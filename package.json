@@ -48,6 +48,11 @@
       "last 1 safari version"
     ]
   },
+  "config": {
+    "commitizen": {
+      "path": "cz-conventional-changelog"
+    }
+  },
   "dependencies": {
     "@editorjs/editorjs": "2.19.1",
     "@editorjs/header": "2.6.1",
