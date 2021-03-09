@@ -1,0 +1,342 @@
+import {
+  Accordion as MuiAccordion,
+  AccordionDetails as MuiAccordionDetails,
+  AccordionSummary as MuiAccordionSummary,
+  Divider,
+  makeStyles,
+  TextField,
+  Typography,
+  useTheme,
+  withStyles,
+} from '@material-ui/core';
+import React from 'react';
+import { Formik } from 'formik';
+import * as yup from 'yup';
+import DefaultButton from '../../components/Buttons/DefaultButton';
+import { useStoreActions, useStoreState } from '../../stores/mainStore/typedHooks';
+import { Redirect } from 'wouter';
+import createNewUser from '../../services/local/createNewUser';
+import LoginPage from '../../components/LoginPage';
+import { ChevronDown } from 'react-feather';
+import { generateSalt, getKeyFromDerivedPassword } from '@slater-notes/core';
+
+const Signup = () => {
+  const theme = useTheme();
+  const classes = useStyles();
+
+  const [testingIterations, setTestingIterations] = React.useState(false);
+  const [iterationsResult, setIterationsResult] = React.useState<number | null>(null);
+
+  const localDB = useStoreState((s) => s.localDB);
+  const user = useStoreState((s) => s.user);
+  const passwordKey = useStoreState((s) => s.passwordKey);
+  const fileCollection = useStoreState((s) => s.fileCollection);
+
+  const setUser = useStoreActions((a) => a.setUser);
+  const setPasswordKey = useStoreActions((a) => a.setPasswordKey);
+  const setFileCollection = useStoreActions((a) => a.setFileCollection);
+
+  if (user && passwordKey && fileCollection) {
+    return <Redirect to='/' />;
+  }
+
+  return (
+    <LoginPage background={1}>
+      <div>
+        <Typography variant='h4' color='textPrimary' style={{ marginBottom: theme.spacing(2) }}>
+          New Account
+        </Typography>
+        <Typography variant='body1' color='textSecondary'>
+          Enter a username and password to create a new account.
+        </Typography>
+      </div>
+
+      <div className={classes.formContainer}>
+        <Formik
+          initialValues={{
+            username: '',
+            password: '',
+            password2: '',
+            iterations: 500000,
+          }}
+          validationSchema={() =>
+            yup.object().shape({
+              username: yup.string().min(3).trim().required(),
+              password: yup.string().min(8).required(),
+              password2: yup
+                .string()
+                .oneOf([yup.ref('password'), null], 'Passwords must match')
+                .required(),
+              iterations: yup.number().min(10000).required(),
+            })
+          }
+          onSubmit={(values, { setErrors, setSubmitting }) => {
+            (async () => {
+              const result = await createNewUser(localDB as any, {
+                username: values.username,
+                password: values.password,
+                iterations: values.iterations,
+              });
+
+              setSubmitting(false);
+
+              switch (result.error?.code) {
+                case 'user_exist':
+                  return setErrors({ username: 'Username already in use.' });
+                case 'iterations_too_low':
+                  return setErrors({ iterations: 'PBKDF2 iterations amount too low.' });
+                default:
+                  if (
+                    result.error ||
+                    !result.user ||
+                    !result.passwordKey ||
+                    !result.fileCollection
+                  ) {
+                    // unhandled error, ooops
+                    console.log(result);
+                    return;
+                  }
+              }
+
+              // TODO setCloudSyncPasswordKey
+              setUser(result.user);
+              setPasswordKey(result.passwordKey);
+              setFileCollection(result.fileCollection);
+            })();
+          }}
+        >
+          {({ handleSubmit, handleChange, handleBlur, values, isSubmitting, errors, touched }) => (
+            <React.Fragment>
+              <form onSubmit={handleSubmit} autoComplete='off'>
+                <TextField
+                  name='username'
+                  label='Username'
+                  variant='outlined'
+                  fullWidth
+                  value={values.username}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  error={touched.username && !!errors.username}
+                  helperText={
+                    touched.username &&
+                    errors.username &&
+                    errors.username.charAt(0).toUpperCase() + errors.username.slice(1)
+                  }
+                />
+
+                <Divider />
+
+                <Typography variant='body2' color='textSecondary'>
+                  If you forget your password, there is no way to recover your notes. We recommend
+                  randomly generating and storing your password in a password manager.
+                </Typography>
+
+                <TextField
+                  type='password'
+                  name='password'
+                  label='Password'
+                  variant='outlined'
+                  fullWidth
+                  value={values.password}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  error={touched.password && !!errors.password}
+                  helperText={
+                    touched.password &&
+                    errors.password &&
+                    errors.password.charAt(0).toUpperCase() + errors.password.slice(1)
+                  }
+                />
+
+                <TextField
+                  type='password'
+                  name='password2'
+                  label='Confirm Password'
+                  variant='outlined'
+                  fullWidth
+                  value={values.password2}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  error={touched.password2 && !!errors.password2}
+                  helperText={
+                    touched.password2 &&
+                    errors.password2 &&
+                    errors.password2.charAt(0).toUpperCase() + errors.password2.slice(1)
+                  }
+                />
+
+                <Divider />
+
+                <Accordion>
+                  <AccordionSummary expandIcon={<ChevronDown size={16} />}>
+                    <Typography variant='body1'>Advanced Settings</Typography>
+                  </AccordionSummary>
+                  <AccordionDetails>
+                    <TextField
+                      type='number'
+                      name='iterations'
+                      label='PBKDF2 Iterations'
+                      variant='outlined'
+                      fullWidth
+                      value={values.iterations}
+                      onChange={(e) => {
+                        setIterationsResult(null);
+                        handleChange(e);
+                      }}
+                      onBlur={handleBlur}
+                      error={touched.iterations && !!errors.iterations}
+                      helperText={
+                        touched.iterations &&
+                        errors.iterations &&
+                        errors.iterations.charAt(0).toUpperCase() + errors.iterations.slice(1)
+                      }
+                    />
+                    <Typography variant='body2'>
+                      A higher iteration count means slow login time{' '}
+                      <strong>but higher resistance to password cracking attacks</strong>.{' '}
+                      <a
+                        href='https://support.1password.com/pbkdf2/'
+                        target='_blank'
+                        rel='noreferrer'
+                      >
+                        Learn more
+                      </a>
+                    </Typography>
+
+                    {(!values.password || !values.password2) && (
+                      <Typography variant='body2'>
+                        Enter a password first before testing its iterations.
+                      </Typography>
+                    )}
+
+                    {typeof iterationsResult === 'number' && (
+                      <Typography variant='body2'>
+                        <strong>{values.iterations.toLocaleString()}</strong> iterations of your
+                        password took{' '}
+                        <strong>{iterationsResult > 100 ? iterationsResult : '<100'}ms</strong> on
+                        your computer.
+                      </Typography>
+                    )}
+
+                    <DefaultButton
+                      buttonProps={{
+                        variant: 'contained',
+                        color: 'primary',
+                        size: 'small',
+                        disabled: !values.password || !values.password2 || testingIterations,
+                        onClick: async () => {
+                          setTestingIterations(true);
+                          setIterationsResult(null);
+                          const start = window.performance.now();
+
+                          await getKeyFromDerivedPassword(
+                            values.password,
+                            generateSalt(),
+                            true,
+                            values.iterations,
+                          );
+
+                          const end = window.performance.now();
+                          setIterationsResult(Math.round(end - start));
+                          setTestingIterations(false);
+                        },
+                      }}
+                      text='Test Iterations'
+                      isLoading={testingIterations}
+                    />
+                  </AccordionDetails>
+                </Accordion>
+
+                <Divider />
+
+                <DefaultButton
+                  buttonProps={{
+                    type: 'submit',
+                    variant: 'contained',
+                    size: 'large',
+                    color: 'primary',
+                    fullWidth: true,
+                    disabled: isSubmitting || testingIterations,
+                  }}
+                  text='Submit'
+                  isLoading={isSubmitting}
+                />
+              </form>
+            </React.Fragment>
+          )}
+        </Formik>
+      </div>
+
+      <div>
+        <DefaultButton
+          text='Cancel'
+          type='error'
+          buttonProps={{
+            color: 'inherit',
+            fullWidth: true,
+            href: '/login',
+          }}
+        />
+      </div>
+    </LoginPage>
+  );
+};
+
+const useStyles = makeStyles({
+  formContainer: {
+    width: '100%',
+
+    '& form > *, .MuiAccordionDetails-root > *': {
+      marginBottom: '1rem',
+      textAlign: 'left',
+    },
+
+    '& form > hr': {
+      marginTop: '1rem',
+      marginBottom: '2rem',
+    },
+  },
+});
+
+const Accordion = withStyles({
+  root: {
+    color: 'inherit',
+    border: '1px solid rgba(0, 0, 0, .125)',
+    boxShadow: 'none',
+    '&:before': {
+      display: 'none',
+    },
+    '&$expanded': {
+      margin: 'auto',
+    },
+  },
+})(MuiAccordion);
+
+const AccordionSummary = withStyles((theme) => ({
+  root: {
+    color: theme.palette.text.secondary,
+    backgroundColor: theme.palette.background.default,
+    borderBottom: '1px solid rgba(0, 0, 0, .125)',
+    marginBottom: -1,
+    minHeight: 56,
+    '&$expanded': {
+      minHeight: 56,
+    },
+  },
+  content: {
+    '&$expanded': {
+      margin: '12px 0',
+    },
+  },
+  expanded: {},
+}))(MuiAccordionSummary);
+
+const AccordionDetails = withStyles((theme) => ({
+  root: {
+    color: theme.palette.text.secondary,
+    padding: theme.spacing(3),
+    display: 'block',
+  },
+}))(MuiAccordionDetails);
+
+export default Signup;
