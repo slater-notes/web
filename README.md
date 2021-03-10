@@ -10,6 +10,8 @@
 </p>
 <p align="center">Open-source, end-to-end encrypted notes app 📝 — <a href="https://slaternotes.com">https://slaternotes.com</a></p>
 
+> **NOTE:** Slater Notes is still a pre-release project (v0.x.x). Please use at your own risk. If you find this project useful, please consider leaving a star so others can find it. Thanks!
+
 > **Help is welcome!** See [CONTIBUTING](#Contributing) for more information.
 
 ## Features
