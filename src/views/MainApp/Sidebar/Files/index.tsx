@@ -1,7 +1,7 @@
 import { List, ListItem, ListItemText, makeStyles, Typography, useTheme } from '@material-ui/core';
 import { grey } from '@material-ui/core/colors';
 import moment from 'moment';
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useMemo } from 'react';
 import { NoteItem } from '@slater-notes/core';
 import { useStoreActions, useStoreState } from '../../../../stores/mainStore/typedHooks';
 import DefaultDialog from '../../../../components/Dialogs/DefaultDialog';
@@ -18,7 +18,7 @@ const Files = () => {
 
   const [filter, setFilter] = React.useState<string>('');
   const [emptyTrashConfirm, setEmptyTrashConfirm] = React.useState(false);
-  const [containerShadow, setContainerShadow] = React.useState(false);
+  const [, setContainerShadow] = React.useState(false);
 
   const fileCollection = useStoreState((s) => s.fileCollection);
   const activeNote = useStoreState((s) => s.activeNote);
