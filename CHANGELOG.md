@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.1.2](https://github.com/slater-notes/web/compare/v0.1.1...v0.1.2) (2021-03-10)
+
+
+### Bug Fixes
+
+* remove unused vars ([f87d692](https://github.com/slater-notes/web/commit/f87d6926ec88ecb3a6f26e16fb02d1a4db6229a9))
+
 ### 0.1.1 (2021-03-10)
 
 
