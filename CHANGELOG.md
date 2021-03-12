@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.1.6](https://github.com/slater-notes/web/compare/v0.1.5...v0.1.6) (2021-03-12)
+
+
+### Bug Fixes
+
+* remove prod-only code ([99fe2d5](https://github.com/slater-notes/web/commit/99fe2d5d650f6fa39fb391b3c91e2ad2ba845ab5))
+
 ### [0.1.5](https://github.com/slater-notes/web/compare/v0.1.4...v0.1.5) (2021-03-12)
 
 
