@@ -29,7 +29,8 @@
     "storybook": "start-storybook -p 6006 -s public",
     "build-storybook": "build-storybook -s public",
     "commit": "cz",
-    "bump": "standard-version"
+    "bump": "standard-version",
+    "pub": "git push --follow-tags origin main"
   },
   "eslintConfig": {
     "extends": [
