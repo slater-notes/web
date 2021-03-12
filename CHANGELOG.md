@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.1.5](https://github.com/slater-notes/web/compare/v0.1.4...v0.1.5) (2021-03-12)
+
+
+### Bug Fixes
+
+* **cloudsync:** use production cloud sync url ([78831ec](https://github.com/slater-notes/web/commit/78831ecd99d5d2ba4fcd2995a2aaf95df37a0231))
+
 ### [0.1.4](https://github.com/slater-notes/web/compare/v0.1.3...v0.1.4) (2021-03-12)
 
 
