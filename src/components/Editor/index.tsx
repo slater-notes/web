@@ -1,6 +1,6 @@
 import { makeStyles } from '@material-ui/core';
 import React, { useEffect } from 'react';
-import EditorJS, { API, EditorConfig, LogLevels, OutputData } from '@editorjs/editorjs';
+import EditorJS, { API, EditorConfig, OutputData } from '@editorjs/editorjs';
 import { debounce } from 'lodash';
 import Header from '@editorjs/header';
 import List from '@editorjs/list';
@@ -92,10 +92,6 @@ const Editor = (props: Props) => {
 
     if (props.initialData) {
       config.data = props.initialData;
-    }
-
-    if (process.env.NODE_ENV === 'production') {
-      config.logLevel = LogLevels.ERROR;
     }
 
     new EditorJS(config);
