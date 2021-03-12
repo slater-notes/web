@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.1.4](https://github.com/slater-notes/web/compare/v0.1.3...v0.1.4) (2021-03-12)
+
+
+### Bug Fixes
+
+* update @slater-notes/core and other libs ([5783a70](https://github.com/slater-notes/web/commit/5783a70745d27fa077cec923f546462ed77a5405))
+
 ### [0.1.3](https://github.com/slater-notes/web/compare/v0.1.2...v0.1.3) (2021-03-10)
 
 
