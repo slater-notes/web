@@ -1,2 +1,2 @@
-export const defaultCloudSyncURL = 'http://localhost:8080';
+export const defaultCloudSyncURL = 'https://us-central1-slater-notes.cloudfunctions.net/app';
 export const defaultCloudSyncPasswordIterations = 500000;
