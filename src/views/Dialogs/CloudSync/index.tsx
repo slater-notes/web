@@ -246,7 +246,7 @@ const CloudSync = () => {
                 />
                 {isSyncing && (
                   <span style={{ marginLeft: theme.spacing(2) }}>
-                    Syncing your notes... Do not close this window.
+                    Syncing your account... Do not close this window.
                   </span>
                 )}
               </React.Fragment>
