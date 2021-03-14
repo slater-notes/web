@@ -6,7 +6,7 @@
 
 <h1 align="center">Slater Notes</h1>
 <p align="center">
-  <img src="https://img.shields.io/github/package-json/v/slater-notes/web?color=yellow" />
+  <img src="https://img.shields.io/github/package-json/v/slater-notes/web?color=red" />
   <img src="https://img.shields.io/github/last-commit/slater-notes/web" />
   <img src="https://img.shields.io/github/license/slater-notes/web?color=blue" />
   <a href="https://app.netlify.com/sites/slaternotes/deploys">
