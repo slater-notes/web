@@ -6,7 +6,9 @@
 
 <h1 align="center">Slater Notes</h1>
 <p align="center">
-  <img src="https://badgen.net/badge/version/0.1.0/red" />
+  <img src="https://img.shields.io/github/package-json/v/slater-notes/web?color=yellow" />
+  <img src="https://img.shields.io/github/last-commit/slater-notes/web" />
+  <img src="https://img.shields.io/github/license/slater-notes/web?color=blue" />
   <a href="https://app.netlify.com/sites/slaternotes/deploys">
     <img src="https://api.netlify.com/api/v1/badges/ff360300-83fb-4169-9524-1b1aa8cdf789/deploy-status" />
   </a>
