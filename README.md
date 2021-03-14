@@ -9,9 +9,6 @@
   <img src="https://img.shields.io/github/package-json/v/slater-notes/web?color=red" />
   <img src="https://img.shields.io/github/last-commit/slater-notes/web" />
   <img src="https://img.shields.io/github/license/slater-notes/web?color=blue" />
-  <a href="https://app.netlify.com/sites/slaternotes/deploys">
-    <img src="https://api.netlify.com/api/v1/badges/ff360300-83fb-4169-9524-1b1aa8cdf789/deploy-status" />
-  </a>
 </p>
 <p align="center">Open-source, end-to-end encrypted notes app 📝 — <a href="https://slaternotes.com">https://slaternotes.com</a></p>
 
