@@ -1,11 +1,11 @@
-import { List, ListItem, ListItemText, makeStyles, Typography, useTheme } from '@material-ui/core';
+import { Box, List, ListItem, ListItemText, makeStyles, useTheme } from '@material-ui/core';
 import { grey } from '@material-ui/core/colors';
 import moment from 'moment';
 import React, { useMemo } from 'react';
 import { NoteItem } from '@slater-notes/core';
 import { useStoreActions, useStoreState } from '../../../../stores/mainStore/typedHooks';
 import DefaultDialog from '../../../../components/Dialogs/DefaultDialog';
-import { Plus, Star, Trash } from 'react-feather';
+import { Star, Trash } from 'react-feather';
 import DefaultIconButton from '../../../../components/Buttons/DefaultIconButton';
 import FilterFiles from './FilterFiles';
 import { throttle } from 'lodash';
@@ -93,22 +93,27 @@ const Files = () => {
         className={classes.container}
         onScroll={handleContainerScrollThrottled}
       >
-        {activeFolderId === 'all' && <FilterFiles onChange={(value) => setFilter(value)} />}
+        <div className={classes.titleContainer}>
+          <div className={classes.title}>
+            <Box fontSize='1.8rem' fontWeight={theme.typography.fontWeightMedium}>
+              {getTitle()}
+            </Box>
+            {activeFolderId === 'trash' && (
+              <DefaultIconButton
+                icon={Trash}
+                size={18}
+                disabled={!fileCollection?.notes.find((n) => n.isDeleted)}
+                style={{
+                  marginTop: `-${theme.spacing(0.5)}px`,
+                }}
+                onClick={() => {
+                  setEmptyTrashConfirm(true);
+                }}
+              />
+            )}
+          </div>
 
-        <div className={classes.title}>
-          <Typography variant='h4' component='div'>
-            {getTitle()}
-          </Typography>
-          {activeFolderId === 'trash' && (
-            <DefaultIconButton
-              icon={Trash}
-              size={18}
-              disabled={!fileCollection?.notes.find((n) => n.isDeleted)}
-              onClick={() => {
-                setEmptyTrashConfirm(true);
-              }}
-            />
-          )}
+          {activeFolderId === 'all' && <FilterFiles onChange={(value) => setFilter(value)} />}
         </div>
 
         {useMemo(
@@ -121,15 +126,29 @@ const Files = () => {
 
             return (
               <List disablePadding>
+                {activeFolderId === 'all' && items.length === 0 && (
+                  <ListItem className={classes.noteItem}>
+                    <ListItemText
+                      primary={
+                        <Box color='text.secondary' style={{ lineHeight: 2 }}>
+                          You don't have any notes yet.
+                          <br />
+                          Press the <b>New Note</b> button to add a new note.
+                        </Box>
+                      }
+                    />
+                  </ListItem>
+                )}
+
                 {activeFolderId === 'starred' && items.length === 0 && (
                   <ListItem className={classes.noteItem}>
                     <ListItemText
                       primary={
-                        <span style={{ lineHeight: 2 }}>
+                        <Box color='text.secondary' style={{ lineHeight: 2 }}>
                           Add notes here by pressing the{' '}
                           <Star size={16} style={{ margin: `0 ${theme.spacing(1)}px -2px` }} />{' '}
                           icon.
-                        </span>
+                        </Box>
                       }
                     />
                   </ListItem>
@@ -139,11 +158,16 @@ const Files = () => {
                   <ListItem className={classes.noteItem}>
                     <ListItemText
                       primary={
-                        <span style={{ lineHeight: 2 }}>
-                          When you trash notes, they end up here. Press the{' '}
-                          <Trash size={16} style={{ margin: `0 ${theme.spacing(1)}px -2px` }} />{' '}
+                        <Box color='text.secondary' style={{ lineHeight: 2 }}>
+                          When you trash notes, they end up here.
+                          <br />
+                          Press the{' '}
+                          <Trash
+                            size={16}
+                            style={{ margin: `0 ${theme.spacing(1)}px -2px` }}
+                          />{' '}
                           icon above to empty the trash.
-                        </span>
+                        </Box>
                       }
                     />
                   </ListItem>
@@ -153,11 +177,9 @@ const Files = () => {
                   <ListItem className={classes.noteItem}>
                     <ListItemText
                       primary={
-                        <span style={{ lineHeight: 2 }}>
-                          Press the{' '}
-                          <Plus size={16} style={{ margin: `0 ${theme.spacing(0.5)}px -2px` }} />
-                          <b>New Note</b> button to add a new note in this folder.
-                        </span>
+                        <Box color='text.secondary' style={{ lineHeight: 2 }}>
+                          Press the <b>New Note</b> button to add a new note in this folder.
+                        </Box>
                       }
                     />
                   </ListItem>
@@ -230,28 +252,28 @@ const useStyles = makeStyles((theme) => ({
   container: {
     overflowY: 'auto',
     backgroundColor: theme.palette.background.default,
-    padding: `0 ${theme.spacing(2)}px`,
+  },
+
+  titleContainer: {
+    padding: `0 ${theme.spacing(3)}px`,
   },
 
   title: {
     display: 'flex',
     justifyContent: 'space-between',
-    padding: `${theme.spacing(3)}px ${theme.spacing(4)}px`,
+    padding: `${theme.spacing(3)}px 0`,
     marginBottom: theme.spacing(2),
   },
 
   noteItem: {
-    background: theme.palette.background.paper,
-    borderRadius: 6,
-    marginBottom: theme.spacing(2),
+    marginBottom: theme.spacing(1),
 
     '&.MuiListItem-gutters': {
-      padding: `${theme.spacing(2)}px ${theme.spacing(4)}px`,
+      padding: `${theme.spacing(2)}px ${theme.spacing(3)}px`,
     },
 
     '&.Mui-selected, &.Mui-selected:hover': {
-      background: theme.palette.primary.main,
-      color: theme.palette.primary.contrastText,
+      background: theme.palette.background.paper,
 
       '& .MuiListItemText-root': {
         '& .MuiListItemText-secondary': {

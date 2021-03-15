@@ -227,14 +227,12 @@ const Folders = () => {
               key: 'cloudsync',
               text: 'Cloud Sync',
               icon: typeof user?.cloudLastSynced === 'number' ? Cloud : CloudOff,
-              hasNormalTextColor: true,
               onClick: () => setOpenCloudSync(true),
             },
             {
               key: 'settings',
               text: 'Settings',
               icon: SettingsIcon,
-              hasNormalTextColor: true,
               onClick: () => setOpenSettings(true),
             },
           ]}
@@ -284,6 +282,7 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     padding: `${theme.spacing(1)}px ${theme.spacing(4)}px`,
     fontSize: '0.9rem',
+    fontWeight: theme.typography.fontWeightMedium,
     textTransform: 'uppercase',
     justifyContent: 'space-between',
     position: 'relative',

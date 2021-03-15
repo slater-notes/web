@@ -24,7 +24,8 @@ const FilterFiles = (props: Props) => {
 const useStyles = makeStyles((theme) => ({
   formControl: {
     display: 'flex',
-    padding: `${theme.spacing(3)}px ${theme.spacing(2)}px ${theme.spacing(2)}px`,
+    marginTop: `-${theme.spacing(3)}px`,
+    marginBottom: `${theme.spacing(3)}px`,
   },
 }));
 

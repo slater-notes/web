@@ -64,12 +64,13 @@ const useStyles = makeStyles((theme) => ({
 
     '&.Mui-selected': {
       color: theme.palette.text.primary,
-      boxShadow: `inset 4px 0px 0px ${theme.palette.text.primary}`,
+      boxShadow: `inset 4px 0px 0px ${theme.palette.secondary.main}`,
     },
 
     '& .MuiListItemText-root': {
       '& .MuiListItemText-primary': {
         fontSize: '0.9rem',
+        fontWeight: theme.typography.fontWeightMedium,
       },
     },
 

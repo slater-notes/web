@@ -13,7 +13,7 @@ export const THEME: ThemeOptions = {
     },
     background: {
       default: '#fff',
-      paper: grey[50],
+      paper: grey[100],
     },
     divider: grey[200],
   },
