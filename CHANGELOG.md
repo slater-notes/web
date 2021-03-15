@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.1.8](https://github.com/slater-notes/web/compare/v0.1.7...v0.1.8) (2021-03-15)
+
+
+### Features
+
+* **ui:** improve note section ui ([6ff87ef](https://github.com/slater-notes/web/commit/6ff87efb6c8ae694a058f3a762bc8f80c8b49bc9))
+* **ui:** improve sidebar ui ([a380115](https://github.com/slater-notes/web/commit/a3801154028ae57c270d75e7cbf24bd7e00558c5))
+* **ui:** use bold font in login, signup page ([2854087](https://github.com/slater-notes/web/commit/285408721165146b3cb84466aa19ff06c81e09ff))
+
 ### [0.1.7](https://github.com/slater-notes/web/compare/v0.1.6...v0.1.7) (2021-03-15)
 
 
