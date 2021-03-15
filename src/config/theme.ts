@@ -19,17 +19,10 @@ export const THEME: ThemeOptions = {
   },
   typography: {
     fontSize: 14,
-    fontFamily: [
-      'Roboto',
-      '-apple-system',
-      'BlinkMacSystemFont',
-      '"Segoe UI"',
-      '"Helvetica Neue"',
-      'Arial',
-      'sans-serif',
-      '"Apple Color Emoji"',
-      '"Segoe UI Emoji"',
-      '"Segoe UI Symbol"',
-    ].join(','),
+    fontWeightLight: 300,
+    fontWeightRegular: 400,
+    fontWeightMedium: 500,
+    fontWeightBold: 700,
+    fontFamily: ['Inter', 'sans-serif'].join(','),
   },
 };
