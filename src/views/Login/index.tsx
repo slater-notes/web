@@ -4,7 +4,6 @@ import {
   makeStyles,
   TextField,
   Typography,
-  useTheme,
 } from '@material-ui/core';
 import React from 'react';
 import { Formik } from 'formik';
@@ -22,9 +21,10 @@ import decryptAndSaveUserFromBase64 from '../../services/local/decryptAndSaveUse
 import saveFileCollectionFromBase64 from '../../services/local/saveFileCollectionFromBase64';
 import moment from 'moment';
 import downloadNotesFromCloudSync from '../../services/cloudSync/downloadNotes';
+import H1 from '../../components/Typography/H1';
+import Paragraph from '../../components/Typography/Paragraph';
 
 const Login = () => {
-  const theme = useTheme();
   const classes = useStyles();
 
   const localDB = useStoreState((s) => s.localDB);
@@ -48,12 +48,8 @@ const Login = () => {
   return (
     <LoginPage background={0}>
       <div>
-        <Typography variant='h4' color='textPrimary' style={{ marginBottom: theme.spacing(2) }}>
-          Log In
-        </Typography>
-        <Typography variant='body1' color='textSecondary'>
-          Enter your username and password to access your notes.
-        </Typography>
+        <H1>Log In</H1>
+        <Paragraph>Enter your username and password to access your notes.</Paragraph>
       </div>
 
       <div className={classes.formContainer}>

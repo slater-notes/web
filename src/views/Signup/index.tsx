@@ -6,7 +6,6 @@ import {
   makeStyles,
   TextField,
   Typography,
-  useTheme,
   withStyles,
 } from '@material-ui/core';
 import React from 'react';
@@ -19,9 +18,10 @@ import createNewUser from '../../services/local/createNewUser';
 import LoginPage from '../../components/LoginPage';
 import { ChevronDown } from 'react-feather';
 import { generateSalt, getKeyFromDerivedPassword } from '@slater-notes/core';
+import H1 from '../../components/Typography/H1';
+import Paragraph from '../../components/Typography/Paragraph';
 
 const Signup = () => {
-  const theme = useTheme();
   const classes = useStyles();
 
   const [testingIterations, setTestingIterations] = React.useState(false);
@@ -43,12 +43,8 @@ const Signup = () => {
   return (
     <LoginPage background={1}>
       <div>
-        <Typography variant='h4' color='textPrimary' style={{ marginBottom: theme.spacing(2) }}>
-          New Account
-        </Typography>
-        <Typography variant='body1' color='textSecondary'>
-          Enter a username and password to create a new account.
-        </Typography>
+        <H1>New Account</H1>
+        <Paragraph>Enter a username and password to create a new account.</Paragraph>
       </div>
 
       <div className={classes.formContainer}>
