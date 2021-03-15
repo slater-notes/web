@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.1.7](https://github.com/slater-notes/web/compare/v0.1.6...v0.1.7) (2021-03-15)
+
+
+### Features
+
+* **ui:** change font from roboto to inter ([22a6fea](https://github.com/slater-notes/web/commit/22a6feaf4f0c0b36e7839e37f96d1c2d83daadfb))
+
 ### [0.1.6](https://github.com/slater-notes/web/compare/v0.1.5...v0.1.6) (2021-03-12)
 
 
