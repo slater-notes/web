@@ -1,5 +1,5 @@
-import { Divider, makeStyles, Typography } from '@material-ui/core';
-import React, { useEffect, useMemo, useState } from 'react';
+import { Box, Divider, makeStyles, Typography, useTheme } from '@material-ui/core';
+import React from 'react';
 import { FolderItem, NoteItem } from '@slater-notes/core';
 import { MenuItemObject } from '../../../components/Menus/SimpleTextMenu';
 import Tag from '../../../components/Tag';
@@ -8,13 +8,14 @@ import moment from 'moment';
 
 interface Props {
   noteItem: NoteItem;
-  onChange: () => void;
+  onChange?: () => void;
 }
 
 const FolderPicker = (props: Props) => {
+  const theme = useTheme();
   const classes = useStyles();
 
-  const [folder, setFolder] = useState<FolderItem | null | undefined>(null);
+  const [folder, setFolder] = React.useState<FolderItem | null | undefined>(null);
 
   const fileCollection = useStoreState((s) => s.fileCollection);
   const updateNoteItem = useStoreActions((s) => s.updateNoteItem);
@@ -22,7 +23,7 @@ const FolderPicker = (props: Props) => {
   const getFolderItemFromId = (id: string): FolderItem | undefined =>
     fileCollection?.folders.find((f) => f.id === id);
 
-  useEffect(
+  React.useEffect(
     () => {
       setFolder(props.noteItem.parentId ? getFolderItemFromId(props.noteItem.parentId) : null);
     },
@@ -44,12 +45,12 @@ const FolderPicker = (props: Props) => {
 
     updateNoteItem({ id: noteItem.id, noteItem });
 
-    props.onChange();
+    if (props.onChange) props.onChange();
   };
 
   return (
-    <span>
-      {useMemo(() => {
+    <React.Fragment>
+      {React.useMemo(() => {
         const items: MenuItemObject[] =
           fileCollection && fileCollection.folders.length > 0
             ? fileCollection.folders
@@ -66,7 +67,7 @@ const FolderPicker = (props: Props) => {
         items.unshift({
           replacementLabel: (
             <Typography display='block' variant='caption'>
-              Save note to...
+              Save note to:
             </Typography>
           ),
         });
@@ -85,7 +86,11 @@ const FolderPicker = (props: Props) => {
         return (
           <div className={classes.container}>
             <Tag
-              text={folder ? folder.title || 'Untitled' : 'Save to folder...'}
+              text={
+                <Box component='span' fontWeight={theme.typography.fontWeightMedium}>
+                  {folder ? folder.title || 'Untitled' : 'Save to folder...'}
+                </Box>
+              }
               color={folder ? 'primary' : undefined}
               menuItems={items}
               onDelete={props.noteItem.parentId ? () => updateFolder(null) : undefined}
@@ -94,13 +99,13 @@ const FolderPicker = (props: Props) => {
         );
         // eslint-disable-next-line
       }, [fileCollection, props.noteItem, props.noteItem.parentId, folder])}
-    </span>
+    </React.Fragment>
   );
 };
 
 const useStyles = makeStyles((theme) => ({
   container: {
-    marginBottom: theme.spacing(2),
+    display: 'inline-block',
   },
 
   removeFromFolderText: {

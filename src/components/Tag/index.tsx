@@ -3,7 +3,7 @@ import React, { useRef, useState } from 'react';
 import SimpleTextMenu, { MenuItemObject } from '../Menus/SimpleTextMenu';
 
 interface Props {
-  text: string;
+  text: React.ReactNode;
   color?: 'primary' | 'secondary';
   menuItems?: MenuItemObject[];
   onDelete?: () => void;

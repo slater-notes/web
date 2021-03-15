@@ -109,10 +109,19 @@ const Editor = (props: Props) => {
 const useStyles = makeStyles((theme) => ({
   container: {
     color: theme.palette.text.primary,
-    fontSize: 18,
+    fontSize: '1.1rem',
+    fontWeight: theme.typography.fontWeightRegular,
 
     '& .ce-block__content, .ce-toolbar__content': {
       margin: '0px !important',
+
+      '& h2, h3, h4': {
+        fontWeight: theme.typography.fontWeightMedium,
+      },
+
+      '&  b': {
+        fontWeight: theme.typography.fontWeightBold,
+      },
     },
   },
 }));

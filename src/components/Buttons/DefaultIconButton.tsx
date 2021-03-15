@@ -1,4 +1,4 @@
-import { IconButton, Tooltip } from '@material-ui/core';
+import { IconButton, makeStyles, Tooltip } from '@material-ui/core';
 import React from 'react';
 import { Icon } from 'react-feather';
 
@@ -14,11 +14,14 @@ interface Props {
 }
 
 const DefaultIconButton = (props: Props) => {
+  const classes = useStyles();
+
   const fillProps = props.fill ? { fill: props.fill } : undefined;
 
   return (
     <Tooltip title={props.label || ''}>
       <IconButton
+        className={classes.iconButton}
         color={props.color}
         disabled={props.disabled}
         style={props.style}
@@ -29,5 +32,13 @@ const DefaultIconButton = (props: Props) => {
     </Tooltip>
   );
 };
+
+const useStyles = makeStyles((theme) => ({
+  iconButton: {
+    '&:hover': {
+      color: `${theme.palette.text.primary}`,
+    },
+  },
+}));
 
 export default DefaultIconButton;

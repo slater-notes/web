@@ -6,7 +6,6 @@ import React from 'react';
 import EditableTypography from '../../../components/EditableTypography';
 import Editor from '../../../components/Editor';
 import { useStoreActions } from '../../../stores/mainStore/typedHooks';
-import FolderPicker from './FolderPicker';
 import TopBar from './TopBar';
 
 interface Props {
@@ -53,8 +52,6 @@ const NotePage = ({ noteItem, noteData }: Props) => {
       <TopBar note={{ noteItem, noteData }} saved={saved} lastSaved={lastSaved} />
 
       <div className={classes.content} style={{ opacity: noteItem.isDeleted ? 0.3 : undefined }}>
-        <FolderPicker noteItem={noteItem} onChange={() => setLastSaved(moment().unix())} />
-
         <EditableTypography
           ref={inputRef}
           text={title}
@@ -102,6 +99,8 @@ const useStyles = makeStyles((theme) => ({
   },
 
   title: {
+    color: theme.palette.text.primary,
+    fontWeight: theme.typography.fontWeightMedium,
     marginBottom: theme.spacing(6),
   },
 }));

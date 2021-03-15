@@ -26,7 +26,6 @@ const useStyles = makeStyles((theme) => ({
     textAlign: 'center',
     padding: `${theme.spacing(3)}px 0`,
     cursor: 'pointer',
-    color: theme.palette.text.hint,
 
     '&:hover': {
       background: theme.palette.background.paper,

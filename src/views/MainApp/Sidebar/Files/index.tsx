@@ -285,6 +285,7 @@ const useStyles = makeStyles((theme) => ({
     '& .MuiListItemText-root': {
       '& .MuiListItemText-primary': {
         fontSize: '0.9rem',
+        fontWeight: theme.typography.fontWeightMedium,
         marginBottom: theme.spacing(1),
       },
 

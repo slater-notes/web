@@ -6,6 +6,7 @@ import DefaultButton from '../../../components/Buttons/DefaultButton';
 import DefaultIconButton from '../../../components/Buttons/DefaultIconButton';
 import DefaultDialog from '../../../components/Dialogs/DefaultDialog';
 import { useStoreActions, useStoreState } from '../../../stores/mainStore/typedHooks';
+import FolderPicker from './FolderPicker';
 
 interface Props {
   note: { noteItem: NoteItem; noteData: NoteData };
@@ -29,6 +30,8 @@ const TopBar = (props: Props) => {
   return (
     <div className={classes.container}>
       <div>
+        <FolderPicker noteItem={props.note.noteItem} />
+
         {props.note.noteItem.isDeleted && (
           <DefaultButton
             text={
@@ -72,7 +75,7 @@ const TopBar = (props: Props) => {
               size={20}
               fill={props.note.noteItem.isStarred ? theme.palette.secondary.main : undefined}
               style={{
-                color: props.note.noteItem.isStarred ? theme.palette.secondary.main : 'inherit',
+                color: props.note.noteItem.isStarred ? theme.palette.secondary.main : undefined,
               }}
               onClick={() => {
                 const noteItem = props.note.noteItem;
@@ -84,7 +87,6 @@ const TopBar = (props: Props) => {
               label='Move to Trash'
               icon={Trash}
               size={20}
-              style={{ color: 'inherit' }}
               onClick={() => setDeleteConfirm(true)}
             />
           </React.Fragment>
@@ -124,7 +126,7 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     justifyContent: 'space-between',
     padding: `${theme.spacing(3)}px ${theme.spacing(8)}px`,
-    color: theme.palette.text.hint,
+    // color: theme.palette.text.hint,
 
     '& > * > *': {
       marginRight: theme.spacing(1),

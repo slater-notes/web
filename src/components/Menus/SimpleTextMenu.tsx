@@ -1,8 +1,8 @@
-import { Menu, MenuItem } from '@material-ui/core';
+import { makeStyles, Menu, MenuItem } from '@material-ui/core';
 import React from 'react';
 
 export interface MenuItemObject {
-  label?: string | React.ReactNode;
+  label?: React.ReactNode;
   replacementLabel?: React.ReactNode;
   isSelected?: boolean;
   onClick?: () => void;
@@ -16,8 +16,15 @@ interface Props {
 }
 
 const SimpleTextMenu = (props: Props) => {
+  const classes = useStyles();
+
   return (
-    <Menu anchorEl={props.anchorEl} open={props.isOpen} onClose={props.onClose}>
+    <Menu
+      className={classes.menu}
+      anchorEl={props.anchorEl}
+      open={props.isOpen}
+      onClose={props.onClose}
+    >
       {props.items.map((item, index) => {
         if (item.replacementLabel) {
           return (
@@ -47,5 +54,13 @@ const SimpleTextMenu = (props: Props) => {
     </Menu>
   );
 };
+
+const useStyles = makeStyles((theme) => ({
+  menu: {
+    '& .MuiListItem-root': {
+      fontWeight: theme.typography.fontWeightMedium,
+    },
+  },
+}));
 
 export default SimpleTextMenu;

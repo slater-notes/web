@@ -11,6 +11,10 @@ export const THEME: ThemeOptions = {
       main: deepOrange[400],
       contrastText: '#fff',
     },
+    text: {
+      primary: grey[900],
+      secondary: '#707684',
+    },
     background: {
       default: '#fff',
       paper: grey[100],
