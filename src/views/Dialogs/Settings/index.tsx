@@ -21,8 +21,8 @@ import defaultUserSettings from '../../../stores/mainStore/defaultUserSettings';
 import { useStoreActions, useStoreState } from '../../../stores/mainStore/typedHooks';
 import ChangeUsername from '../ChangeUsername';
 
-const latestVersion = '0.1.8';
-const latestReleaseTime = moment('2021-03-15T12:25:34Z');
+const latestVersion = '0.1.9';
+const latestReleaseTime = moment.unix(1615894711);
 
 const Settings = () => {
   const theme = useTheme();
@@ -125,6 +125,10 @@ const Settings = () => {
                     <ul>
                       <li>Overall UI improvements</li>
                       <li>Use Inter font instead of Roboto</li>
+                    </ul>
+                    <b>Fixes:</b>
+                    <ul>
+                      <li>Default heading block</li>
                     </ul>
                   </Box>
                 </span>
