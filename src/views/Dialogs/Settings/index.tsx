@@ -1,4 +1,5 @@
 import {
+  Box,
   Button,
   List,
   ListItem,
@@ -12,12 +13,16 @@ import {
   Tabs,
   useTheme,
 } from '@material-ui/core';
+import moment from 'moment';
 import React, { useState } from 'react';
 import DefaultButton from '../../../components/Buttons/DefaultButton';
 import DefaultDialog from '../../../components/Dialogs/DefaultDialog';
 import defaultUserSettings from '../../../stores/mainStore/defaultUserSettings';
 import { useStoreActions, useStoreState } from '../../../stores/mainStore/typedHooks';
 import ChangeUsername from '../ChangeUsername';
+
+const latestVersion = '0.1.8';
+const latestReleaseTime = moment('2021-03-15T12:25:34Z');
 
 const Settings = () => {
   const theme = useTheme();
@@ -72,7 +77,6 @@ const Settings = () => {
           <ListItem>
             <ListItemText
               primary={user?.username}
-              secondaryTypographyProps={{ component: 'div' }}
               secondary={
                 <DefaultButton
                   text='Change Username'
@@ -101,12 +105,12 @@ const Settings = () => {
         <List>
           <ListItem>
             <ListItemText
-              primary='Slater Notes (Unstable)'
+              primary={<b>Slater Notes (Pre-Release)</b>}
               secondary={
                 <span>
-                  Version: 0.1.0
+                  Version: <b>{latestVersion}</b>
                   <br />
-                  Build Date: 2021-01-06T00:00:00.00Z (6 days ago)
+                  Release Date: <b>{latestReleaseTime.fromNow()}</b> ({latestReleaseTime.format()})
                 </span>
               }
             />
@@ -114,12 +118,24 @@ const Settings = () => {
           <ListItem>
             <ListItemText
               secondary={
-                <a
-                  href='https://github.com/slaternotes/slaternotes-web'
-                  target='_blank'
-                  rel='noreferrer'
-                >
-                  https://github.com/slaternotes/slaternotes-web
+                <span>
+                  Release Notes:
+                  <Box marginTop={`${theme.spacing(2)}px`} marginLeft={`${theme.spacing(2)}px`}>
+                    <b>Features:</b>
+                    <ul>
+                      <li>Overall UI improvements</li>
+                      <li>Use Inter font instead of Roboto</li>
+                    </ul>
+                  </Box>
+                </span>
+              }
+            />
+          </ListItem>
+          <ListItem>
+            <ListItemText
+              secondary={
+                <a href='https://github.com/slater-notes/web' target='_blank' rel='noreferrer'>
+                  https://github.com/slater-notes/web
                 </a>
               }
             />

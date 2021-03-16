@@ -29,4 +29,11 @@ export const THEME: ThemeOptions = {
     fontWeightBold: 700,
     fontFamily: ['Inter', 'sans-serif'].join(','),
   },
+  props: {
+    MuiListItemText: {
+      secondaryTypographyProps: {
+        component: 'div' as any,
+      },
+    },
+  },
 };
