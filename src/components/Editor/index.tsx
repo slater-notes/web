@@ -20,7 +20,7 @@ const editorTools: { [toolName: string]: any } = {
     config: {
       placeholder: 'Enter a Heading',
       levels: [2, 3, 4],
-      defaultLevel: 4,
+      defaultLevel: 2,
     },
   },
   list: {
