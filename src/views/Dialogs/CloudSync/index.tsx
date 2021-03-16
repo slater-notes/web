@@ -276,7 +276,7 @@ const CloudSync = () => {
         {typeof user?.cloudLastSynced === 'number' && (
           <ListItem>
             <ListItemText
-              primary='Last Synced'
+              primary='Last Full Sync'
               secondary={`${lastSyncTime.fromNow} — ${lastSyncTime.exact}`}
             />
           </ListItem>
