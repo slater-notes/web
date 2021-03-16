@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.1.9](https://github.com/slater-notes/web/compare/v0.1.8...v0.1.9) (2021-03-16)
+
+
+### Features
+
+* **editor:** add inline toolbar for heading blocks ([7837ef8](https://github.com/slater-notes/web/commit/7837ef82739379e51fda7e10b07ff4654aeed65b))
+* update last cloud sync time ([54d517c](https://github.com/slater-notes/web/commit/54d517cd5b7fe0f2698e15f13228e16d3f54d167))
+
+
+### Bug Fixes
+
+* show last sync time on cloud sync dialog mount ([c392689](https://github.com/slater-notes/web/commit/c39268949b7b48c79f717ac0deb229017354e5bf))
+* **editor:** use h2 heading as default ([ca035d0](https://github.com/slater-notes/web/commit/ca035d0f2fd489053fc72e334157010baf83a4c1))
+* correct about section info ([65b0f6b](https://github.com/slater-notes/web/commit/65b0f6b231970945a6a52ab6694d731b8bc9480b))
+
 ### [0.1.8](https://github.com/slater-notes/web/compare/v0.1.7...v0.1.8) (2021-03-15)
 
 
