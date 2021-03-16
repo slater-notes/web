@@ -225,14 +225,18 @@ const CloudSync = () => {
   };
 
   React.useEffect(() => {
-    const interval = setInterval(() => {
+    const updateLastSyncTime = () => {
       if (typeof user?.cloudLastSynced === 'number') {
         setLastSyncTime({
           fromNow: moment.unix(user.cloudLastSynced).fromNow(),
           exact: moment.unix(user.cloudLastSynced).format('D MMM YYYY HH:mm'),
         });
       }
-    }, 10000);
+    };
+
+    updateLastSyncTime();
+
+    const interval = setInterval(updateLastSyncTime, 10000);
 
     return () => {
       clearInterval(interval);
