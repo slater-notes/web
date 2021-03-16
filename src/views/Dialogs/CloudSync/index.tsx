@@ -24,6 +24,7 @@ const CloudSync = () => {
   const [usernameTakenError, setUsernameTakenError] = React.useState(false);
   const [isSyncing, setIsSyncing] = React.useState(false);
   const [syncSuccess, setSyncSuccess] = React.useState(false);
+  const [lastSyncTime, setLastSyncTime] = React.useState({ fromNow: '', exact: '' });
 
   const localDB = useStoreState((s) => s.localDB);
   const workers = useStoreState((s) => s.workers);
@@ -223,6 +224,21 @@ const CloudSync = () => {
     console.log('all done!');
   };
 
+  React.useEffect(() => {
+    const interval = setInterval(() => {
+      if (typeof user?.cloudLastSynced === 'number') {
+        setLastSyncTime({
+          fromNow: moment.unix(user.cloudLastSynced).fromNow(),
+          exact: moment.unix(user.cloudLastSynced).format('D MMM YYYY HH:mm'),
+        });
+      }
+    }, 10000);
+
+    return () => {
+      clearInterval(interval);
+    };
+  }, []);
+
   return (
     <div className={classes.content}>
       <List>
@@ -257,9 +273,7 @@ const CloudSync = () => {
           <ListItem>
             <ListItemText
               primary='Last Synced'
-              secondary={`${moment.unix(user.cloudLastSynced).fromNow()} — ${moment
-                .unix(user.cloudLastSynced)
-                .format('D MMM YYYY HH:mm')}`}
+              secondary={`${lastSyncTime.fromNow} — ${lastSyncTime.exact}`}
             />
           </ListItem>
         )}
