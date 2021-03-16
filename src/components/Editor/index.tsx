@@ -17,6 +17,7 @@ const editorTools: { [toolName: string]: any } = {
   },
   header: {
     class: Header,
+    inlineToolbar: true,
     config: {
       placeholder: 'Enter a Heading',
       levels: [2, 3, 4],
