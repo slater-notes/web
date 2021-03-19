@@ -1,12 +1,12 @@
 import { makeStyles } from '@material-ui/core';
-import { NoteData, NoteItem } from '@slater-notes/core';
 import { debounce } from 'lodash';
 import moment from 'moment';
 import React from 'react';
 import EditableTypography from '../../../components/EditableTypography';
-import Editor from '../../../components/Editor';
 import { useStoreActions } from '../../../stores/mainStore/typedHooks';
 import TopBar from './TopBar';
+import DraftEditor from '../../../components/Editor';
+import { NoteData, NoteItem } from '../../../types/notes';
 
 interface Props {
   noteItem: NoteItem;
@@ -69,17 +69,20 @@ const NotePage = ({ noteItem, noteData }: Props) => {
           }}
         />
 
-        <Editor
-          id={noteItem.id}
+        <DraftEditor
           readOnly={noteItem.isDeleted}
-          initialData={
+          initialContent={
             noteData.revisions
-              ? noteData.revisions.sort((d1, d2) => (d2.time || 0) - (d1.time || 0))[0]
+              ? noteData.revisions.sort((d1, d2) => (d2.time || 0) - (d1.time || 0))[0]?.content
               : undefined
           }
           onChange={() => setSaved(false)}
-          handleSave={(data) => {
-            noteData.revisions.push(data);
+          handleSave={(content) => {
+            noteData.revisions.push({
+              version: 1,
+              time: moment().valueOf(),
+              content,
+            });
             saveNoteItem();
             updateNoteData({ id: noteItem.id, noteData });
           }}

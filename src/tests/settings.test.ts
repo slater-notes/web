@@ -1,11 +1,11 @@
 import { createStore } from 'easy-peasy';
 import { bufferToString, base64ToBuffer, decrypt, localDB } from '@slater-notes/core';
-import MainStore from '..';
-import createNewUser from '../../../services/local/createNewUser';
-import loadUser from '../../../services/local/loadUser';
-import { SETTINGS_KEY } from '../../../utils/DBIndexKeys';
-import { addPolyfill } from '../../../utils/testPolyfill';
-import { UserSettingsOptions } from '../defaultUserSettings';
+import MainStore from '../stores/mainStore';
+import createNewUser from '../services/local/createNewUser';
+import loadUser from '../services/local/loadUser';
+import { SETTINGS_KEY } from '../utils/DBIndexKeys';
+import { addPolyfill } from '../utils/testPolyfill';
+import { UserSettingsOptions } from '../stores/mainStore/defaultUserSettings';
 
 addPolyfill();
 

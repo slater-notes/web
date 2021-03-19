@@ -1,7 +1,6 @@
 import { nanoid } from 'nanoid';
 import {
   encrypt,
-  FileCollection,
   generateNonce,
   generateSalt,
   getKeyFromDerivedPassword,
@@ -12,6 +11,7 @@ import {
 } from '@slater-notes/core';
 import { FILE_COLLECTION_KEY, USERS_KEY } from '../../utils/DBIndexKeys';
 import { ServiceResponse } from './services';
+import { FileCollection } from '../../types/notes';
 
 interface Payload {
   username: string;

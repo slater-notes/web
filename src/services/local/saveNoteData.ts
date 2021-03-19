@@ -1,4 +1,5 @@
-import { base64ToBuffer, encrypt, localDB, NoteData, stringToBuffer } from '@slater-notes/core';
+import { base64ToBuffer, encrypt, localDB, stringToBuffer } from '@slater-notes/core';
+import { NoteData } from '../../types/notes';
 import { ServiceResponse } from './services';
 
 interface Response extends ServiceResponse {

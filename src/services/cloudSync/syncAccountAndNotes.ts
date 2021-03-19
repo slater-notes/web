@@ -2,9 +2,6 @@ import {
   decrypt,
   stringToBuffer,
   bufferToString,
-  FileCollection,
-  FolderItem,
-  NoteItem,
   encrypt,
   base64ToBuffer,
   UserItem,
@@ -21,6 +18,7 @@ import saveNoteDataFromBase64 from '../local/saveNoteDataFromBase64';
 import { eachLimit } from 'async';
 import { debounce } from 'lodash';
 import * as Workers from '../../services/webWorkers';
+import { FileCollection, FolderItem, NoteItem } from '../../types/notes';
 
 export interface Payload {
   sessionToken: string;

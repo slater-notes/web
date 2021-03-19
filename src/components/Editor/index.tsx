@@ -1,132 +1,72 @@
+import React from 'react';
+import { convertFromRaw, convertToRaw, Editor, EditorState, RawDraftContentState } from 'draft-js';
 import { makeStyles } from '@material-ui/core';
-import React, { useEffect } from 'react';
-import EditorJS, { API, EditorConfig, OutputData } from '@editorjs/editorjs';
 import { debounce } from 'lodash';
-import Header from '@editorjs/header';
-import List from '@editorjs/list';
-import InlineCode from '@editorjs/inline-code';
-import Marker from '@editorjs/marker';
-import Table from 'editorjs-table';
-import Image from '@editorjs/image';
 
-const editorTools: { [toolName: string]: any } = {
-  paragraph: {
-    config: {
-      preserveBlank: true,
-    },
-  },
-  header: {
-    class: Header,
-    inlineToolbar: true,
-    config: {
-      placeholder: 'Enter a Heading',
-      levels: [2, 3, 4],
-      defaultLevel: 2,
-    },
-  },
-  list: {
-    class: List,
-    inlineToolbar: true,
-  },
-  inlineCode: {
-    class: InlineCode,
-  },
-  marker: {
-    class: Marker,
-  },
-  table: {
-    class: Table,
-    inlineToolbar: true,
-  },
-  Image: {
-    class: Image,
-    config: {
-      uploader: {
-        uploadByFile: (file: File) => {
-          return new Promise((done) => {
-            const reader = new FileReader();
-
-            reader.addEventListener('load', () => {
-              console.log(reader.result);
-              const url = reader.result;
-              done({ success: true, file: { url } });
-            });
-
-            reader.readAsDataURL(file);
-          });
-        },
-      },
-    },
-  },
-};
+import 'draft-js/dist/Draft.css';
 
 interface Props {
-  id: string;
-  initialData?: OutputData;
+  initialContent?: RawDraftContentState;
   readOnly?: boolean;
-  autoFocus?: boolean;
-  handleSave: (data: OutputData) => void;
+  handleSave: (content: RawDraftContentState) => void;
   onChange?: () => void;
 }
 
-const Editor = (props: Props) => {
+const DraftEditor = (props: Props) => {
   const classes = useStyles();
 
-  const save = async (api: API) => {
-    const data = await api.saver.save();
-    props.handleSave(data);
+  const [editorState, setEditorState] = React.useState(() =>
+    props.initialContent
+      ? EditorState.createWithContent(convertFromRaw(props.initialContent))
+      : EditorState.createEmpty(),
+  );
+
+  const editor = React.useRef<any>(null);
+
+  const handleSaveDebounced = React.useMemo(
+    () => debounce(props.handleSave, 1000, { leading: false }),
+    [],
+  );
+
+  const focusEditor = () => {
+    editor.current?.focus();
   };
 
-  const handleChangeDebounced = React.useMemo(() => debounce(save, 1000, { leading: false }), []);
+  const handleChange = (es: EditorState) => {
+    const oldContent = editorState.getCurrentContent();
+    const newContent = es.getCurrentContent();
 
-  useEffect(() => {
-    const config: EditorConfig = {
-      holder: 'editor-' + props.id,
-      placeholder: 'Write something here...',
-      readOnly: props.readOnly,
-      tools: editorTools,
-      onChange: (api) => {
-        if (props.onChange) props.onChange();
-        handleChangeDebounced(api);
-      },
-    };
-
-    if (props.initialData) {
-      config.data = props.initialData;
+    if (oldContent.getPlainText() !== newContent.getPlainText()) {
+      if (props.onChange) props.onChange();
+      handleSaveDebounced(convertToRaw(newContent));
     }
 
-    new EditorJS(config);
-
-    // eslint-disable-next-line
-  }, []);
+    setEditorState(es);
+  };
 
   return (
-    <div className={classes.container}>
-      <EditorElement id={props.id} />
+    <div className={classes.container} onClick={focusEditor}>
+      <Editor
+        ref={editor}
+        editorState={editorState}
+        placeholder='Write something here...'
+        readOnly={props.readOnly}
+        textAlignment='left'
+        textDirectionality='LTR'
+        onChange={handleChange}
+      />
     </div>
   );
 };
 
 const useStyles = makeStyles((theme) => ({
   container: {
+    maxWidth: 900,
+    paddingBottom: 300,
+    cursor: 'text',
     color: theme.palette.text.primary,
     fontSize: '1.1rem',
-    fontWeight: theme.typography.fontWeightRegular,
-
-    '& .ce-block__content, .ce-toolbar__content': {
-      margin: '0px !important',
-
-      '& h2, h3, h4': {
-        fontWeight: theme.typography.fontWeightMedium,
-      },
-
-      '&  b': {
-        fontWeight: theme.typography.fontWeightBold,
-      },
-    },
   },
 }));
 
-const EditorElement = React.memo((props: { id: string }) => <div id={'editor-' + props.id} />);
-
-export default Editor;
+export default DraftEditor;

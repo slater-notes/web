@@ -1,9 +1,9 @@
 import { createStore } from 'easy-peasy';
 import { localDB } from '@slater-notes/core';
-import MainStore from '..';
-import createNewUser from '../../../services/local/createNewUser';
-import loadUser from '../../../services/local/loadUser';
-import { addPolyfill } from '../../../utils/testPolyfill';
+import MainStore from '../stores/mainStore';
+import createNewUser from '../services/local/createNewUser';
+import loadUser from '../services/local/loadUser';
+import { addPolyfill } from '../utils/testPolyfill';
 
 addPolyfill();
 

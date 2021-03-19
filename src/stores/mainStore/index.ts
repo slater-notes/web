@@ -3,14 +3,10 @@ import moment from 'moment';
 import { nanoid } from 'nanoid';
 import {
   localDB,
-  FileCollection,
   UserItem,
   generateNonce,
-  NoteItem,
-  NoteData,
   encrypt,
   stringToBuffer,
-  FolderItem,
   bufferToBase64,
   base64ToBuffer,
 } from '@slater-notes/core';
@@ -26,6 +22,7 @@ import { syncAccountAndNotesToCloudSyncDebouncedWorkerized } from '../../service
 import { AppSettingsOptions } from './defaultAppSettings';
 import saveAppSettings from '../../services/local/saveAppSettings';
 import * as Workers from '../../services/webWorkers';
+import { FileCollection, FolderItem, NoteData, NoteItem } from '../../types/notes';
 
 export interface MainStoreModel {
   localDB: localDB | null;

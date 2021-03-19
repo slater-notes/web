@@ -1,4 +1,5 @@
-import { bufferToString, base64ToBuffer, decrypt, localDB, NoteData } from '@slater-notes/core';
+import { bufferToString, base64ToBuffer, decrypt, localDB } from '@slater-notes/core';
+import { NoteData } from '../../types/notes';
 import { ServiceResponse } from './services';
 
 interface Response extends ServiceResponse {
@@ -32,7 +33,13 @@ const loadNoteData = async (
     };
   }
 
-  const noteData = JSON.parse(bufferToString(decryptedData));
+  const noteData: NoteData = JSON.parse(bufferToString(decryptedData));
+
+  // Make sure our noteData.revisions consist of the correct object,
+  // otherwise just overwrite it with empty array.
+  if (noteData.revisions.length > 0 && typeof noteData.revisions[0].content == 'undefined') {
+    noteData.revisions = [];
+  }
 
   return { noteData };
 };

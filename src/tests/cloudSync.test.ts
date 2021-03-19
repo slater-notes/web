@@ -1,14 +1,14 @@
-import { encode, getKeyFromDerivedPassword, exportKey } from '@slater-notes/core';
+import { getKeyFromDerivedPassword, exportKey, stringToBuffer } from '@slater-notes/core';
 import axios from 'axios';
-import { defaultCloudSyncURL } from '../../../config/cloudSync';
-import { addPolyfill } from '../../../utils/testPolyfill';
-import getAccountFromCloudSync from '../api/getAccount';
-import getNewSessionFromCloudSync from '../api/getNewSession';
-import registerToCloudSync from '../api/registerAccount';
-import updateAccountToCloudSync from '../api/updateAccount';
-import putNoteToCloudSync from '../api/putNote';
-import getNoteFromCloudSync from '../api/getNote';
-import deleteNoteFromCloudSync from '../api/deleteNote';
+import { defaultCloudSyncURL } from '../config/cloudSync';
+import { addPolyfill } from '../utils/testPolyfill';
+import getAccountFromCloudSync from '../services/cloudSync/api/getAccount';
+import getNewSessionFromCloudSync from '../services/cloudSync/api/getNewSession';
+import registerToCloudSync from '../services/cloudSync/api/registerAccount';
+import updateAccountToCloudSync from '../services/cloudSync/api/updateAccount';
+import putNoteToCloudSync from '../services/cloudSync/api/putNote';
+import getNoteFromCloudSync from '../services/cloudSync/api/getNote';
+import deleteNoteFromCloudSync from '../services/cloudSync/api/deleteNote';
 
 addPolyfill();
 
@@ -21,7 +21,7 @@ describe('Cloud sync', () => {
     return (async () => {
       const passwordKey = await getKeyFromDerivedPassword(
         'abc123',
-        encode(username),
+        stringToBuffer(username),
         true,
         1,
         true,

@@ -1,11 +1,5 @@
-import {
-  base64ToBuffer,
-  encrypt,
-  FileCollection,
-  localDB,
-  stringToBuffer,
-  UserItem,
-} from '@slater-notes/core';
+import { base64ToBuffer, encrypt, localDB, stringToBuffer, UserItem } from '@slater-notes/core';
+import { FileCollection } from '../../types/notes';
 import { FILE_COLLECTION_KEY } from '../../utils/DBIndexKeys';
 import { ServiceResponse } from './services';
 

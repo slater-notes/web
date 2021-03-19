@@ -1,7 +1,7 @@
-import { NoteData, NoteItem } from '@slater-notes/core';
 import { defer } from 'lodash';
 import React from 'react';
 import { useStoreActions, useStoreState } from '../../../stores/mainStore/typedHooks';
+import { NoteData, NoteItem } from '../../../types/notes';
 import NotePage from './NotePage';
 
 const Note = () => {
@@ -41,15 +41,11 @@ const Note = () => {
           key={note.noteItem.id}
           style={{ display: activeNote?.noteItem.id === note.noteItem.id ? 'block' : 'none' }}
         >
-          <NotePageMemoed noteItem={note.noteItem} noteData={note.noteData} />
+          <NotePage noteItem={note.noteItem} noteData={note.noteData} />
         </div>
       ))}
     </React.Fragment>
   );
 };
-
-const NotePageMemoed = React.memo((props: { noteItem: NoteItem; noteData: NoteData }) => (
-  <NotePage noteItem={props.noteItem} noteData={props.noteData} />
-));
 
 export default Note;

@@ -3,13 +3,13 @@ import {
   base64ToBuffer,
   decrypt,
   stringToBuffer,
-  FileCollection,
   getKeyFromDerivedPassword,
   localDB,
   UserItem,
 } from '@slater-notes/core';
 import { defaultCloudSyncPasswordIterations } from '../../config/cloudSync';
 import { UserSettingsOptions } from '../../stores/mainStore/defaultUserSettings';
+import { FileCollection } from '../../types/notes';
 import { FILE_COLLECTION_KEY, SETTINGS_KEY, USERS_KEY } from '../../utils/DBIndexKeys';
 import { ServiceResponse } from './services';
 
@@ -66,8 +66,6 @@ const loadUser = async (db: localDB, payload: Payload): Promise<Response> => {
       encryptedData,
     );
   } catch (_e) {
-    console.log('heeer');
-    console.log(_e);
     return {
       error: {
         code: 'bad_key',
