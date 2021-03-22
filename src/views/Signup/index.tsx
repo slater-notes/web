@@ -123,9 +123,9 @@ const Signup = () => {
                   value={values.username}
                   onChange={handleChange}
                   onBlur={handleBlur}
-                  error={touched.username && !!errors.username}
+                  error={values.username.length > 0 && !!errors.username}
                   helperText={
-                    touched.username &&
+                    values.username.length > 0 &&
                     errors.username &&
                     errors.username.charAt(0).toUpperCase() + errors.username.slice(1)
                   }
@@ -148,9 +148,9 @@ const Signup = () => {
                   value={values.password}
                   onChange={handleChange}
                   onBlur={handleBlur}
-                  error={touched.password && !!errors.password}
+                  error={values.password.length > 0 && !!errors.password}
                   helperText={
-                    touched.password &&
+                    values.password.length > 0 &&
                     errors.password &&
                     errors.password.charAt(0).toUpperCase() + errors.password.slice(1)
                   }
@@ -165,9 +165,9 @@ const Signup = () => {
                   value={values.password2}
                   onChange={handleChange}
                   onBlur={handleBlur}
-                  error={touched.password2 && !!errors.password2}
+                  error={values.password2.length > 0 && !!errors.password2}
                   helperText={
-                    touched.password2 &&
+                    values.password2.length > 0 &&
                     errors.password2 &&
                     errors.password2.charAt(0).toUpperCase() + errors.password2.slice(1)
                   }
