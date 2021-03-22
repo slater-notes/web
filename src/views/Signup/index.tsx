@@ -57,7 +57,13 @@ const Signup = () => {
           }}
           validationSchema={() =>
             yup.object().shape({
-              username: yup.string().min(3).trim().required(),
+              username: yup
+                .string()
+                .trim()
+                .lowercase()
+                .min(3)
+                .matches(/^[a-z0-9]+$/, 'username must be alphanumeric')
+                .required(),
               password: yup.string().min(8).required(),
               password2: yup
                 .string()
