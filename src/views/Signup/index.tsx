@@ -120,6 +120,7 @@ const Signup = () => {
                   label='Username'
                   variant='outlined'
                   fullWidth
+                  autoFocus
                   value={values.username}
                   onChange={handleChange}
                   onBlur={handleBlur}
