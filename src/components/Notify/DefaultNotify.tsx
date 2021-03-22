@@ -1,6 +1,6 @@
 import { IconButton, Snackbar } from '@material-ui/core';
-import { Close } from '@material-ui/icons';
 import React from 'react';
+import { X } from 'react-feather';
 
 interface Props {
   message: string;
@@ -27,7 +27,7 @@ const DefaultNotify = (props: Props) => {
             UNDO
           </Button> */}
           <IconButton size='small' aria-label='close' color='inherit' onClick={props.handleClose}>
-            <Close fontSize='small' />
+            <X size={16} />
           </IconButton>
         </React.Fragment>
       }
