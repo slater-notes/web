@@ -104,6 +104,11 @@ const Signup = () => {
           {({ handleSubmit, handleChange, handleBlur, values, isSubmitting, errors, touched }) => (
             <React.Fragment>
               <form onSubmit={handleSubmit} autoComplete='off'>
+                <Typography variant='body2' color='textSecondary'>
+                  Slater Notes is a privacy-focused notes platform therefore we do not collect any
+                  information that may personally identify you. That includes your email address.
+                </Typography>
+
                 <TextField
                   name='username'
                   label='Username'
@@ -123,8 +128,9 @@ const Signup = () => {
                 <Divider />
 
                 <Typography variant='body2' color='textSecondary'>
-                  If you forget your password, there is no way to recover your notes. We recommend
-                  randomly generating and storing your password in a password manager.
+                  Your notes are end-to-end encrypted with your password. If you forget your
+                  password, there is no way to recover your notes. We recommend storing your
+                  password in a password manager.
                 </Typography>
 
                 <TextField
