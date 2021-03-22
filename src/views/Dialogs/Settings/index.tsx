@@ -21,8 +21,8 @@ import defaultUserSettings from '../../../stores/mainStore/defaultUserSettings';
 import { useStoreActions, useStoreState } from '../../../stores/mainStore/typedHooks';
 import ChangeUsername from '../ChangeUsername';
 
-const latestVersion = '0.1.9';
-const latestReleaseTime = moment.unix(1615894711);
+const latestVersion = '0.2.0';
+const latestReleaseTime = moment.unix(1616384656);
 
 const Settings = () => {
   const theme = useTheme();
@@ -123,12 +123,12 @@ const Settings = () => {
                   <Box marginTop={`${theme.spacing(2)}px`} marginLeft={`${theme.spacing(2)}px`}>
                     <b>Features:</b>
                     <ul>
-                      <li>Overall UI improvements</li>
-                      <li>Use Inter font instead of Roboto</li>
+                      <li>Using a new, clean and minimal editor</li>
+                      <li>Using Inter font instead of Roboto</li>
                     </ul>
                     <b>Fixes:</b>
                     <ul>
-                      <li>Default heading block</li>
+                      <li>Fixed issues with cloud sync time display</li>
                     </ul>
                   </Box>
                 </span>
