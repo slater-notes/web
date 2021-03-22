@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [0.2.0](https://github.com/slater-notes/web/compare/v0.1.9...v0.2.0) (2021-03-22)
+
+
+### ⚠ BREAKING CHANGES
+
+* **editor:** Content on the old editor are not coverted to the new one therefore losing data.
+
+### Features
+
+* **editor:** use draft.js instead of editor.js ([c99537a](https://github.com/slater-notes/web/commit/c99537ae703342a3d6601a47cfdbf21d5f949e1e))
+* bump dependencies ([29a7fc6](https://github.com/slater-notes/web/commit/29a7fc6382f49d48b17f9e21a71f18da2c387909))
+* change last sync text ([f7708a7](https://github.com/slater-notes/web/commit/f7708a7f7125b57818f7e25859314c91f06459a3))
+
 ### [0.1.9](https://github.com/slater-notes/web/compare/v0.1.8...v0.1.9) (2021-03-16)
 
 
