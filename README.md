@@ -37,10 +37,6 @@
 
 `// TODO`
 
-## Credits
-
-- The [Editor.js](https://github.com/codex-team/editor.js) library is managed and maintained by the [CodeX](https://codex.so) team.
-
 ## License
 
 This project is licensed under the terms of the **MIT** license.
