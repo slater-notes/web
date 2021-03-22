@@ -1,5 +1,5 @@
 import { localDB } from '@slater-notes/core';
-import { AppSettingsOptions } from '../../stores/mainStore/defaultAppSettings';
+import defaultAppSettings, { AppSettingsOptions } from '../../stores/mainStore/defaultAppSettings';
 import { ServiceResponse } from './services';
 
 interface Response extends ServiceResponse {
@@ -8,7 +8,7 @@ interface Response extends ServiceResponse {
 
 const loadAppSettings = async (db: localDB): Promise<Response> => {
   const appSettings = (await db.get('app-settings')) as string | undefined;
-  return { appSettings: appSettings ? JSON.parse(appSettings) : {} };
+  return { appSettings: appSettings ? JSON.parse(appSettings) : defaultAppSettings };
 };
 
 export default loadAppSettings;
