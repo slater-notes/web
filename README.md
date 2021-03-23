@@ -18,12 +18,11 @@
 
 ## Features
 
-- 🔐 Notes and attachements are end-to-end encrypted
-- 🏖 Offline by default
-- ☁️ Optional, **zero trust** cloud sync (_self-hosted cloud sync coming soon!_)
+- 🔐 Notes and any metadata are 100% end-to-end encrypted
+- 🏖 Offline mode
+- ☁️ Zero trust cloud sync (_self-hosted cloud sync coming soon!_)
 - 🙅‍♂️ No telemetry/analytics/data collection
 - 🌙 _Dark mode coming soon!_
-- 🖥 _Desktop versions coming soon!_
 
 ## Changelog
 
