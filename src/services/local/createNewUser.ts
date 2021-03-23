@@ -12,16 +12,19 @@ import {
 import { FILE_COLLECTION_KEY, USERS_KEY } from '../../utils/DBIndexKeys';
 import { ServiceResponse } from './services';
 import { FileCollection } from '../../types/notes';
+import { defaultCloudSyncPasswordIterations } from '../../config/cloudSync';
 
 interface Payload {
   username: string;
   password: string;
+  enableCloudSync?: boolean;
   iterations?: number;
 }
 
 interface Response extends ServiceResponse {
   user?: UserItem;
   passwordKey?: CryptoKey;
+  cloudSyncPasswordKey?: CryptoKey;
   fileCollection?: FileCollection;
 }
 
@@ -89,9 +92,21 @@ const createNewUser = async (db: localDB, payload: Payload): Promise<Response> =
 
   await db.set(`${FILE_COLLECTION_KEY}--${user.id}`, encryptedData);
 
+  // Generate cloud sync password
+  let cloudSyncPasswordKey;
+  if (payload.enableCloudSync) {
+    cloudSyncPasswordKey = await getKeyFromDerivedPassword(
+      payload.password,
+      stringToBuffer(payload.username),
+      true,
+      defaultCloudSyncPasswordIterations,
+    );
+  }
+
   return {
     user,
     passwordKey,
+    cloudSyncPasswordKey,
     fileCollection,
   };
 };

@@ -3,7 +3,7 @@ export interface AppSettingsOptions {
 }
 
 export const defaultAppSettings: AppSettingsOptions = {
-  enableCloudSyncLogin: false,
+  enableCloudSyncLogin: true,
 };
 
 export default defaultAppSettings;

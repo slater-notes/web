@@ -2,7 +2,9 @@ import {
   Accordion as MuiAccordion,
   AccordionDetails as MuiAccordionDetails,
   AccordionSummary as MuiAccordionSummary,
+  Checkbox,
   Divider,
+  FormControlLabel,
   makeStyles,
   TextField,
   Typography,
@@ -20,23 +22,25 @@ import { ChevronDown } from 'react-feather';
 import { generateSalt, getKeyFromDerivedPassword } from '@slater-notes/core';
 import H1 from '../../components/Typography/H1';
 import Paragraph from '../../components/Typography/Paragraph';
+import prepareAndRegisterToCloudSync from '../../services/cloudSync/prepareAndRegister';
+import generateTokenFromPassword from '../../utils/generateTokenFromPassword';
+import moment from 'moment';
 
 const Signup = () => {
   const classes = useStyles();
 
+  const [done, setDone] = React.useState(false);
   const [testingIterations, setTestingIterations] = React.useState(false);
   const [iterationsResult, setIterationsResult] = React.useState<number | null>(null);
 
   const localDB = useStoreState((s) => s.localDB);
-  const user = useStoreState((s) => s.user);
-  const passwordKey = useStoreState((s) => s.passwordKey);
-  const fileCollection = useStoreState((s) => s.fileCollection);
 
   const setUser = useStoreActions((a) => a.setUser);
   const setPasswordKey = useStoreActions((a) => a.setPasswordKey);
   const setFileCollection = useStoreActions((a) => a.setFileCollection);
+  const updateUser = useStoreActions((a) => a.updateUser);
 
-  if (user && passwordKey && fileCollection) {
+  if (done) {
     return <Redirect to='/' />;
   }
 
@@ -53,6 +57,7 @@ const Signup = () => {
             username: '',
             password: '',
             password2: '',
+            enableCloudSync: true,
             iterations: 500000,
           }}
           validationSchema={() =>
@@ -69,41 +74,93 @@ const Signup = () => {
                 .string()
                 .oneOf([yup.ref('password'), null], 'Passwords must match')
                 .required(),
+              enableCloudSync: yup.boolean(),
               iterations: yup.number().min(10000).required(),
             })
           }
           onSubmit={(values, { setErrors, setSubmitting }) => {
             (async () => {
-              const result = await createNewUser(localDB as any, {
+              // Step 1. create local user
+              const createUserResult = await createNewUser(localDB as any, {
                 username: values.username,
                 password: values.password,
+                enableCloudSync: values.enableCloudSync,
                 iterations: values.iterations,
               });
 
-              setSubmitting(false);
+              if (createUserResult.error) {
+                setSubmitting(false);
+              }
 
-              switch (result.error?.code) {
+              switch (createUserResult.error?.code) {
                 case 'user_exist':
                   return setErrors({ username: 'Username already in use.' });
                 case 'iterations_too_low':
                   return setErrors({ iterations: 'PBKDF2 iterations amount too low.' });
                 default:
                   if (
-                    result.error ||
-                    !result.user ||
-                    !result.passwordKey ||
-                    !result.fileCollection
+                    createUserResult.error ||
+                    !createUserResult.user ||
+                    !createUserResult.passwordKey ||
+                    !createUserResult.fileCollection
                   ) {
                     // unhandled error, ooops
-                    console.log(result);
+                    console.log(createUserResult);
                     return;
                   }
               }
 
-              // TODO setCloudSyncPasswordKey
-              setUser(result.user);
-              setPasswordKey(result.passwordKey);
-              setFileCollection(result.fileCollection);
+              // Step 2. register to cloud sync, if enabled
+              let cloudSyncSessionToken;
+
+              if (values.enableCloudSync) {
+                if (!createUserResult.cloudSyncPasswordKey) {
+                  // unhandled error, ooops
+                  setSubmitting(false);
+                  return;
+                }
+
+                const token = await generateTokenFromPassword(values.password, values.username);
+
+                const registerCloudSyncResult = await prepareAndRegisterToCloudSync({
+                  user: createUserResult.user,
+                  token,
+                  db: localDB as any,
+                  cloudSyncPasswordKey: createUserResult.cloudSyncPasswordKey,
+                });
+
+                if (registerCloudSyncResult.error || !registerCloudSyncResult.sessionToken) {
+                  setSubmitting(false);
+
+                  if (registerCloudSyncResult.error === 'username already exist') {
+                    setErrors({ username: 'username already in use' });
+                  } else {
+                    // unhandled error, oops
+                  }
+
+                  return;
+                }
+
+                cloudSyncSessionToken = registerCloudSyncResult.sessionToken;
+              }
+
+              setUser(createUserResult.user);
+              setPasswordKey(createUserResult.passwordKey);
+              setFileCollection(createUserResult.fileCollection);
+
+              // Step 3. save cloud sync session token
+              if (values.enableCloudSync) {
+                await updateUser({
+                  userItem: {
+                    ...createUserResult.user,
+                    cloudSyncSessionToken,
+                    cloudLastSynced: moment().unix(),
+                  },
+                  noCloudSync: true,
+                });
+              }
+
+              setDone(true);
             })();
           }}
         >
@@ -181,6 +238,33 @@ const Signup = () => {
                     <Typography variant='body1'>Advanced Settings</Typography>
                   </AccordionSummary>
                   <AccordionDetails>
+                    <Typography variant='body2' color='textSecondary'>
+                      You can choose to disable cloud sync. This means that your account and notes
+                      stay on your device. Nothing touches a server. No one knows your account
+                      exists.
+                    </Typography>
+                    <FormControlLabel
+                      control={
+                        <Checkbox
+                          checked={values.enableCloudSync}
+                          onChange={handleChange}
+                          name='enableCloudSync'
+                        />
+                      }
+                      label='Enable Cloud Sync'
+                    />
+                    <Divider />
+                    <Typography variant='body2' color='textSecondary'>
+                      A higher iteration count means slow login time{' '}
+                      <strong>but higher resistance to password cracking attacks</strong>.{' '}
+                      <a
+                        href='https://support.1password.com/pbkdf2/'
+                        target='_blank'
+                        rel='noreferrer'
+                      >
+                        Learn more
+                      </a>
+                    </Typography>
                     <TextField
                       type='number'
                       name='iterations'
@@ -200,33 +284,19 @@ const Signup = () => {
                         errors.iterations.charAt(0).toUpperCase() + errors.iterations.slice(1)
                       }
                     />
-                    <Typography variant='body2'>
-                      A higher iteration count means slow login time{' '}
-                      <strong>but higher resistance to password cracking attacks</strong>.{' '}
-                      <a
-                        href='https://support.1password.com/pbkdf2/'
-                        target='_blank'
-                        rel='noreferrer'
-                      >
-                        Learn more
-                      </a>
-                    </Typography>
-
                     {(!values.password || !values.password2) && (
                       <Typography variant='body2'>
                         Enter a password first before testing its iterations.
                       </Typography>
                     )}
-
                     {typeof iterationsResult === 'number' && (
-                      <Typography variant='body2'>
+                      <Typography variant='body2' color='textSecondary'>
                         <strong>{values.iterations.toLocaleString()}</strong> iterations of your
                         password took{' '}
                         <strong>{iterationsResult > 100 ? iterationsResult : '<100'}ms</strong> on
                         your computer.
                       </Typography>
                     )}
-
                     <DefaultButton
                       buttonProps={{
                         variant: 'contained',
