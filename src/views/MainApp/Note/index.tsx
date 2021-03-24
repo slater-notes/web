@@ -32,7 +32,7 @@ const Note = () => {
     });
 
     // eslint-disable-next-line
-  }, [activeNote]);
+  }, [activeNote?.noteItem.id]);
 
   return (
     <React.Fragment>
