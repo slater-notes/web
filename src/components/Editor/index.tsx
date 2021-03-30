@@ -1,66 +1,58 @@
-import React from 'react';
-import { convertFromRaw, convertToRaw, Editor, EditorState, RawDraftContentState } from 'draft-js';
 import { makeStyles } from '@material-ui/core';
 import { debounce } from 'lodash';
-
-import 'draft-js/dist/Draft.css';
+import React from 'react';
+import { createEditor, Node } from 'slate';
+import { withHistory } from 'slate-history';
+import { Slate, Editable, withReact } from 'slate-react';
+import RenderElement from './RenderElement';
+import RenderLeaf from './RenderLeaf';
+import HoveringToolbar from './HoveringToolbar';
 
 interface Props {
-  initialContent?: RawDraftContentState;
-  readOnly?: boolean;
-  handleSave: (content: RawDraftContentState) => void;
-  onChange?: () => void;
+  initialContent?: string; // JSON
+  readOnly: boolean;
+  onChange: () => void;
+  handleSave: (content: string) => void; // content is JSON
 }
 
-const DraftEditor = (props: Props) => {
+const SlateEditor = (props: Props) => {
   const classes = useStyles();
+  const editor = React.useMemo(() => withHistory(withReact(createEditor())), []);
 
-  const [editorState, setEditorState] = React.useState(() =>
-    props.initialContent
-      ? EditorState.createWithContent(convertFromRaw(props.initialContent))
-      : EditorState.createEmpty(),
+  const [value, setValue] = React.useState<Node[]>(
+    props.initialContent ? JSON.parse(props.initialContent) : defaultInitialContent,
   );
 
-  const editor = React.useRef<any>(null);
+  const renderElement = React.useCallback(RenderElement, []);
+  const renderLeaf = React.useCallback(RenderLeaf, []);
 
   const handleSaveDebounced = React.useMemo(
-    () => debounce(props.handleSave, 1000, { leading: false }),
+    () => debounce(props.handleSave, 2500, { leading: false }),
     [],
   );
 
-  const focusEditor = () => {
-    editor.current?.focus();
-  };
-
-  const handleChange = (es: EditorState) => {
-    const oldContent = editorState.getCurrentContent();
-    const newContent = es.getCurrentContent();
-
-    if (oldContent.getPlainText() !== newContent.getPlainText()) {
-      if (props.onChange) props.onChange();
-      handleSaveDebounced(convertToRaw(newContent));
-    }
-
-    setEditorState(es);
+  const handleChange = (newValue: Node[]) => {
+    setValue(newValue);
+    props.onChange();
+    handleSaveDebounced(JSON.stringify(newValue));
   };
 
   return (
-    <div className={classes.container} onClick={focusEditor}>
-      <Editor
-        ref={editor}
-        editorState={editorState}
-        placeholder='Write something here...'
+    <Slate editor={editor} value={value} onChange={handleChange}>
+      <HoveringToolbar />
+      <Editable
+        className={classes.editor}
         readOnly={props.readOnly}
-        textAlignment='left'
-        textDirectionality='LTR'
-        onChange={handleChange}
+        placeholder='Write something here...'
+        renderElement={renderElement}
+        renderLeaf={renderLeaf}
       />
-    </div>
+    </Slate>
   );
 };
 
 const useStyles = makeStyles((theme) => ({
-  container: {
+  editor: {
     maxWidth: 900,
     paddingBottom: 300,
     cursor: 'text',
@@ -69,4 +61,11 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default DraftEditor;
+const defaultInitialContent = [
+  {
+    type: 'paragraph',
+    children: [{ text: '' }],
+  },
+];
+
+export default SlateEditor;

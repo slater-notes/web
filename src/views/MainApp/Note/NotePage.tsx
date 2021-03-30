@@ -5,7 +5,7 @@ import React from 'react';
 import EditableTypography from '../../../components/EditableTypography';
 import { useStoreActions } from '../../../stores/mainStore/typedHooks';
 import TopBar from './TopBar';
-import DraftEditor from '../../../components/Editor';
+import Editor from '../../../components/Editor';
 import { NoteData, NoteItem } from '../../../types/notes';
 
 interface Props {
@@ -24,6 +24,11 @@ const NotePage = ({ noteItem, noteData }: Props) => {
 
   const updateNoteItem = useStoreActions((a) => a.updateNoteItem);
   const updateNoteData = useStoreActions((a) => a.updateNoteData);
+
+  const getLatestNoteRevision = () => {
+    const data = noteData.revisions.sort((d1, d2) => (d2.time || 0) - (d1.time || 0)).shift();
+    return data && typeof data.content === 'string' ? data.content : undefined;
+  };
 
   const saveNoteItem = async (title?: string) => {
     if (typeof title === 'string') {
@@ -69,13 +74,9 @@ const NotePage = ({ noteItem, noteData }: Props) => {
           }}
         />
 
-        <DraftEditor
-          readOnly={noteItem.isDeleted}
-          initialContent={
-            noteData.revisions
-              ? noteData.revisions.sort((d1, d2) => (d2.time || 0) - (d1.time || 0))[0]?.content
-              : undefined
-          }
+        <Editor
+          readOnly={!!noteItem.isDeleted}
+          initialContent={getLatestNoteRevision()}
           onChange={() => setSaved(false)}
           handleSave={(content) => {
             noteData.revisions.push({

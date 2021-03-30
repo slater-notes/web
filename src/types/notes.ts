@@ -1,5 +1,3 @@
-import { RawDraftContentState } from 'draft-js';
-
 export interface FolderItem {
   readonly id: string;
   title: string;
@@ -23,7 +21,7 @@ export interface NoteItem {
 export interface NoteDataContent {
   version: number;
   time: number;
-  content: RawDraftContentState;
+  content: string; // JSON
 }
 
 export interface NoteData {
