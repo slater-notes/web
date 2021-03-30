@@ -2,6 +2,28 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [0.3.0](https://github.com/slater-notes/web/compare/v0.2.0...v0.3.0) (2021-03-30)
+
+
+### ⚠ BREAKING CHANGES
+
+* **editor:** changing editor library will break previously saved notes
+
+### Features
+
+* **editor:** use slatejs instead of draftjs ([ad1e563](https://github.com/slater-notes/web/commit/ad1e56306f2d4302a22ff1a91e60f6b6daf32427))
+* add ability to signup with cloud sync enabled ([db41d91](https://github.com/slater-notes/web/commit/db41d915672721c416ead000ce084426b5170fb0))
+* add privacy notice for username ([106fb4b](https://github.com/slater-notes/web/commit/106fb4b9666c056e376de4e2b014a9059b38ed84))
+* auto focus username input in signup page ([8b6fafa](https://github.com/slater-notes/web/commit/8b6fafaa98f060ef325eb5b105a6efdfef6ca2fd))
+* enforce alphanumeric username ([afc255e](https://github.com/slater-notes/web/commit/afc255e01693d7d276488fe727f32085df1628ad))
+
+
+### Bug Fixes
+
+* dont show errors on empty input in signup page ([fe9a89c](https://github.com/slater-notes/web/commit/fe9a89c4a3c4fcad300a695a71ce952767b263b7))
+* fix not loading default app settings ([6b53df1](https://github.com/slater-notes/web/commit/6b53df12605b5764cbb4e1b8d74e6b4331faea8c))
+* prevent unnecessary focus on note title input ([65c8d12](https://github.com/slater-notes/web/commit/65c8d126fbd35468984cb50c8edbb7849a59fde4))
+
 ## [0.2.0](https://github.com/slater-notes/web/compare/v0.1.9...v0.2.0) (2021-03-22)
 
 
