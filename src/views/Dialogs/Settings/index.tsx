@@ -21,8 +21,8 @@ import defaultUserSettings from '../../../stores/mainStore/defaultUserSettings';
 import { useStoreActions, useStoreState } from '../../../stores/mainStore/typedHooks';
 import ChangeUsername from '../ChangeUsername';
 
-const latestVersion = '0.2.0';
-const latestReleaseTime = moment.unix(1616384656);
+const latestVersion = '0.3.0';
+const latestReleaseTime = moment.unix(1617099026);
 
 const Settings = () => {
   const theme = useTheme();
