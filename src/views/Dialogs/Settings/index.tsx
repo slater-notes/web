@@ -21,8 +21,8 @@ import defaultUserSettings from '../../../stores/mainStore/defaultUserSettings';
 import { useStoreActions, useStoreState } from '../../../stores/mainStore/typedHooks';
 import ChangeUsername from '../ChangeUsername';
 
-const latestVersion = '0.3.0';
-const latestReleaseTime = moment.unix(1617099026);
+const latestVersion = '0.3.1';
+const latestReleaseTime = moment.unix(1617273544);
 
 const Settings = () => {
   const theme = useTheme();
@@ -121,14 +121,21 @@ const Settings = () => {
                 <span>
                   Release Notes:
                   <Box marginTop={`${theme.spacing(2)}px`} marginLeft={`${theme.spacing(2)}px`}>
-                    <b>Features:</b>
+                    <b>🤩 Features</b>
                     <ul>
-                      <li>Using a new, clean and minimal editor</li>
-                      <li>Using Inter font instead of Roboto</li>
+                      <li>editor: add bold toggle shortcut (3644850)</li>
+                      <li>editor: use slatejs instead of draftjs (ad1e563)</li>
+                      <li>add ability to signup with cloud sync enabled (db41d91)</li>
+                      <li>add privacy notice for username (106fb4b)</li>
+                      <li>auto focus username input in signup page (8b6fafa)</li>
+                      <li>enforce alphanumeric username (afc255e)</li>
                     </ul>
-                    <b>Fixes:</b>
+                    <b>🐞 Bug Fixes</b>
                     <ul>
-                      <li>Fixed issues with cloud sync time display</li>
+                      <li>fix icon button default styling (5528954)</li>
+                      <li>dont show errors on empty input in signup page (fe9a89c)</li>
+                      <li>fix not loading default app settings (6b53df1)</li>
+                      <li>prevent unnecessary focus on note title input (65c8d12)</li>
                     </ul>
                   </Box>
                 </span>
