@@ -7,6 +7,7 @@ import { Slate, Editable, withReact } from 'slate-react';
 import RenderElement from './RenderElement';
 import RenderLeaf from './RenderLeaf';
 import HoveringToolbar from './HoveringToolbar';
+import keyboardShortcutHandler from './keyboardShortcutHandler';
 
 interface Props {
   initialContent?: string; // JSON
@@ -46,6 +47,7 @@ const SlateEditor = (props: Props) => {
         placeholder='Write something here...'
         renderElement={renderElement}
         renderLeaf={renderLeaf}
+        onKeyDown={(e) => keyboardShortcutHandler(e, editor)}
       />
     </Slate>
   );
