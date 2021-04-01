@@ -21,13 +21,13 @@ const DefaultIconButton = (props: Props) => {
   return (
     <Tooltip title={props.label || ''}>
       <IconButton
-        color={props.color}
+        color={props.color || 'inherit'}
         disabled={props.disabled}
         style={props.style}
         onClick={props.onClick}
         onMouseDown={props.onMouseDown}
       >
-        <props.icon size={props.size || 16} {...fillProps} strokeWidth={props.strokeWidth} />
+        <props.icon size={props.size || 16} {...fillProps} strokeWidth={props.strokeWidth || 2} />
       </IconButton>
     </Tooltip>
   );
