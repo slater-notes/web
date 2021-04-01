@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.3.1](https://github.com/slater-notes/web/compare/v0.3.0...v0.3.1) (2021-04-01)
+
+
+### Features
+
+* **editor:** add bold toggle shortcut ([3644850](https://github.com/slater-notes/web/commit/3644850935fdc41228579ae558ea9cd63e1d3ed8))
+
+
+### Bug Fixes
+
+* fix icon button default styling ([5528954](https://github.com/slater-notes/web/commit/55289540355d95849eaa338c34d193c9f8b816c9))
+
 ## [0.3.0](https://github.com/slater-notes/web/compare/v0.2.0...v0.3.0) (2021-03-30)
 
 
