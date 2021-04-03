@@ -1,10 +1,4 @@
-import {
-  Checkbox,
-  FormControlLabel,
-  makeStyles,
-  TextField,
-  Typography,
-} from '@material-ui/core';
+import { Checkbox, FormControlLabel, makeStyles, TextField, Typography } from '@material-ui/core';
 import React from 'react';
 import { Formik } from 'formik';
 import * as yup from 'yup';
@@ -192,7 +186,10 @@ const Login = () => {
               }
 
               // display Favorites folder if there is one or more note in there
-              if (loadLocalUser.fileCollection.notes.findIndex((n) => n.isStarred) > -1) {
+              if (
+                loadLocalUser.fileCollection.notes.findIndex((n) => n.isStarred && !n.isDeleted) >
+                -1
+              ) {
                 setActiveFolderId('starred');
               }
 
