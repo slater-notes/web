@@ -11,7 +11,6 @@ import {
 import { ErrorResult } from './api/types';
 import getAccountFromCloudSync from './api/getAccount';
 import updateAccountToCloudSync from './api/updateAccount';
-import { map } from 'bluebird';
 import putNoteToCloudSync from './api/putNote';
 import getNoteFromCloudSync from './api/getNote';
 import saveNoteDataFromBase64 from '../local/saveNoteDataFromBase64';
@@ -19,6 +18,7 @@ import { eachLimit } from 'async';
 import { debounce } from 'lodash';
 import * as Workers from '../../services/webWorkers';
 import { FileCollection, FolderItem, NoteItem } from '../../types/notes';
+import { mergeArrayOfObjectsBy } from '../../utils/mergeArrayOfObject';
 
 export interface Payload {
   sessionToken: string;
@@ -75,160 +75,109 @@ const syncAccountAndNotesToCloudSync = async (payload: Payload): Promise<Result>
     return { error: 'unknown error' };
   }
 
-  let hasChange = false;
+  // merge fileCollection.folders
+  const mergedFolders: FolderItem[] = mergeArrayOfObjectsBy(
+    payload.fileCollection.folders,
+    fileCollection.folders,
+    'id',
+    'updated',
+  );
 
-  // combine fileCollection.folders
-  let newFileCollectionFolders: FolderItem[] = payload.fileCollection.folders.map((aFolder) => {
-    const bIndex = fileCollection.folders.findIndex((f) => f.id === aFolder.id);
-    if (bIndex > -1) {
-      if (aFolder.updated === fileCollection.folders[bIndex].updated) {
-        fileCollection.folders.splice(bIndex, 1);
-      } else {
-        hasChange = true;
-        const mainFolder =
-          aFolder.updated > fileCollection.folders[bIndex].updated
-            ? aFolder
-            : { ...fileCollection.folders[bIndex] };
-        fileCollection.folders.splice(bIndex, 1);
-        return mainFolder;
+  // merge fileCollection.notes
+  const newOrOutdatedNoteIds: string[] = [];
+
+  // loop through notes from cloud storage
+  fileCollection.notes.forEach((noteItem) => {
+    const localNoteItem = payload.fileCollection.notes.find((n) => n.id === noteItem.id);
+    if (localNoteItem) {
+      // we have this note in local, see if it's outdated
+      if (localNoteItem.updated < noteItem.updated) {
+        newOrOutdatedNoteIds.push(noteItem.id);
       }
+    } else {
+      // we don't have this note in out local
+      newOrOutdatedNoteIds.push(noteItem.id);
     }
-
-    return aFolder;
   });
 
-  if (fileCollection.folders.length > 0) {
-    hasChange = true;
-    newFileCollectionFolders = [...newFileCollectionFolders, ...fileCollection.folders];
-  }
+  const mergedNotes: NoteItem[] = mergeArrayOfObjectsBy(
+    payload.fileCollection.notes,
+    fileCollection.notes,
+    'id',
+    'updated',
+  );
 
+  // download outdated and new noteData
   globalThis.localDB = globalThis.localDB || new localDB();
   const db = globalThis.localDB;
 
-  // combine fileCollection.notes
-  let newFileCollectionNotes: NoteItem[] = await map(
-    payload.fileCollection.notes,
-    async (aNote) => {
-      const bIndex = fileCollection.notes.findIndex((n) => n.id === aNote.id);
-      if (bIndex > -1) {
-        if (aNote.updated === fileCollection.notes[bIndex].updated) {
-          fileCollection.notes.splice(bIndex, 1);
-        } else {
-          const aIsUpdated = aNote.updated > fileCollection.notes[bIndex].updated;
+  await eachLimit(newOrOutdatedNoteIds, 2, async (noteId) => {
+    const getNote = await getNoteFromCloudSync({
+      username: payload.user.username,
+      sessionToken: payload.sessionToken,
+      noteId,
+    });
 
-          if (aIsUpdated) {
-            // upload noteData
-            const encryptedNoteData = await db.get(aNote.id);
-            if (encryptedNoteData instanceof Uint8Array) {
-              await putNoteToCloudSync({
-                username: payload.user.username,
-                sessionToken: payload.sessionToken,
-                noteId: aNote.id,
-                noteData: bufferToBase64(encryptedNoteData),
-              });
-            }
-          } else {
-            // download noteData
-            const getNote = await getNoteFromCloudSync({
-              username: payload.user.username,
-              sessionToken: payload.sessionToken,
-              noteId: aNote.id,
-            });
-
-            if (getNote.noteData) {
-              await saveNoteDataFromBase64(db, aNote.id, getNote.noteData);
-            }
-          }
-
-          hasChange = true;
-          const mainNote = aIsUpdated ? aNote : { ...fileCollection.notes[bIndex] };
-          fileCollection.notes.splice(bIndex, 1);
-          return mainNote;
-        }
-      } else {
-        // note does not exist in cloud sync, upload note data
-        const encryptedNoteData = await db.get(aNote.id);
-        if (encryptedNoteData instanceof Uint8Array) {
-          await putNoteToCloudSync({
-            username: payload.user.username,
-            sessionToken: payload.sessionToken,
-            noteId: aNote.id,
-            noteData: bufferToBase64(encryptedNoteData),
-          });
-        }
-
-        hasChange = true;
-      }
-
-      return aNote;
-    },
-    { concurrency: 2 },
-  );
-
-  if (fileCollection.notes.length > 0) {
-    hasChange = true;
-    newFileCollectionNotes = [...newFileCollectionNotes, ...fileCollection.notes];
-  }
-
-  // download any missing noteData from newFileCollectionNotes
-  await eachLimit(newFileCollectionNotes, 2, async (noteItem) => {
-    const check = await db.get(noteItem.id);
-
-    if (!check) {
-      const getNote = await getNoteFromCloudSync({
-        username: payload.user.username,
-        sessionToken: payload.sessionToken,
-        noteId: noteItem.id,
-      });
-
-      if (getNote.noteData) {
-        await saveNoteDataFromBase64(db, noteItem.id, getNote.noteData);
-      }
+    if (getNote.noteData) {
+      await saveNoteDataFromBase64(db, noteId, getNote.noteData);
     }
   });
 
-  // if there's change, upload to cloud
-  if (hasChange) {
-    const newFileCollection = {
-      ...payload.fileCollection,
-      folders: newFileCollectionFolders,
-      notes: newFileCollectionNotes,
-    };
+  // upload other noteData
+  const otherNoteIds = mergedNotes
+    .map((n) => n.id)
+    .filter((id) => !newOrOutdatedNoteIds.includes(id));
 
-    // encrypt fileCollection and output as base64
-    const fileCollectionJson = JSON.stringify(newFileCollection);
-    const fileCollecitonEnc = await encrypt(
-      payload.passwordKey,
-      base64ToBuffer(payload.fileCollectionNonce),
-      stringToBuffer(fileCollectionJson),
-    );
+  await eachLimit(otherNoteIds, 2, async (noteId) => {
+    const encryptedNoteData = await db.get(noteId);
+    if (encryptedNoteData instanceof Uint8Array) {
+      await putNoteToCloudSync({
+        username: payload.user.username,
+        sessionToken: payload.sessionToken,
+        noteId: noteId,
+        noteData: bufferToBase64(encryptedNoteData),
+      });
+    }
+  });
 
-    const fileCollectionDataBase64 = bufferToBase64(fileCollecitonEnc);
+  // create a new fileCollection object
+  const newFileCollection = {
+    ...payload.fileCollection,
+    folders: mergedFolders,
+    notes: mergedNotes,
+  };
 
-    // encrypt userItem and output as base64
-    const userItemJson = JSON.stringify(payload.user);
-    const userItemEnc = await encrypt(
-      payload.cloudSyncPasswordKey,
-      stringToBuffer(payload.user.username),
-      stringToBuffer(userItemJson),
-    );
+  // encrypt fileCollection and output as base64
+  const fileCollectionJson = JSON.stringify(newFileCollection);
+  const fileCollecitonEnc = await encrypt(
+    payload.passwordKey,
+    base64ToBuffer(payload.fileCollectionNonce),
+    stringToBuffer(fileCollectionJson),
+  );
 
-    const userItemDataBase64 = bufferToBase64(userItemEnc);
+  const fileCollectionDataBase64 = bufferToBase64(fileCollecitonEnc);
 
-    const update = await updateAccountToCloudSync({
-      username: payload.user.username,
-      sessionToken: payload.sessionToken,
-      userItem: userItemDataBase64,
-      fileCollection: fileCollectionDataBase64,
-    });
+  // encrypt userItem and output as base64
+  const userItemJson = JSON.stringify(payload.user);
+  const userItemEnc = await encrypt(
+    payload.cloudSyncPasswordKey,
+    stringToBuffer(payload.user.username),
+    stringToBuffer(userItemJson),
+  );
 
-    return {
-      ...update,
-      fileCollection: newFileCollection,
-    };
-  }
+  const userItemDataBase64 = bufferToBase64(userItemEnc);
 
-  return { success: true };
+  const update = await updateAccountToCloudSync({
+    username: payload.user.username,
+    sessionToken: payload.sessionToken,
+    userItem: userItemDataBase64,
+    fileCollection: fileCollectionDataBase64,
+  });
+
+  return {
+    ...update,
+    fileCollection: newFileCollection,
+  };
 };
 
 export const syncAccountAndNotesToCloudSyncWorkerized = async (
