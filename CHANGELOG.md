@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.3.2](https://github.com/slater-notes/web/compare/v0.3.1...v0.3.2) (2021-04-04)
+
+
+### Bug Fixes
+
+* favorites folder on login ([c8cfd8e](https://github.com/slater-notes/web/commit/c8cfd8ee0659d8fcea2370ea9dc0c2d09ca92696))
+* refactor full sync code to fix duplication error ([6db09bd](https://github.com/slater-notes/web/commit/6db09bda024b89831a5014befa2662a142ee8c17))
+
 ### [0.3.1](https://github.com/slater-notes/web/compare/v0.3.0...v0.3.1) (2021-04-01)
 
 
