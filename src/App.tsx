@@ -2,12 +2,12 @@ import { createMuiTheme, LinearProgress, ThemeProvider } from '@material-ui/core
 import { createStore, StoreProvider } from 'easy-peasy';
 import React, { useEffect } from 'react';
 import MainStore from './stores/mainStore';
-import Login from './views/Login';
+import Login from './pages/Login';
 import { Route } from 'wouter';
-import MainApp from './views/MainApp';
+import MainApp from './pages/MainApp';
 import { useStoreActions, useStoreState } from './stores/mainStore/typedHooks';
 import { localDB } from '@slater-notes/core';
-import Signup from './views/Signup';
+import Signup from './pages/Signup';
 import { THEME } from './config/theme';
 import loadAppSettings from './services/local/loadAppSettings';
 // eslint-disable-next-line import/no-webpack-loader-syntax

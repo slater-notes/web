@@ -18,10 +18,10 @@ import IconButtonWithMenu from '../../../../components/Buttons/IconButtonWithMen
 import DefaultDialog from '../../../../components/Dialogs/DefaultDialog';
 import FullDialog from '../../../../components/Dialogs/FullDialog';
 import { useStoreActions, useStoreState } from '../../../../stores/mainStore/typedHooks';
-import Settings from '../../../Dialogs/Settings';
+import Settings from '../../../../containers/Dialogs/Settings';
 import FolderItemEdit from './FolderItemEdit';
 import ListGroup, { Props as ListGroupProps } from './ListGroup';
-import CloudSync from '../../../Dialogs/CloudSync';
+import CloudSync from '../../../../containers/Dialogs/CloudSync';
 import { throttle } from 'lodash';
 
 const Folders = () => {
