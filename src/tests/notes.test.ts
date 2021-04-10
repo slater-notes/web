@@ -1,7 +1,7 @@
 import { createStore } from 'easy-peasy';
 import moment from 'moment';
 import { bufferToString, base64ToBuffer, decrypt, localDB } from '@slater-notes/core';
-import MainStore from '../stores/mainStore';
+import ApplicationStore from '../store';
 import createNewUser from '../services/local/createNewUser';
 import { FILE_COLLECTION_KEY } from '../utils/DBIndexKeys';
 import { addPolyfill } from '../utils/testPolyfill';
@@ -10,7 +10,7 @@ import { FileCollection, NoteData } from '../types/notes';
 addPolyfill();
 
 describe('notes test', () => {
-  const store = createStore(MainStore);
+  const store = createStore(ApplicationStore);
   store.getActions().setLocalDB(new localDB(true));
   const db = store.getState().localDB;
 

@@ -1,7 +1,7 @@
 import { defer } from 'lodash';
 import React from 'react';
-import { useStoreActions, useStoreState } from '../../../stores/mainStore/typedHooks';
-import { NoteData, NoteItem } from '../../../types/notes';
+import { useStoreActions, useStoreState } from '../../store/typedHooks';
+import { NoteData, NoteItem } from '../../types/notes';
 import NotePage from './NotePage';
 
 const Note = () => {

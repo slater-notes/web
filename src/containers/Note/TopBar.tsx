@@ -1,11 +1,11 @@
 import { makeStyles, useTheme } from '@material-ui/core';
 import React, { useState } from 'react';
 import { RotateCcw, Star, Trash } from 'react-feather';
-import DefaultButton from '../../../components/Buttons/DefaultButton';
-import DefaultIconButton from '../../../components/Buttons/DefaultIconButton';
-import DefaultDialog from '../../../components/Dialogs/DefaultDialog';
-import { useStoreActions, useStoreState } from '../../../stores/mainStore/typedHooks';
-import { NoteData, NoteItem } from '../../../types/notes';
+import DefaultButton from '../../components/Buttons/DefaultButton';
+import DefaultIconButton from '../../components/Buttons/DefaultIconButton';
+import DefaultDialog from '../../components/Dialogs/DefaultDialog';
+import { useStoreActions, useStoreState } from '../../store/typedHooks';
+import { NoteData, NoteItem } from '../../types/notes';
 import FolderPicker from './FolderPicker';
 
 interface Props {

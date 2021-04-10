@@ -1,11 +1,11 @@
 import { createMuiTheme, LinearProgress, ThemeProvider } from '@material-ui/core';
 import { createStore, StoreProvider } from 'easy-peasy';
-import React, { useEffect } from 'react';
-import MainStore from './stores/mainStore';
+import { useEffect } from 'react';
+import ApplicationStore from './store';
 import Login from './pages/Login';
 import { Route } from 'wouter';
 import MainApp from './pages/MainApp';
-import { useStoreActions, useStoreState } from './stores/mainStore/typedHooks';
+import { useStoreActions, useStoreState } from './store/typedHooks';
 import { localDB } from '@slater-notes/core';
 import Signup from './pages/Signup';
 import { THEME } from './config/theme';
@@ -14,7 +14,7 @@ import loadAppSettings from './services/local/loadAppSettings';
 import createWorker from 'workerize-loader!./services/webWorkers';
 import * as Workers from './services/webWorkers';
 
-const mainStore = createStore(MainStore);
+const store = createStore(ApplicationStore);
 const theme = createMuiTheme(THEME);
 
 export const AppStarter = ({ children }: any) => {
@@ -57,7 +57,7 @@ export const AppStarter = ({ children }: any) => {
 
 const App = () => {
   return (
-    <StoreProvider store={mainStore}>
+    <StoreProvider store={store}>
       <ThemeProvider theme={theme}>
         <AppStarter>
           <Route path='/login' component={Login} />

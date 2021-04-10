@@ -2,11 +2,11 @@ import { makeStyles } from '@material-ui/core';
 import { debounce } from 'lodash';
 import moment from 'moment';
 import React from 'react';
-import EditableTypography from '../../../components/EditableTypography';
-import { useStoreActions } from '../../../stores/mainStore/typedHooks';
+import EditableTypography from '../../components/EditableTypography';
+import { useStoreActions } from '../../store/typedHooks';
 import TopBar from './TopBar';
-import Editor from '../../../components/Editor';
-import { NoteData, NoteItem } from '../../../types/notes';
+import Editor from '../../components/Editor';
+import { NoteData, NoteItem } from '../../types/notes';
 
 interface Props {
   noteItem: NoteItem;

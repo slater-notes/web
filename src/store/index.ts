@@ -10,77 +10,77 @@ import {
   bufferToBase64,
   base64ToBuffer,
 } from '@slater-notes/core';
-import loadNoteData from '../../services/local/loadNoteData';
-import saveFileCollection from '../../services/local/saveFileCollection';
-import saveNoteData from '../../services/local/saveNoteData';
-import saveUserSettings from '../../services/local/saveUserSettings';
-import { FILE_COLLECTION_KEY } from '../../utils/DBIndexKeys';
-import { log } from '../../utils/log';
-import { UserSettingsOptions } from './defaultUserSettings';
-import saveUser from '../../services/local/saveUser';
-import { syncAccountAndNotesToCloudSyncDebouncedWorkerized } from '../../services/cloudSync/syncAccountAndNotes';
-import { AppSettingsOptions } from './defaultAppSettings';
-import saveAppSettings from '../../services/local/saveAppSettings';
-import * as Workers from '../../services/webWorkers';
-import { FileCollection, FolderItem, NoteData, NoteItem } from '../../types/notes';
+import loadNoteData from '../services/local/loadNoteData';
+import saveFileCollection from '../services/local/saveFileCollection';
+import saveNoteData from '../services/local/saveNoteData';
+import saveUserSettings from '../services/local/saveUserSettings';
+import { FILE_COLLECTION_KEY } from '../utils/DBIndexKeys';
+import { log } from '../utils/log';
+import { UserSettingsOptions } from '../config/defaultUserSettings';
+import saveUser from '../services/local/saveUser';
+import { syncAccountAndNotesToCloudSyncDebouncedWorkerized } from '../services/cloudSync/syncAccountAndNotes';
+import { AppSettingsOptions } from '../config/defaultAppSettings';
+import saveAppSettings from '../services/local/saveAppSettings';
+import * as Workers from '../services/webWorkers';
+import { FileCollection, FolderItem, NoteData, NoteItem } from '../types/notes';
 
-export interface MainStoreModel {
+export interface StoreModel {
   localDB: localDB | null;
-  setLocalDB: Action<MainStoreModel, localDB>;
+  setLocalDB: Action<StoreModel, localDB>;
 
   workers: Workerized<typeof Workers> | null;
-  setWorkers: Action<MainStoreModel, Workerized<typeof Workers>>;
+  setWorkers: Action<StoreModel, Workerized<typeof Workers>>;
 
   user: UserItem | null;
-  setUser: Action<MainStoreModel, UserItem | null>;
+  setUser: Action<StoreModel, UserItem | null>;
 
   passwordKey: CryptoKey | null;
-  setPasswordKey: Action<MainStoreModel, CryptoKey | null>;
+  setPasswordKey: Action<StoreModel, CryptoKey | null>;
 
   cloudSyncPasswordKey: CryptoKey | null;
-  setCloudSyncPasswordKey: Action<MainStoreModel, CryptoKey | null>;
+  setCloudSyncPasswordKey: Action<StoreModel, CryptoKey | null>;
 
   fileCollection: FileCollection | null;
-  setFileCollection: Action<MainStoreModel, FileCollection | null>;
+  setFileCollection: Action<StoreModel, FileCollection | null>;
 
   settings: Partial<UserSettingsOptions> | null;
-  setSettings: Action<MainStoreModel, Partial<UserSettingsOptions> | null>;
+  setSettings: Action<StoreModel, Partial<UserSettingsOptions> | null>;
 
   appSettings: Partial<AppSettingsOptions> | null;
-  setAppSettings: Action<MainStoreModel, Partial<AppSettingsOptions> | null>;
+  setAppSettings: Action<StoreModel, Partial<AppSettingsOptions> | null>;
 
   sidebarOpen: boolean;
-  setSidebarOpen: Action<MainStoreModel, boolean>;
+  setSidebarOpen: Action<StoreModel, boolean>;
 
   activeNote: { noteItem: NoteItem; noteData: NoteData } | null;
-  setActiveNote: Action<MainStoreModel, { noteItem: NoteItem; noteData: NoteData } | null>;
+  setActiveNote: Action<StoreModel, { noteItem: NoteItem; noteData: NoteData } | null>;
 
   activeFolderId: string;
-  setActiveFolderId: Action<MainStoreModel, string>;
-  resetActiveFolder: Action<MainStoreModel>;
-  resetFolderIdIfActive: Action<MainStoreModel, string>;
+  setActiveFolderId: Action<StoreModel, string>;
+  resetActiveFolder: Action<StoreModel>;
+  resetFolderIdIfActive: Action<StoreModel, string>;
 
   editingFolderId: string | null;
-  setEditingFolderId: Action<MainStoreModel, string | null>;
+  setEditingFolderId: Action<StoreModel, string | null>;
 
-  updateUser: Thunk<MainStoreModel, { userItem: UserItem; noCloudSync?: boolean }>;
-  updateFileCollection: Thunk<MainStoreModel, FileCollection>;
-  updateSettings: Thunk<MainStoreModel, Partial<UserSettingsOptions>>;
-  updateAppSettings: Thunk<MainStoreModel, Partial<AppSettingsOptions>>;
-  createNewNote: Thunk<MainStoreModel, { title: string; parentId?: string }>;
-  createNewFolder: Thunk<MainStoreModel, { title: string; editOnCreate?: boolean }>;
-  loadNote: Thunk<MainStoreModel, NoteItem>;
-  updateNoteItem: Thunk<MainStoreModel, { id: string; noteItem: NoteItem }>;
-  updateNoteData: Thunk<MainStoreModel, { id: string; noteData: NoteData }>;
-  updateFolder: Thunk<MainStoreModel, { id: string; folder: FolderItem }>;
-  trashNote: Thunk<MainStoreModel, string>;
-  trashFolder: Thunk<MainStoreModel, string>;
-  emptyTrash: Thunk<MainStoreModel>;
-  permanentlyDeleteNote: Thunk<MainStoreModel, string>;
-  permanentlyDeleteFolder: Thunk<MainStoreModel, string>;
+  updateUser: Thunk<StoreModel, { userItem: UserItem; noCloudSync?: boolean }>;
+  updateFileCollection: Thunk<StoreModel, FileCollection>;
+  updateSettings: Thunk<StoreModel, Partial<UserSettingsOptions>>;
+  updateAppSettings: Thunk<StoreModel, Partial<AppSettingsOptions>>;
+  createNewNote: Thunk<StoreModel, { title: string; parentId?: string }>;
+  createNewFolder: Thunk<StoreModel, { title: string; editOnCreate?: boolean }>;
+  loadNote: Thunk<StoreModel, NoteItem>;
+  updateNoteItem: Thunk<StoreModel, { id: string; noteItem: NoteItem }>;
+  updateNoteData: Thunk<StoreModel, { id: string; noteData: NoteData }>;
+  updateFolder: Thunk<StoreModel, { id: string; folder: FolderItem }>;
+  trashNote: Thunk<StoreModel, string>;
+  trashFolder: Thunk<StoreModel, string>;
+  emptyTrash: Thunk<StoreModel>;
+  permanentlyDeleteNote: Thunk<StoreModel, string>;
+  permanentlyDeleteFolder: Thunk<StoreModel, string>;
 }
 
-const MainStore: MainStoreModel = {
+const ApplicationStore: StoreModel = {
   localDB: null,
   setLocalDB: action((state, payload) => {
     state.localDB = payload;
@@ -803,4 +803,4 @@ const MainStore: MainStoreModel = {
   }),
 };
 
-export default MainStore;
+export default ApplicationStore;

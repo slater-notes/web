@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { FolderItem } from '@slater-notes/core';
-import EditableTypography from '../../../../components/EditableTypography';
+import EditableTypography from '../../../components/EditableTypography';
 
 interface Props {
   folder: FolderItem;

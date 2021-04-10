@@ -1,7 +1,7 @@
 import { makeStyles } from '@material-ui/core';
 import React from 'react';
 import { Menu } from 'react-feather';
-import { useStoreActions } from '../../../stores/mainStore/typedHooks';
+import { useStoreActions } from '../../store/typedHooks';
 
 const MiniSidebar = () => {
   const classes = useStyles();

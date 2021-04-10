@@ -1,9 +1,9 @@
 import { Box, Divider, makeStyles, Typography, useTheme } from '@material-ui/core';
 import React from 'react';
 import { FolderItem, NoteItem } from '@slater-notes/core';
-import { MenuItemObject } from '../../../components/Menus/SimpleTextMenu';
-import Tag from '../../../components/Tag';
-import { useStoreActions, useStoreState } from '../../../stores/mainStore/typedHooks';
+import { MenuItemObject } from '../../components/Menus/SimpleTextMenu';
+import Tag from '../../components/Tag';
+import { useStoreActions, useStoreState } from '../../store/typedHooks';
 import moment from 'moment';
 
 interface Props {

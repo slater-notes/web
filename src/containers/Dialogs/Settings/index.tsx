@@ -17,8 +17,8 @@ import moment from 'moment';
 import React, { useState } from 'react';
 import DefaultButton from '../../../components/Buttons/DefaultButton';
 import DefaultDialog from '../../../components/Dialogs/DefaultDialog';
-import defaultUserSettings from '../../../stores/mainStore/defaultUserSettings';
-import { useStoreActions, useStoreState } from '../../../stores/mainStore/typedHooks';
+import defaultUserSettings from '../../../config/defaultUserSettings';
+import { useStoreActions, useStoreState } from '../../../store/typedHooks';
 import ChangeUsername from '../ChangeUsername';
 
 const latestVersion = '0.3.2';

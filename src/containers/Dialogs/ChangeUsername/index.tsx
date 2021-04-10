@@ -2,7 +2,7 @@ import { TextField, useTheme } from '@material-ui/core';
 import React from 'react';
 import DefaultDialog from '../../../components/Dialogs/DefaultDialog';
 import changeUsername from '../../../services/local/changeUsername';
-import { useStoreActions, useStoreState } from '../../../stores/mainStore/typedHooks';
+import { useStoreActions, useStoreState } from '../../../store/typedHooks';
 import * as yup from 'yup';
 
 interface Props {

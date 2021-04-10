@@ -8,7 +8,7 @@ import {
   UserItem,
 } from '@slater-notes/core';
 import { defaultCloudSyncPasswordIterations } from '../../config/cloudSync';
-import { UserSettingsOptions } from '../../stores/mainStore/defaultUserSettings';
+import { UserSettingsOptions } from '../../config/defaultUserSettings';
 import { FileCollection } from '../../types/notes';
 import { FILE_COLLECTION_KEY, SETTINGS_KEY, USERS_KEY } from '../../utils/DBIndexKeys';
 import { ServiceResponse } from './services';

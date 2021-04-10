@@ -1,16 +1,16 @@
 import { createStore } from 'easy-peasy';
 import { bufferToString, base64ToBuffer, decrypt, localDB } from '@slater-notes/core';
-import MainStore from '../stores/mainStore';
+import ApplicationStore from '../store';
 import createNewUser from '../services/local/createNewUser';
 import loadUser from '../services/local/loadUser';
 import { SETTINGS_KEY } from '../utils/DBIndexKeys';
 import { addPolyfill } from '../utils/testPolyfill';
-import { UserSettingsOptions } from '../stores/mainStore/defaultUserSettings';
+import { UserSettingsOptions } from '../config/defaultUserSettings';
 
 addPolyfill();
 
 describe('settings test', () => {
-  const store = createStore(MainStore);
+  const store = createStore(ApplicationStore);
   const actions = store.getActions();
   actions.setLocalDB(new localDB(true));
   const db = store.getState().localDB;

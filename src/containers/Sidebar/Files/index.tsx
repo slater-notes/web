@@ -3,10 +3,10 @@ import { grey } from '@material-ui/core/colors';
 import moment from 'moment';
 import React, { useMemo } from 'react';
 import { NoteItem } from '@slater-notes/core';
-import { useStoreActions, useStoreState } from '../../../../stores/mainStore/typedHooks';
-import DefaultDialog from '../../../../components/Dialogs/DefaultDialog';
+import { useStoreActions, useStoreState } from '../../../store/typedHooks';
+import DefaultDialog from '../../../components/Dialogs/DefaultDialog';
 import { Star, Trash } from 'react-feather';
-import DefaultIconButton from '../../../../components/Buttons/DefaultIconButton';
+import DefaultIconButton from '../../../components/Buttons/DefaultIconButton';
 import FilterFiles from './FilterFiles';
 import { throttle } from 'lodash';
 

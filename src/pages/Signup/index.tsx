@@ -14,7 +14,7 @@ import React from 'react';
 import { Formik } from 'formik';
 import * as yup from 'yup';
 import DefaultButton from '../../components/Buttons/DefaultButton';
-import { useStoreActions, useStoreState } from '../../stores/mainStore/typedHooks';
+import { useStoreActions, useStoreState } from '../../store/typedHooks';
 import { Redirect } from 'wouter';
 import createNewUser from '../../services/local/createNewUser';
 import LoginPage from '../../components/LoginPage';

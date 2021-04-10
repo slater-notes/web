@@ -1,5 +1,5 @@
 import { base64ToBuffer, encrypt, localDB, stringToBuffer, UserItem } from '@slater-notes/core';
-import { UserSettingsOptions } from '../../stores/mainStore/defaultUserSettings';
+import { UserSettingsOptions } from '../../config/defaultUserSettings';
 import { SETTINGS_KEY } from '../../utils/DBIndexKeys';
 import { ServiceResponse } from './services';
 

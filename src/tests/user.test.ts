@@ -1,6 +1,6 @@
 import { createStore } from 'easy-peasy';
 import { localDB } from '@slater-notes/core';
-import MainStore from '../stores/mainStore';
+import ApplicationStore from '../store';
 import createNewUser from '../services/local/createNewUser';
 import loadUser from '../services/local/loadUser';
 import { addPolyfill } from '../utils/testPolyfill';
@@ -8,7 +8,7 @@ import { addPolyfill } from '../utils/testPolyfill';
 addPolyfill();
 
 describe('user test', () => {
-  const store = createStore(MainStore);
+  const store = createStore(ApplicationStore);
   store.getActions().setLocalDB(new localDB(true));
   const db = store.getState().localDB;
 
@@ -41,7 +41,7 @@ describe('user test', () => {
   });
 
   test('loading user that does not exist should fail gracefully', async () => {
-    const store = createStore(MainStore);
+    const store = createStore(ApplicationStore);
     store.getActions().setLocalDB(new localDB(true));
     const db = store.getState().localDB;
 

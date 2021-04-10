@@ -1,11 +1,11 @@
 import React from 'react';
-import { useStoreActions, useStoreState } from '../../stores/mainStore/typedHooks';
+import { useStoreActions, useStoreState } from '../../store/typedHooks';
 import { Redirect } from 'wouter';
 import { Drawer, Grid, makeStyles } from '@material-ui/core';
-import Sidebar from './Sidebar';
-import Note from './Note';
-import MiniSidebar from './Sidebar/MiniSidebar';
-import defaultUserSettings from '../../stores/mainStore/defaultUserSettings';
+import Sidebar from '../../containers/Sidebar';
+import Note from '../../containers/Note';
+import MiniSidebar from '../../containers/Sidebar/MiniSidebar';
+import defaultUserSettings from '../../config/defaultUserSettings';
 
 const MainApp = () => {
   const classes = useStyles();

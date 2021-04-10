@@ -1,5 +1,5 @@
 import { localDB } from '@slater-notes/core';
-import { AppSettingsOptions } from '../../stores/mainStore/defaultAppSettings';
+import { AppSettingsOptions } from '../../config/defaultAppSettings';
 import { ServiceResponse } from './services';
 
 interface Response extends ServiceResponse {

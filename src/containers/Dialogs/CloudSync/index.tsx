@@ -6,7 +6,7 @@ import DefaultDialog from '../../../components/Dialogs/DefaultDialog';
 import { defaultCloudSyncURL } from '../../../config/cloudSync';
 import getNewSessionFromCloudSync from '../../../services/cloudSync/api/getNewSession';
 import uploadNotesToCloudSync from '../../../services/cloudSync/uploadNotes';
-import { useStoreActions, useStoreState } from '../../../stores/mainStore/typedHooks';
+import { useStoreActions, useStoreState } from '../../../store/typedHooks';
 import generateTokenFromPassword from '../../../utils/generateTokenFromPassword';
 import checkSessionFromCloudSync from '../../../services/cloudSync/api/checkSession';
 import prepareAndRegisterToCloudSync from '../../../services/cloudSync/prepareAndRegister';
