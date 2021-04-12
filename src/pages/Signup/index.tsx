@@ -39,6 +39,7 @@ const Signup = () => {
   const setPasswordKey = useStoreActions((a) => a.setPasswordKey);
   const setFileCollection = useStoreActions((a) => a.setFileCollection);
   const updateUser = useStoreActions((a) => a.updateUser);
+  const setCloudSyncPasswordKey = useStoreActions((a) => a.setCloudSyncPasswordKey);
 
   if (done) {
     return <Redirect to='/' />;
@@ -143,6 +144,8 @@ const Signup = () => {
 
                 cloudSyncSessionToken = registerCloudSyncResult.sessionToken;
               }
+
+              setCloudSyncPasswordKey(createUserResult.cloudSyncPasswordKey || null);
 
               setUser(createUserResult.user);
               setPasswordKey(createUserResult.passwordKey);

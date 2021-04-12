@@ -191,7 +191,7 @@ const ApplicationStore: StoreModel = {
     }
 
     await saveFileCollection(localDB, user, passwordKey, payload);
-    actions.setFileCollection(payload);
+    actions.setFileCollection({ ...payload });
   }),
 
   updateSettings: thunk(async (actions, payload, { getState }) => {

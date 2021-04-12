@@ -93,15 +93,12 @@ const createNewUser = async (db: localDB, payload: Payload): Promise<Response> =
   await db.set(`${FILE_COLLECTION_KEY}--${user.id}`, encryptedData);
 
   // Generate cloud sync password
-  let cloudSyncPasswordKey;
-  if (payload.enableCloudSync) {
-    cloudSyncPasswordKey = await getKeyFromDerivedPassword(
-      payload.password,
-      stringToBuffer(payload.username),
-      true,
-      defaultCloudSyncPasswordIterations,
-    );
-  }
+  const cloudSyncPasswordKey = await getKeyFromDerivedPassword(
+    payload.password,
+    stringToBuffer(payload.username),
+    true,
+    defaultCloudSyncPasswordIterations,
+  );
 
   return {
     user,
