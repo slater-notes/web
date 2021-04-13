@@ -44,20 +44,20 @@ const useCloudSyncRegister = (): [
       return;
     }
 
-    const { error, sessionToken } = await prepareAndRegisterToCloudSync({
+    const register = await prepareAndRegisterToCloudSync({
       user,
       token,
       db: localDB,
       cloudSyncPasswordKey,
     });
 
-    if (error || !sessionToken) {
-      setError({ error: error || 'Failed to register user to the cloud sync server.' });
+    if ('error' in register) {
+      setError({ error: register.error });
       return;
     }
 
     await updateUser({
-      userItem: { ...user, cloudSyncSessionToken: sessionToken },
+      userItem: { ...user, cloudSyncSessionToken: register.sessionToken },
       noCloudSync: true,
     });
 

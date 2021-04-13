@@ -117,7 +117,7 @@ const Signup = () => {
                   cloudSyncPasswordKey: createUserResult.cloudSyncPasswordKey,
                 });
 
-                if (registerCloudSyncResult.error || !registerCloudSyncResult.sessionToken) {
+                if ('error' in registerCloudSyncResult) {
                   setSubmitting(false);
 
                   if (registerCloudSyncResult.error === 'username already exist') {

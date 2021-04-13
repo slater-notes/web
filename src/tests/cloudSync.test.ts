@@ -52,6 +52,8 @@ describe('Cloud sync', () => {
       fileCollection: 'bbb',
     });
 
+    if ('error' in result) fail();
+
     expect(result.sessionToken).toBeTruthy();
   });
 
@@ -61,9 +63,11 @@ describe('Cloud sync', () => {
       token,
     });
 
-    sessionToken = result.sessionToken;
+    if ('error' in result) fail();
 
     expect(result.sessionToken).toBeTruthy();
+
+    sessionToken = result.sessionToken;
   });
 
   test('get account', async () => {
@@ -71,6 +75,8 @@ describe('Cloud sync', () => {
       username,
       sessionToken,
     });
+
+    if ('error' in result) fail();
 
     expect(result.userItem).toBeTruthy();
     expect(result.fileCollection).toBeTruthy();
@@ -95,6 +101,8 @@ describe('Cloud sync', () => {
       noteData: 'aaabbb',
     });
 
+    if ('error' in result) fail();
+
     expect(result.success).toBeTruthy();
   });
 
@@ -104,6 +112,8 @@ describe('Cloud sync', () => {
       sessionToken,
       noteId: 'abc123',
     });
+
+    if ('error' in result) fail();
 
     expect(result.noteData).toBeTruthy();
   });
@@ -115,6 +125,6 @@ describe('Cloud sync', () => {
       noteId: 'abc123',
     });
 
-    expect(result.success).toBeTruthy();
+    expect('success' in result).toBeTruthy();
   });
 });

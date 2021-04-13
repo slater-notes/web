@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { defaultCloudSyncURL } from '../../../config/cloudSync';
-import { ErrorResult, returnError } from './types';
+import { StandardError, StandardSuccess } from '../../../types/response';
+import { returnError } from './returnError';
 
 interface Payload {
   username: string;
@@ -8,12 +9,11 @@ interface Payload {
   noteId: string;
 }
 
-interface Result extends ErrorResult {
-  success?: boolean;
-  noteData?: string;
+interface SuccessResponse extends StandardSuccess {
+  noteData: string;
 }
 
-const getNoteFromCloudSync = async (payload: Payload): Promise<Result> => {
+const getNoteFromCloudSync = async (payload: Payload): Promise<SuccessResponse | StandardError> => {
   let result;
 
   try {

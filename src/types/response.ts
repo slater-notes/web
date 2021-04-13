@@ -1,7 +1,7 @@
 export type StandardResponse = StandardSuccess | StandardError;
 
 export type StandardSuccess = {
-  success: true;
+  success: boolean;
 };
 
 export type StandardError = {

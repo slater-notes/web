@@ -1,9 +1,6 @@
-export interface ErrorResult {
-  error?: string;
-  errorCode?: number;
-}
+import { StandardError } from '../../../types/response';
 
-export const returnError = (error: any): ErrorResult => {
+export const returnError = (error: any): StandardError => {
   if (error.response) {
     return {
       error: error.response.data?.error

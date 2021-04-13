@@ -1,17 +1,20 @@
 import axios from 'axios';
 import { defaultCloudSyncURL } from '../../../config/cloudSync';
-import { ErrorResult, returnError } from './types';
+import { StandardError, StandardSuccess } from '../../../types/response';
+import { returnError } from './returnError';
 
 interface Payload {
   username: string;
   token: string;
 }
 
-interface Result extends ErrorResult {
-  sessionToken?: string;
+interface SuccessResponse extends StandardSuccess {
+  sessionToken: string;
 }
 
-const getNewSessionFromCloudSync = async (payload: Payload): Promise<Result> => {
+const getNewSessionFromCloudSync = async (
+  payload: Payload,
+): Promise<SuccessResponse | StandardError> => {
   let result;
 
   try {

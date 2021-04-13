@@ -84,21 +84,21 @@ const Login = () => {
                   token,
                 });
 
-                switch (newSession.error) {
-                  case 'user does not exist':
-                    setErrors({ username: 'username does not exist' });
-                    setSubmitting(false);
-                    return;
-                  case 'token does not match':
-                    setErrors({ password: 'password is incorrect' });
-                    setSubmitting(false);
-                    return;
-                  default:
-                    if (!newSession.sessionToken) {
-                      setErrors({ username: newSession.error || 'unknown error' });
+                if ('error' in newSession) {
+                  switch (newSession.error) {
+                    case 'user does not exist':
+                      setErrors({ username: 'username does not exist' });
                       setSubmitting(false);
                       return;
-                    }
+                    case 'token does not match':
+                      setErrors({ password: 'password is incorrect' });
+                      setSubmitting(false);
+                      return;
+                    default:
+                      setErrors({ username: newSession.error });
+                      setSubmitting(false);
+                      return;
+                  }
                 }
 
                 sessionToken = newSession.sessionToken;
@@ -120,8 +120,8 @@ const Login = () => {
                   sessionToken,
                 });
 
-                if (!getAccount.userItem || !getAccount.fileCollection) {
-                  setErrors({ username: getAccount.error || 'unknown error' });
+                if ('error' in getAccount) {
+                  setErrors({ username: getAccount.error });
                   setSubmitting(false);
                   return;
                 }

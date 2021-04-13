@@ -52,7 +52,7 @@ const useFullSync = (): [() => Promise<void>, boolean, ErrorOrNull, boolean, () 
       sessionToken: cloudSyncSessionToken,
     });
 
-    if (!sessionCheck.success) {
+    if ('error' in sessionCheck) {
       setError({ errorCode: 'invalid_session', error: sessionCheck.error || '' });
       return;
     }
@@ -67,20 +67,18 @@ const useFullSync = (): [() => Promise<void>, boolean, ErrorOrNull, boolean, () 
       cloudSyncPasswordKey,
     });
 
-    if (sync.error) {
+    if ('error' in sync) {
       setError({ errorCode: 'sync_error', error: sync.error });
       return;
     }
 
-    if (sync.fileCollection) {
-      await updateFileCollection(sync.fileCollection);
-      await updateUser({
-        userItem: { ...user, cloudLastSynced: moment().unix() },
-        noCloudSync: true,
-      });
+    await updateFileCollection(sync.fileCollection);
+    await updateUser({
+      userItem: { ...user, cloudLastSynced: moment().unix() },
+      noCloudSync: true,
+    });
 
-      setIsComplete(true);
-    }
+    setIsComplete(true);
   };
 
   return [startSync, isLoading, error, isComplete, reset];

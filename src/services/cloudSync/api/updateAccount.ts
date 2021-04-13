@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { defaultCloudSyncURL } from '../../../config/cloudSync';
-import { ErrorResult, returnError } from './types';
+import { StandardResponse } from '../../../types/response';
+import { returnError } from './returnError';
 
 interface Payload {
   username: string;
@@ -9,11 +10,7 @@ interface Payload {
   fileCollection: string;
 }
 
-interface Result extends ErrorResult {
-  success?: boolean;
-}
-
-const updateAccountToCloudSync = async (payload: Payload): Promise<Result> => {
+const updateAccountToCloudSync = async (payload: Payload): Promise<StandardResponse> => {
   let result;
 
   try {

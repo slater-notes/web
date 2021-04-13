@@ -1,5 +1,5 @@
 import { bufferToBase64, encrypt, localDB, stringToBuffer, UserItem } from '@slater-notes/core';
-import { ErrorResult } from './api/types';
+import { StandardError, StandardSuccess } from '../../types/response';
 import getFileCollectionAsBase64 from '../local/getFileCollectionAsBase64';
 import registerToCloudSync from './api/registerAccount';
 
@@ -10,12 +10,13 @@ interface Payload {
   cloudSyncPasswordKey: CryptoKey;
 }
 
-interface Result extends ErrorResult {
-  success?: boolean;
+interface SuccessResponse extends StandardSuccess {
   sessionToken?: string;
 }
 
-const prepareAndRegisterToCloudSync = async (payload: Payload): Promise<Result> => {
+const prepareAndRegisterToCloudSync = async (
+  payload: Payload,
+): Promise<SuccessResponse | StandardError> => {
   // encrypt userItem and output as base64
   const json = JSON.stringify(payload.user);
   const encryptedData = await encrypt(

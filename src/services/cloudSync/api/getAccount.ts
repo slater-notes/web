@@ -1,18 +1,21 @@
 import axios from 'axios';
 import { defaultCloudSyncURL } from '../../../config/cloudSync';
-import { ErrorResult, returnError } from './types';
+import { StandardError, StandardSuccess } from '../../../types/response';
+import { returnError } from './returnError';
 
 interface Payload {
   username: string;
   sessionToken: string;
 }
 
-interface Result extends ErrorResult {
-  userItem?: string;
-  fileCollection?: string;
+interface SuccessResponse extends StandardSuccess {
+  userItem: string;
+  fileCollection: string;
 }
 
-const getAccountFromCloudSync = async (payload: Payload): Promise<Result> => {
+const getAccountFromCloudSync = async (
+  payload: Payload,
+): Promise<SuccessResponse | StandardError> => {
   let result;
 
   try {

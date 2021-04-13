@@ -8,7 +8,6 @@ import {
   localDB,
   bufferToBase64,
 } from '@slater-notes/core';
-import { ErrorResult } from './api/types';
 import getAccountFromCloudSync from './api/getAccount';
 import updateAccountToCloudSync from './api/updateAccount';
 import putNoteToCloudSync from './api/putNote';
@@ -19,6 +18,7 @@ import { debounce } from 'lodash';
 import * as Workers from '../../services/webWorkers';
 import { FileCollection, FolderItem, NoteItem } from '../../types/notes';
 import { mergeArrayOfObjectsBy } from '../../utils/mergeArrayOfObject';
+import { StandardError, StandardSuccess } from '../../types/response';
 
 export interface Payload {
   sessionToken: string;
@@ -29,12 +29,13 @@ export interface Payload {
   cloudSyncPasswordKey: CryptoKey;
 }
 
-interface Result extends ErrorResult {
-  success?: boolean;
-  fileCollection?: FileCollection;
+interface SuccessResonse extends StandardSuccess {
+  fileCollection: FileCollection;
 }
 
-const syncAccountAndNotesToCloudSync = async (payload: Payload): Promise<Result> => {
+const syncAccountAndNotesToCloudSync = async (
+  payload: Payload,
+): Promise<SuccessResonse | StandardError> => {
   console.log('syncAccountAndNotesToCloudSync');
   // fetch from cloud
   const account = await getAccountFromCloudSync({
@@ -42,8 +43,8 @@ const syncAccountAndNotesToCloudSync = async (payload: Payload): Promise<Result>
     sessionToken: payload.sessionToken,
   });
 
-  if (account.error || !account.fileCollection) {
-    return { error: account.error || 'unknown error' };
+  if ('error' in account) {
+    return { error: account.error };
   }
 
   // decrypt fileCollection
@@ -118,7 +119,7 @@ const syncAccountAndNotesToCloudSync = async (payload: Payload): Promise<Result>
       noteId,
     });
 
-    if (getNote.noteData) {
+    if ('success' in getNote && getNote.success) {
       await saveNoteDataFromBase64(db, noteId, getNote.noteData);
     }
   });

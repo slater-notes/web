@@ -1,8 +1,8 @@
 import { localDB } from '@slater-notes/core';
-import { ErrorResult } from './api/types';
 import { eachLimit } from 'async';
 import putNote from './api/putNote';
 import getNoteDataAsBase64 from '../local/getNoteDataAsBase64';
+import { StandardResponse } from '../../types/response';
 
 interface Payload {
   username: string;
@@ -11,11 +11,7 @@ interface Payload {
   noteIds: string[];
 }
 
-interface Result extends ErrorResult {
-  success?: boolean;
-}
-
-const uploadNotesToCloudSync = async (payload: Payload): Promise<Result> => {
+const uploadNotesToCloudSync = async (payload: Payload): Promise<StandardResponse> => {
   await eachLimit(payload.noteIds, 2, async (noteId) => {
     const noteData = await getNoteDataAsBase64(payload.db, noteId);
 
