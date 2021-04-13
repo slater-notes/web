@@ -1,21 +1,20 @@
 import { createStore } from 'easy-peasy';
 import moment from 'moment';
-import { bufferToString, base64ToBuffer, decrypt, localDB } from '@slater-notes/core';
+import { bufferToString, base64ToBuffer, decrypt } from '@slater-notes/core';
 import ApplicationStore from '../store';
 import createNewUser from '../services/createNewUser';
 import { FILE_COLLECTION_KEY } from '../utils/DBIndexKeys';
 import { addPolyfill } from '../utils/testPolyfill';
 import { FileCollection, NoteData } from '../types/notes';
+import disk from '../utils/disk';
 
 addPolyfill();
 
 describe('notes test', () => {
   const store = createStore(ApplicationStore);
-  store.getActions().setLocalDB(new localDB(true));
-  const db = store.getState().localDB;
 
   test('file collection is loaded on user load', async () => {
-    const result = await createNewUser(db as localDB, {
+    const result = await createNewUser({
       username: 'testuser',
       password: 'testpass',
     });
@@ -44,7 +43,7 @@ describe('notes test', () => {
   test('file collection has been saved locally', async () => {
     const state = store.getState();
 
-    const encryptedData = await db?.get(`${FILE_COLLECTION_KEY}--${state.user?.id}`);
+    const encryptedData = await disk.get(`${FILE_COLLECTION_KEY}--${state.user?.id}`);
 
     expect(encryptedData).toBeTruthy();
 
@@ -65,7 +64,7 @@ describe('notes test', () => {
   test('new note data has been saved locally', async () => {
     const state = store.getState();
 
-    const encryptedData = await db?.get(state.activeNote?.noteItem.id as string);
+    const encryptedData = await disk.get(state.activeNote?.noteItem.id as string);
 
     expect(encryptedData).toBeTruthy();
 
@@ -92,11 +91,11 @@ describe('notes test', () => {
 
     await actions.loadNote(noteItem);
 
-    state = store.getState();
+    const { activeNote } = store.getState();
 
-    expect(state.activeNote?.noteItem).toEqual(noteItem);
-    expect(state.activeNote?.noteData?.id).toEqual(noteItem.id);
-    expect(state.activeNote?.noteData?.revisions).toHaveLength(0);
+    expect(activeNote?.noteItem).toEqual(noteItem);
+    expect(activeNote?.noteData?.id).toEqual(noteItem.id);
+    expect(activeNote?.noteData?.revisions).toHaveLength(0);
   });
 
   test('change note title', async () => {
@@ -118,7 +117,7 @@ describe('notes test', () => {
       state.fileCollection?.notes[0].created as number,
     );
 
-    const encryptedData = await db?.get(`${FILE_COLLECTION_KEY}--${state.user?.id}`);
+    const encryptedData = await disk.get(`${FILE_COLLECTION_KEY}--${state.user?.id}`);
     const decryptedData = await decrypt(
       state.passwordKey as any,
       base64ToBuffer(state.user?.fileCollectionNonce as any),
@@ -140,7 +139,7 @@ describe('notes test', () => {
     expect(state.fileCollection?.folders).toHaveLength(1);
     expect(state.fileCollection?.folders[0].title).toEqual('Test Folder');
 
-    const encryptedData = await db?.get(`${FILE_COLLECTION_KEY}--${state.user?.id}`);
+    const encryptedData = await disk.get(`${FILE_COLLECTION_KEY}--${state.user?.id}`);
     const decryptedData = await decrypt(
       state.passwordKey as any,
       base64ToBuffer(state.user?.fileCollectionNonce as any),
@@ -169,7 +168,7 @@ describe('notes test', () => {
     state = store.getState();
     expect(state.activeNote?.noteItem.parentId).toEqual(folderId);
 
-    const encryptedData = await db?.get(`${FILE_COLLECTION_KEY}--${state.user?.id}`);
+    const encryptedData = await disk.get(`${FILE_COLLECTION_KEY}--${state.user?.id}`);
     const decryptedData = await decrypt(
       state.passwordKey as any,
       base64ToBuffer(state.user?.fileCollectionNonce as any),
@@ -195,7 +194,7 @@ describe('notes test', () => {
     state = store.getState();
     expect(state.fileCollection?.notes[0].isDeleted).toBe(true);
 
-    const encryptedData = await db?.get(`${FILE_COLLECTION_KEY}--${state.user?.id}`);
+    const encryptedData = await disk.get(`${FILE_COLLECTION_KEY}--${state.user?.id}`);
     const decryptedData = await decrypt(
       state.passwordKey as any,
       base64ToBuffer(state.user?.fileCollectionNonce as any),
@@ -221,7 +220,7 @@ describe('notes test', () => {
     state = store.getState();
     expect(state.fileCollection?.folders[0].isDeleted).toBe(true);
 
-    const encryptedData = await db?.get(`${FILE_COLLECTION_KEY}--${state.user?.id}`);
+    const encryptedData = await disk.get(`${FILE_COLLECTION_KEY}--${state.user?.id}`);
     const decryptedData = await decrypt(
       state.passwordKey as any,
       base64ToBuffer(state.user?.fileCollectionNonce as any),
@@ -245,7 +244,7 @@ describe('notes test', () => {
     const state = store.getState();
     expect(state.fileCollection?.notes).toHaveLength(0);
 
-    const encryptedData = await db?.get(`${FILE_COLLECTION_KEY}--${state.user?.id}`);
+    const encryptedData = await disk.get(`${FILE_COLLECTION_KEY}--${state.user?.id}`);
     const decryptedData = await decrypt(
       state.passwordKey as any,
       base64ToBuffer(state.user?.fileCollectionNonce as any),
@@ -269,7 +268,7 @@ describe('notes test', () => {
     const state = store.getState();
     expect(state.fileCollection?.folders).toHaveLength(0);
 
-    const encryptedData = await db?.get(`${FILE_COLLECTION_KEY}--${state.user?.id}`);
+    const encryptedData = await disk.get(`${FILE_COLLECTION_KEY}--${state.user?.id}`);
     const decryptedData = await decrypt(
       state.passwordKey as any,
       base64ToBuffer(state.user?.fileCollectionNonce as any),

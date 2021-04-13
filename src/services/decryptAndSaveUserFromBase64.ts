@@ -3,7 +3,6 @@ import {
   base64ToBuffer,
   decrypt,
   getKeyFromDerivedPassword,
-  localDB,
   stringToBuffer,
   UserItem,
 } from '@slater-notes/core';
@@ -19,7 +18,6 @@ type SuccessResponse = {
 type Response = SuccessResponse | StandardError;
 
 const decryptAndSaveUserFromBase64 = async (
-  db: localDB,
   username: string,
   password: string,
   userItemData: string,
@@ -32,7 +30,7 @@ const decryptAndSaveUserFromBase64 = async (
     defaultCloudSyncPasswordIterations,
   );
 
-  // userItemData is encrypted, need to decrypt that first before saving to localDB
+  // userItemData is encrypted, need to decrypt that first before saving to disk
   const data = base64ToBuffer(userItemData);
 
   let decryptedData;
@@ -47,8 +45,8 @@ const decryptAndSaveUserFromBase64 = async (
 
   const userItem: UserItem = JSON.parse(bufferToString(decryptedData));
 
-  //  save to localDB
-  await saveUser(db, userItem);
+  //  save to disk
+  await saveUser(userItem);
 
   return { success: true, userItem };
 };

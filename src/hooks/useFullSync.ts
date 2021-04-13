@@ -17,7 +17,6 @@ import useLoading, { ErrorOrNull } from './useLoading';
 const useFullSync = (): [() => Promise<void>, boolean, ErrorOrNull, boolean, () => void] => {
   const [isLoading, error, isComplete, setIsLoading, setError, setIsComplete, reset] = useLoading();
 
-  const localDB = useStoreState((s) => s.localDB);
   const workers = useStoreState((s) => s.workers);
   const user = useStoreState((s) => s.user);
   const passwordKey = useStoreState((s) => s.passwordKey);
@@ -30,7 +29,7 @@ const useFullSync = (): [() => Promise<void>, boolean, ErrorOrNull, boolean, () 
   const startSync = async () => {
     setIsLoading(true);
 
-    if (!localDB || !workers || !user || !passwordKey || !fileCollection) {
+    if (!workers || !user || !passwordKey || !fileCollection) {
       setError({ error: 'Expected truthy values from store.' });
       return;
     }

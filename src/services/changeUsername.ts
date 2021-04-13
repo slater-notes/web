@@ -1,13 +1,13 @@
-import { localDB, UserItem } from '@slater-notes/core';
+import { UserItem } from '@slater-notes/core';
 import { StandardResponse } from '../types/response';
 import { USERS_KEY } from '../utils/DBIndexKeys';
+import disk from '../utils/disk';
 
 const changeUsername = async (
-  db: localDB,
   userItem: UserItem,
   newUsername: string,
 ): Promise<StandardResponse> => {
-  const usersJson = (await db.get(USERS_KEY)) as string | undefined;
+  const usersJson = (await disk.get(USERS_KEY)) as string | undefined;
   const users: UserItem[] = usersJson ? JSON.parse(usersJson) : [];
 
   if (users.findIndex((u) => u.username === newUsername) > -1) {
@@ -22,7 +22,7 @@ const changeUsername = async (
 
   users[userIndex].username = newUsername;
 
-  await db.set(USERS_KEY, JSON.stringify(users));
+  await disk.set(USERS_KEY, JSON.stringify(users));
 
   return { success: true };
 };

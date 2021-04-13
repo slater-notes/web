@@ -1,9 +1,9 @@
-import { base64ToBuffer, encrypt, localDB, stringToBuffer, UserItem } from '@slater-notes/core';
+import { base64ToBuffer, encrypt, stringToBuffer, UserItem } from '@slater-notes/core';
 import { UserSettingsOptions } from '../config/defaultUserSettings';
 import { SETTINGS_KEY } from '../utils/DBIndexKeys';
+import disk from '../utils/disk';
 
 const saveUserSettings = async (
-  db: localDB,
   user: UserItem,
   passwordKey: CryptoKey,
   settings: Partial<UserSettingsOptions>,
@@ -17,7 +17,7 @@ const saveUserSettings = async (
   );
 
   // Save
-  await db.set(`${SETTINGS_KEY}--${user.id}`, encryptedData);
+  await disk.set(`${SETTINGS_KEY}--${user.id}`, encryptedData);
 };
 
 export default saveUserSettings;

@@ -4,7 +4,6 @@ import {
   decrypt,
   stringToBuffer,
   getKeyFromDerivedPassword,
-  localDB,
   UserItem,
 } from '@slater-notes/core';
 import { defaultCloudSyncPasswordIterations } from '../config/cloudSync';
@@ -12,6 +11,7 @@ import { UserSettingsOptions } from '../config/defaultUserSettings';
 import { FileCollection } from '../types/notes';
 import { StandardError } from '../types/response';
 import { FILE_COLLECTION_KEY, SETTINGS_KEY, USERS_KEY } from '../utils/DBIndexKeys';
+import disk from '../utils/disk';
 
 interface Payload {
   username: string;
@@ -27,10 +27,8 @@ type SuccessResponse = {
   settings: Partial<UserSettingsOptions> | null;
 };
 
-type Response = SuccessResponse | StandardError;
-
-const loadUser = async (db: localDB, payload: Payload): Promise<Response> => {
-  const usersJson = (await db.get(USERS_KEY)) as string | undefined;
+const loadUser = async (payload: Payload): Promise<SuccessResponse | StandardError> => {
+  const usersJson = (await disk.get(USERS_KEY)) as string | undefined;
   const users: UserItem[] = usersJson ? JSON.parse(usersJson) : [];
   const user = users.find((u) => u.username === payload.username);
 
@@ -41,7 +39,7 @@ const loadUser = async (db: localDB, payload: Payload): Promise<Response> => {
     };
   }
 
-  const encryptedData = await db.get(`${FILE_COLLECTION_KEY}--${user.id}`);
+  const encryptedData = await disk.get(`${FILE_COLLECTION_KEY}--${user.id}`);
 
   if (!(encryptedData instanceof Uint8Array)) {
     return {
@@ -74,7 +72,7 @@ const loadUser = async (db: localDB, payload: Payload): Promise<Response> => {
   const fileCollection = JSON.parse(bufferToString(decryptedData));
 
   let settings: Partial<UserSettingsOptions> | null = null;
-  const encryptedSettingsData = await db.get(`${SETTINGS_KEY}--${user.id}`);
+  const encryptedSettingsData = await disk.get(`${SETTINGS_KEY}--${user.id}`);
 
   if (encryptedSettingsData instanceof Uint8Array) {
     let decryptedSettingsData;

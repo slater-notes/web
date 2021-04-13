@@ -17,12 +17,11 @@ const ChangeUsername = (props: Props) => {
   const [error, setError] = React.useState<string | null>(null);
 
   const user = useStoreState((s) => s.user);
-  const localDB = useStoreState((s) => s.localDB);
 
   const setUser = useStoreActions((s) => s.setUser);
 
   const handleChangeUsername = async () => {
-    if (!localDB || !user) {
+    if (!user) {
       return;
     }
 
@@ -49,7 +48,7 @@ const ChangeUsername = (props: Props) => {
       return;
     }
 
-    const result = await changeUsername(localDB, user, un);
+    const result = await changeUsername(user, un);
 
     if ('error' in result) {
       setError(result.error);

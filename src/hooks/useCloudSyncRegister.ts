@@ -13,7 +13,6 @@ const useCloudSyncRegister = (): [
 ] => {
   const [isLoading, error, isComplete, setIsLoading, setError, setIsComplete, reset] = useLoading();
 
-  const localDB = useStoreState((s) => s.localDB);
   const user = useStoreState((s) => s.user);
   const cloudSyncPasswordKey = useStoreState((s) => s.cloudSyncPasswordKey);
 
@@ -22,7 +21,7 @@ const useCloudSyncRegister = (): [
   const startRegister = async (password: string) => {
     setIsLoading(true);
 
-    if (!localDB || !user || !cloudSyncPasswordKey) {
+    if (!user || !cloudSyncPasswordKey) {
       setError({ error: 'Expected truthy values from store.' });
       return;
     }
@@ -35,7 +34,7 @@ const useCloudSyncRegister = (): [
     const { username } = user;
 
     const token = await generateTokenFromPassword(password, username);
-    const verify = await verifyPassword(localDB, { username, password });
+    const verify = await verifyPassword({ username, password });
 
     if ('error' in verify) {
       if (verify.errorCode === 'bad_key') setError({ error: 'Invalid password.' });
@@ -47,7 +46,6 @@ const useCloudSyncRegister = (): [
     const register = await prepareAndRegisterToCloudSync({
       user,
       token,
-      db: localDB,
       cloudSyncPasswordKey,
     });
 

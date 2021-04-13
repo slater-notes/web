@@ -1,20 +1,18 @@
-import { bufferToString, base64ToBuffer, decrypt, localDB } from '@slater-notes/core';
+import { bufferToString, base64ToBuffer, decrypt } from '@slater-notes/core';
 import { NoteData } from '../types/notes';
 import { StandardError } from '../types/response';
+import disk from '../utils/disk';
 
 type SuccessResponse = {
   noteData: NoteData;
 };
 
-type Response = SuccessResponse | StandardError;
-
 const loadNoteData = async (
-  db: localDB,
   noteId: string,
   nonce: string,
   passwordKey: CryptoKey,
-): Promise<Response> => {
-  const encryptedData = await db.get(noteId);
+): Promise<SuccessResponse | StandardError> => {
+  const encryptedData = await disk.get(noteId);
 
   if (!(encryptedData instanceof Uint8Array)) {
     return {

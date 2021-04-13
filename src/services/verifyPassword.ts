@@ -1,12 +1,7 @@
-import {
-  base64ToBuffer,
-  decrypt,
-  getKeyFromDerivedPassword,
-  localDB,
-  UserItem,
-} from '@slater-notes/core';
+import { base64ToBuffer, decrypt, getKeyFromDerivedPassword, UserItem } from '@slater-notes/core';
 import { StandardError } from '../types/response';
 import { FILE_COLLECTION_KEY, USERS_KEY } from '../utils/DBIndexKeys';
+import disk from '../utils/disk';
 
 interface Payload {
   username: string;
@@ -17,10 +12,8 @@ type SuccessResponse = {
   success: boolean;
 };
 
-type Response = SuccessResponse | StandardError;
-
-const verifyPassword = async (db: localDB, payload: Payload): Promise<Response> => {
-  const usersJson = (await db.get(USERS_KEY)) as string | undefined;
+const verifyPassword = async (payload: Payload): Promise<SuccessResponse | StandardError> => {
+  const usersJson = (await disk.get(USERS_KEY)) as string | undefined;
   const users: UserItem[] = usersJson ? JSON.parse(usersJson) : [];
   const user = users.find((u) => u.username === payload.username);
 
@@ -31,7 +24,7 @@ const verifyPassword = async (db: localDB, payload: Payload): Promise<Response> 
     };
   }
 
-  const encryptedData = await db.get(`${FILE_COLLECTION_KEY}--${user.id}`);
+  const encryptedData = await disk.get(`${FILE_COLLECTION_KEY}--${user.id}`);
 
   if (!(encryptedData instanceof Uint8Array)) {
     return {

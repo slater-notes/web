@@ -5,7 +5,6 @@ import {
   encrypt,
   base64ToBuffer,
   UserItem,
-  localDB,
   bufferToBase64,
 } from '@slater-notes/core';
 import getAccountFromCloudSync from '../api/cloudSync/getAccount';
@@ -19,6 +18,7 @@ import * as Workers from '../webWorkers';
 import { FileCollection, FolderItem, NoteItem } from '../types/notes';
 import { mergeArrayOfObjectsBy } from '../utils/mergeArrayOfObject';
 import { StandardError, StandardSuccess } from '../types/response';
+import disk from '../utils/disk';
 
 export interface Payload {
   sessionToken: string;
@@ -109,9 +109,6 @@ const syncAccountAndNotesToCloudSync = async (
   );
 
   // download outdated and new noteData
-  globalThis.localDB = globalThis.localDB || new localDB();
-  const db = globalThis.localDB;
-
   await eachLimit(newOrOutdatedNoteIds, 2, async (noteId) => {
     const getNote = await getNoteFromCloudSync({
       username: payload.user.username,
@@ -120,7 +117,7 @@ const syncAccountAndNotesToCloudSync = async (
     });
 
     if ('success' in getNote && getNote.success) {
-      await saveNoteDataFromBase64(db, noteId, getNote.noteData);
+      await saveNoteDataFromBase64(noteId, getNote.noteData);
     }
   });
 
@@ -130,7 +127,7 @@ const syncAccountAndNotesToCloudSync = async (
     .filter((id) => !newOrOutdatedNoteIds.includes(id));
 
   await eachLimit(otherNoteIds, 2, async (noteId) => {
-    const encryptedNoteData = await db.get(noteId);
+    const encryptedNoteData = await disk.get(noteId);
     if (encryptedNoteData instanceof Uint8Array) {
       await putNoteToCloudSync({
         username: payload.user.username,

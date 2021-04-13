@@ -2,7 +2,6 @@ import { action, Action, thunk, Thunk } from 'easy-peasy';
 import moment from 'moment';
 import { nanoid } from 'nanoid';
 import {
-  localDB,
   UserItem,
   generateNonce,
   encrypt,
@@ -23,11 +22,9 @@ import { AppSettingsOptions } from '../config/defaultAppSettings';
 import saveAppSettings from '../services/saveAppSettings';
 import * as Workers from '../webWorkers';
 import { FileCollection, FolderItem, NoteData, NoteItem } from '../types/notes';
+import disk from '../utils/disk';
 
 export interface StoreModel {
-  localDB: localDB | null;
-  setLocalDB: Action<StoreModel, localDB>;
-
   workers: Workerized<typeof Workers> | null;
   setWorkers: Action<StoreModel, Workerized<typeof Workers>>;
 
@@ -82,11 +79,6 @@ export interface StoreModel {
 }
 
 const ApplicationStore: StoreModel = {
-  localDB: null,
-  setLocalDB: action((state, payload) => {
-    state.localDB = payload;
-  }),
-
   workers: null,
   setWorkers: action((state, payload) => {
     state.workers = payload;
@@ -151,22 +143,15 @@ const ApplicationStore: StoreModel = {
   }),
 
   updateUser: thunk(async (actions, payload, { getState }) => {
-    const {
-      localDB,
-      workers,
-      user,
-      fileCollection,
-      passwordKey,
-      cloudSyncPasswordKey,
-    } = getState();
+    const { workers, user, fileCollection, passwordKey, cloudSyncPasswordKey } = getState();
 
-    if (!localDB || !workers || !user || !fileCollection || !passwordKey) {
+    if (!workers || !user || !fileCollection || !passwordKey) {
       // TODO: show error?
-      console.log({ localDB, workers, user, fileCollection, passwordKey });
+      console.log({ workers, user, fileCollection, passwordKey });
       return;
     }
 
-    await saveUser(localDB, payload.userItem);
+    await saveUser(payload.userItem);
 
     actions.setUser(payload.userItem);
 
@@ -183,15 +168,15 @@ const ApplicationStore: StoreModel = {
   }),
 
   updateFileCollection: thunk(async (actions, payload, { getState }) => {
-    const { localDB, user, passwordKey } = getState();
+    const { user, passwordKey } = getState();
 
-    if (!localDB || !user || !passwordKey) {
+    if (!user || !passwordKey) {
       // TODO: show error?
-      console.log({ localDB, user, passwordKey });
+      console.log({ user, passwordKey });
       return;
     }
 
-    await saveFileCollection(localDB, user, passwordKey, payload);
+    await saveFileCollection(user, passwordKey, payload);
     actions.setFileCollection({ ...payload });
   }),
 
@@ -200,15 +185,15 @@ const ApplicationStore: StoreModel = {
 
     actions.setSettings(payload);
 
-    const { localDB, user, passwordKey, settings } = getState();
+    const { user, passwordKey, settings } = getState();
 
-    if (!localDB || !user || !passwordKey) {
+    if (!user || !passwordKey) {
       // TODO: show error?
-      console.log({ localDB, user, passwordKey });
+      console.log({ user, passwordKey });
       return;
     }
 
-    await saveUserSettings(localDB, user, passwordKey, settings || {});
+    await saveUserSettings(user, passwordKey, settings || {});
   }),
 
   updateAppSettings: thunk(async (actions, payload, { getState }) => {
@@ -216,32 +201,25 @@ const ApplicationStore: StoreModel = {
 
     actions.setAppSettings(payload);
 
-    const { localDB, appSettings } = getState();
+    const { appSettings } = getState();
 
-    if (!localDB || !appSettings) {
+    if (!appSettings) {
       // TODO: show error?
-      console.log({ localDB, appSettings });
+      console.log({ appSettings });
       return;
     }
 
-    await saveAppSettings(localDB, appSettings);
+    await saveAppSettings(appSettings);
   }),
 
   createNewNote: thunk(async (actions, payload, { getState }) => {
     log([`Creating new note...`, payload]);
 
-    const {
-      localDB,
-      workers,
-      user,
-      fileCollection,
-      passwordKey,
-      cloudSyncPasswordKey,
-    } = getState();
+    const { workers, user, fileCollection, passwordKey, cloudSyncPasswordKey } = getState();
 
-    if (!localDB || !workers || !user || !fileCollection || !passwordKey) {
+    if (!workers || !user || !fileCollection || !passwordKey) {
       // TODO: show error?
-      console.log({ localDB, workers, user, fileCollection, passwordKey });
+      console.log({ workers, user, fileCollection, passwordKey });
       return;
     }
 
@@ -265,7 +243,7 @@ const ApplicationStore: StoreModel = {
       revisions: [],
     };
 
-    await saveNoteData(localDB, passwordKey, noteItem.nonce, noteData);
+    await saveNoteData(passwordKey, noteItem.nonce, noteData);
 
     const notes = fileCollection.notes;
     notes.push(noteItem);
@@ -276,7 +254,7 @@ const ApplicationStore: StoreModel = {
       stringToBuffer(JSON.stringify(fileCollection)),
     );
 
-    await localDB.set(`${FILE_COLLECTION_KEY}--${user.id}`, encryptedData);
+    await disk.set(`${FILE_COLLECTION_KEY}--${user.id}`, encryptedData);
 
     actions.setFileCollection(fileCollection);
     actions.setActiveNote({ noteItem, noteData });
@@ -296,18 +274,11 @@ const ApplicationStore: StoreModel = {
   createNewFolder: thunk(async (actions, payload, { getState }) => {
     log([`Creating new folder...`, payload]);
 
-    const {
-      localDB,
-      workers,
-      user,
-      fileCollection,
-      passwordKey,
-      cloudSyncPasswordKey,
-    } = getState();
+    const { workers, user, fileCollection, passwordKey, cloudSyncPasswordKey } = getState();
 
-    if (!localDB || !workers || !user || !fileCollection || !passwordKey) {
+    if (!workers || !user || !fileCollection || !passwordKey) {
       // TODO: show error?
-      console.log({ localDB, user, fileCollection, passwordKey });
+      console.log({ user, fileCollection, passwordKey });
       return;
     }
 
@@ -323,7 +294,7 @@ const ApplicationStore: StoreModel = {
 
     fileCollection.folders.push(folder);
 
-    await saveFileCollection(localDB, user, passwordKey, fileCollection);
+    await saveFileCollection(user, passwordKey, fileCollection);
 
     actions.setFileCollection(fileCollection);
     actions.setActiveFolderId(folder.id);
@@ -345,16 +316,15 @@ const ApplicationStore: StoreModel = {
   }),
 
   loadNote: thunk(async (actions, noteItem: NoteItem, { getState }) => {
-    const db = getState().localDB;
     const passwordKey = getState().passwordKey;
 
-    if (!db || !passwordKey) {
+    if (!passwordKey) {
       // TODO: show error?
       console.log('db is null');
       return;
     }
 
-    const result = await loadNoteData(db, noteItem.id, noteItem.nonce, passwordKey);
+    const result = await loadNoteData(noteItem.id, noteItem.nonce, passwordKey);
 
     if ('error' in result) {
       // TODO: show error?
@@ -369,7 +339,6 @@ const ApplicationStore: StoreModel = {
     log([`Updating note item ${payload.id}...`, payload.noteItem]);
 
     const {
-      localDB,
       workers,
       user,
       fileCollection,
@@ -394,13 +363,13 @@ const ApplicationStore: StoreModel = {
 
     fileCollection.notes[noteIndex] = payload.noteItem;
 
-    if (!localDB || !workers || !user || !passwordKey || !fileCollection) {
+    if (!workers || !user || !passwordKey || !fileCollection) {
       // TODO: show error?
-      console.log({ localDB, workers, user, passwordKey, fileCollection });
+      console.log({ workers, user, passwordKey, fileCollection });
       return;
     }
 
-    await saveFileCollection(localDB, user, passwordKey, fileCollection);
+    await saveFileCollection(user, passwordKey, fileCollection);
 
     actions.setFileCollection({ ...fileCollection });
 
@@ -424,7 +393,6 @@ const ApplicationStore: StoreModel = {
     log([`Updating note data ${payload.id}...`, payload.noteData]);
 
     const {
-      localDB,
       workers,
       user,
       fileCollection,
@@ -447,13 +415,13 @@ const ApplicationStore: StoreModel = {
       return;
     }
 
-    if (!localDB || !workers || !user || !fileCollection || !passwordKey) {
+    if (!workers || !user || !fileCollection || !passwordKey) {
       // TODO: show error?
-      console.log({ localDB, workers, user, fileCollection, passwordKey });
+      console.log({ workers, user, fileCollection, passwordKey });
       return;
     }
 
-    await saveNoteData(localDB, passwordKey, noteItem.nonce, payload.noteData);
+    await saveNoteData(passwordKey, noteItem.nonce, payload.noteData);
 
     if (activeNote?.noteItem.id === payload.id) {
       actions.setActiveNote({ noteItem: activeNote.noteItem, noteData: payload.noteData });
@@ -474,14 +442,7 @@ const ApplicationStore: StoreModel = {
   updateFolder: thunk(async (actions, payload, { getState }) => {
     log([`Updating folder ${payload.id}...`, payload.folder]);
 
-    const {
-      localDB,
-      workers,
-      user,
-      fileCollection,
-      passwordKey,
-      cloudSyncPasswordKey,
-    } = getState();
+    const { workers, user, fileCollection, passwordKey, cloudSyncPasswordKey } = getState();
 
     if (!fileCollection) {
       // TODO: show error?
@@ -499,13 +460,13 @@ const ApplicationStore: StoreModel = {
 
     fileCollection.folders[folderIndex] = payload.folder;
 
-    if (!localDB || !workers || !user || !passwordKey) {
+    if (!workers || !user || !passwordKey) {
       // TODO: show error?
-      console.log({ localDB, workers, user, passwordKey });
+      console.log({ workers, user, passwordKey });
       return;
     }
 
-    await saveFileCollection(localDB, user, passwordKey, fileCollection);
+    await saveFileCollection(user, passwordKey, fileCollection);
 
     actions.setFileCollection({ ...fileCollection });
 
@@ -523,7 +484,6 @@ const ApplicationStore: StoreModel = {
 
   trashNote: thunk(async (actions, noteId, { getState }) => {
     const {
-      localDB,
       workers,
       user,
       fileCollection,
@@ -532,9 +492,9 @@ const ApplicationStore: StoreModel = {
       cloudSyncPasswordKey,
     } = getState();
 
-    if (!localDB || !workers || !user || !fileCollection || !passwordKey) {
+    if ( !workers || !user || !fileCollection || !passwordKey) {
       // show error?
-      console.log({ localDB, workers, user, fileCollection, passwordKey });
+      console.log({  workers, user, fileCollection, passwordKey });
       return;
     }
 
@@ -569,7 +529,6 @@ const ApplicationStore: StoreModel = {
 
   trashFolder: thunk(async (actions, folderId, { getState }) => {
     const {
-      localDB,
       workers,
       user,
       fileCollection,
@@ -578,9 +537,9 @@ const ApplicationStore: StoreModel = {
       cloudSyncPasswordKey,
     } = getState();
 
-    if (!localDB || !workers || !user || !fileCollection || !passwordKey) {
+    if ( !workers || !user || !fileCollection || !passwordKey) {
       // show error?
-      console.log({ localDB, workers, user, fileCollection, passwordKey });
+      console.log({ workers, user, fileCollection, passwordKey });
       return;
     }
 
@@ -617,7 +576,6 @@ const ApplicationStore: StoreModel = {
     log('Emptying trash...');
 
     const {
-      localDB,
       workers,
       user,
       fileCollection,
@@ -627,9 +585,9 @@ const ApplicationStore: StoreModel = {
       cloudSyncPasswordKey,
     } = getState();
 
-    if (!fileCollection || !workers || !localDB || !user || !passwordKey) {
+    if (!fileCollection || !workers || !user || !passwordKey) {
       // show error?
-      console.log({ fileCollection, localDB, workers, user, passwordKey });
+      console.log({ fileCollection, workers, user, passwordKey });
       return;
     }
 
@@ -639,7 +597,7 @@ const ApplicationStore: StoreModel = {
     fileCollection.notes = fileCollection.notes.filter((n) => !n.isDeleted);
     fileCollection.folders = fileCollection.folders.filter((f) => !f.isDeleted);
 
-    await saveFileCollection(localDB, user, passwordKey, fileCollection);
+    await saveFileCollection(user, passwordKey, fileCollection);
 
     // reset active note
     if (activeNote && noteIdsToDelete.includes(activeNote.noteItem.id)) {
@@ -668,7 +626,6 @@ const ApplicationStore: StoreModel = {
     log(`Permanently deleting note ${noteId}...`);
 
     const {
-      localDB,
       workers,
       user,
       fileCollection,
@@ -677,9 +634,9 @@ const ApplicationStore: StoreModel = {
       cloudSyncPasswordKey,
     } = getState();
 
-    if (!fileCollection || !localDB || !workers || !user || !passwordKey) {
+    if (!fileCollection || !workers || !user || !passwordKey) {
       // show error?
-      console.log({ fileCollection, localDB, workers, user, passwordKey });
+      console.log({ fileCollection, workers, user, passwordKey });
       return;
     }
 
@@ -689,7 +646,7 @@ const ApplicationStore: StoreModel = {
       fileCollection.notes.splice(noteIndex, 1);
     }
 
-    await saveFileCollection(localDB, user, passwordKey, fileCollection);
+    await saveFileCollection(user, passwordKey, fileCollection);
 
     actions.setFileCollection({ ...fileCollection });
 
@@ -713,7 +670,6 @@ const ApplicationStore: StoreModel = {
     log(`Permanently deleting folder ${folderId}...`);
 
     const {
-      localDB,
       workers,
       user,
       fileCollection,
@@ -722,9 +678,9 @@ const ApplicationStore: StoreModel = {
       cloudSyncPasswordKey,
     } = getState();
 
-    if (!fileCollection || !localDB || !workers || !user || !passwordKey) {
+    if (!fileCollection || !workers || !user || !passwordKey) {
       // show error?
-      console.log({ fileCollection, localDB, workers, user, passwordKey });
+      console.log({ fileCollection, workers, user, passwordKey });
       return;
     }
 
@@ -734,7 +690,7 @@ const ApplicationStore: StoreModel = {
       fileCollection.folders.splice(folderIndex, 1);
     }
 
-    await saveFileCollection(localDB, user, passwordKey, fileCollection);
+    await saveFileCollection(user, passwordKey, fileCollection);
 
     actions.setFileCollection({ ...fileCollection });
 

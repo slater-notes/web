@@ -4,7 +4,6 @@ import {
   generateNonce,
   generateSalt,
   getKeyFromDerivedPassword,
-  localDB,
   stringToBuffer,
   bufferToBase64,
   UserItem,
@@ -13,6 +12,7 @@ import { FILE_COLLECTION_KEY, USERS_KEY } from '../utils/DBIndexKeys';
 import { FileCollection } from '../types/notes';
 import { defaultCloudSyncPasswordIterations } from '../config/cloudSync';
 import { StandardError } from '../types/response';
+import disk from '../utils/disk';
 
 interface Payload {
   username: string;
@@ -29,10 +29,8 @@ type SuccessResponse = {
   fileCollection: FileCollection;
 };
 
-type Response = SuccessResponse | StandardError;
-
-const createNewUser = async (db: localDB, payload: Payload): Promise<Response> => {
-  const usersJson = (await db.get(USERS_KEY)) as string | undefined;
+const createNewUser = async (payload: Payload): Promise<SuccessResponse | StandardError> => {
+  const usersJson = (await disk.get(USERS_KEY)) as string | undefined;
   let users: UserItem[] = usersJson ? JSON.parse(usersJson) : [];
 
   // check that this user does not exist
@@ -72,7 +70,7 @@ const createNewUser = async (db: localDB, payload: Payload): Promise<Response> =
     users = [user];
   }
 
-  await db.set(USERS_KEY, JSON.stringify(users));
+  await disk.set(USERS_KEY, JSON.stringify(users));
 
   // Create an empty file collection
   const passwordKey = await getKeyFromDerivedPassword(payload.password, salt, true, iterations);
@@ -89,7 +87,7 @@ const createNewUser = async (db: localDB, payload: Payload): Promise<Response> =
     stringToBuffer(JSON.stringify(fileCollection)),
   );
 
-  await db.set(`${FILE_COLLECTION_KEY}--${user.id}`, encryptedData);
+  await disk.set(`${FILE_COLLECTION_KEY}--${user.id}`, encryptedData);
 
   // Generate cloud sync password
   const cloudSyncPasswordKey = await getKeyFromDerivedPassword(

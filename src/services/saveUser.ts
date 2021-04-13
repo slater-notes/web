@@ -1,8 +1,9 @@
-import { localDB, UserItem } from '@slater-notes/core';
+import { UserItem } from '@slater-notes/core';
 import { USERS_KEY } from '../utils/DBIndexKeys';
+import disk from '../utils/disk';
 
-const saveUser = async (db: localDB, userItem: UserItem) => {
-  const usersJson = (await db.get(USERS_KEY)) as string | undefined;
+const saveUser = async (userItem: UserItem) => {
+  const usersJson = (await disk.get(USERS_KEY)) as string | undefined;
   const users: UserItem[] = usersJson ? JSON.parse(usersJson) : [];
   const userIndex = users.findIndex((u) => u.username === userItem.username);
 
@@ -12,7 +13,7 @@ const saveUser = async (db: localDB, userItem: UserItem) => {
     users.push(userItem);
   }
 
-  await db.set(USERS_KEY, JSON.stringify(users));
+  await disk.set(USERS_KEY, JSON.stringify(users));
 };
 
 export default saveUser;

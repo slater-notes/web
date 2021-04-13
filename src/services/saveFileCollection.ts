@@ -1,9 +1,9 @@
-import { base64ToBuffer, encrypt, localDB, stringToBuffer, UserItem } from '@slater-notes/core';
+import { base64ToBuffer, encrypt, stringToBuffer, UserItem } from '@slater-notes/core';
 import { FileCollection } from '../types/notes';
 import { FILE_COLLECTION_KEY } from '../utils/DBIndexKeys';
+import disk from '../utils/disk';
 
 const saveFileCollection = async (
-  db: localDB,
   user: UserItem,
   passwordKey: CryptoKey,
   fileCollection: FileCollection,
@@ -17,7 +17,7 @@ const saveFileCollection = async (
   );
 
   // Save
-  await db.set(`${FILE_COLLECTION_KEY}--${user.id}`, new Uint8Array(encryptedData).valueOf());
+  await disk.set(`${FILE_COLLECTION_KEY}--${user.id}`, new Uint8Array(encryptedData).valueOf());
 };
 
 export default saveFileCollection;

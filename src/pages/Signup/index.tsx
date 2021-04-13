@@ -14,7 +14,7 @@ import React from 'react';
 import { Formik } from 'formik';
 import * as yup from 'yup';
 import DefaultButton from '../../components/Buttons/DefaultButton';
-import { useStoreActions, useStoreState } from '../../store/typedHooks';
+import { useStoreActions } from '../../store/typedHooks';
 import { Redirect } from 'wouter';
 import createNewUser from '../../services/createNewUser';
 import LoginPage from '../../components/LoginPage';
@@ -32,8 +32,6 @@ const Signup = () => {
   const [done, setDone] = React.useState(false);
   const [testingIterations, setTestingIterations] = React.useState(false);
   const [iterationsResult, setIterationsResult] = React.useState<number | null>(null);
-
-  const localDB = useStoreState((s) => s.localDB);
 
   const setUser = useStoreActions((a) => a.setUser);
   const setPasswordKey = useStoreActions((a) => a.setPasswordKey);
@@ -82,7 +80,7 @@ const Signup = () => {
           onSubmit={(values, { setErrors, setSubmitting }) => {
             (async () => {
               // Step 1. create local user
-              const createUserResult = await createNewUser(localDB as any, {
+              const createUserResult = await createNewUser({
                 username: values.username,
                 password: values.password,
                 enableCloudSync: values.enableCloudSync,
@@ -113,7 +111,6 @@ const Signup = () => {
                 const registerCloudSyncResult = await prepareAndRegisterToCloudSync({
                   user: createUserResult.user,
                   token,
-                  db: localDB as any,
                   cloudSyncPasswordKey: createUserResult.cloudSyncPasswordKey,
                 });
 

@@ -21,7 +21,6 @@ import Paragraph from '../../components/Typography/Paragraph';
 const Login = () => {
   const classes = useStyles();
 
-  const localDB = useStoreState((s) => s.localDB);
   const user = useStoreState((s) => s.user);
   const passwordKey = useStoreState((s) => s.passwordKey);
   const fileCollection = useStoreState((s) => s.fileCollection);
@@ -62,12 +61,6 @@ const Login = () => {
           }
           onSubmit={(values, { setErrors, setSubmitting }) => {
             (async () => {
-              if (!localDB) {
-                setErrors({ username: 'unknown error' });
-                setSubmitting(false);
-                return;
-              }
-
               updateAppSettings({
                 ...appSettings,
                 enableCloudSyncLogin: values.enableCloudSyncLogin,
@@ -104,7 +97,7 @@ const Login = () => {
                 sessionToken = newSession.sessionToken;
               }
 
-              let loadLocalUser = await loadUser(localDB, {
+              let loadLocalUser = await loadUser({
                 username: values.username,
                 password: values.password,
               });
@@ -127,7 +120,6 @@ const Login = () => {
                 }
 
                 const saveUser = await decryptAndSaveUserFromBase64(
-                  localDB,
                   values.username,
                   values.password,
                   getAccount.userItem,
@@ -140,14 +132,10 @@ const Login = () => {
                 }
 
                 // save fileCollection
-                await saveFileCollectionFromBase64(
-                  localDB,
-                  saveUser.userItem,
-                  getAccount.fileCollection,
-                );
+                await saveFileCollectionFromBase64(saveUser.userItem, getAccount.fileCollection);
 
                 // try loadUser again
-                loadLocalUser = await loadUser(localDB, {
+                loadLocalUser = await loadUser({
                   username: values.username,
                   password: values.password,
                 });
@@ -157,7 +145,6 @@ const Login = () => {
                   await downloadNotesFromCloudSync({
                     username: values.username,
                     sessionToken,
-                    db: localDB,
                     noteIds: loadLocalUser.fileCollection.notes.map((n) => n.id),
                   });
                 }

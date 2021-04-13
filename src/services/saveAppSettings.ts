@@ -1,8 +1,8 @@
-import { localDB } from '@slater-notes/core';
 import { AppSettingsOptions } from '../config/defaultAppSettings';
+import disk from '../utils/disk';
 
-const saveAppSettings = async (db: localDB, settings: Partial<AppSettingsOptions>) => {
-  await db.set('app-settings', JSON.stringify(settings));
+const saveAppSettings = async (settings: Partial<AppSettingsOptions>) => {
+  await disk.set('app-settings', JSON.stringify(settings));
 };
 
 export default saveAppSettings;

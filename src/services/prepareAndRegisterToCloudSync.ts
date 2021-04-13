@@ -1,4 +1,4 @@
-import { bufferToBase64, encrypt, localDB, stringToBuffer, UserItem } from '@slater-notes/core';
+import { bufferToBase64, encrypt, stringToBuffer, UserItem } from '@slater-notes/core';
 import { StandardError, StandardSuccess } from '../types/response';
 import getFileCollectionAsBase64 from './getFileCollectionAsBase64';
 import registerToCloudSync from '../api/cloudSync/registerAccount';
@@ -6,7 +6,6 @@ import registerToCloudSync from '../api/cloudSync/registerAccount';
 interface Payload {
   user: UserItem;
   token: string;
-  db: localDB;
   cloudSyncPasswordKey: CryptoKey;
 }
 
@@ -28,7 +27,7 @@ const prepareAndRegisterToCloudSync = async (
   const userItem = bufferToBase64(encryptedData);
 
   // get fileColleciton as base64
-  const fileCollection = await getFileCollectionAsBase64(payload.db, payload.user.id);
+  const fileCollection = await getFileCollectionAsBase64(payload.user.id);
 
   if (!fileCollection) {
     return { error: 'unknown error' };
