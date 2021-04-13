@@ -1,6 +1,9 @@
 import ReactDOM from 'react-dom';
 import App from './App';
+import webWorkers from './webWorkers';
 // import reportWebVitals from './reportWebVitals';
+
+globalThis.webWorkers = webWorkers;
 
 ReactDOM.render(<App />, document.getElementById('root'));
 

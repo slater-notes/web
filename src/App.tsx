@@ -9,9 +9,6 @@ import { useStoreActions, useStoreState } from './store/typedHooks';
 import Signup from './pages/Signup';
 import { THEME } from './config/theme';
 import loadAppSettings from './services/loadAppSettings';
-// eslint-disable-next-line import/no-webpack-loader-syntax
-import createWorker from 'workerize-loader!./webWorkers';
-import * as Workers from './webWorkers';
 
 const store = createStore(ApplicationStore);
 const theme = createMuiTheme(THEME);
@@ -19,14 +16,7 @@ const theme = createMuiTheme(THEME);
 export const AppStarter = ({ children }: any) => {
   const appSettings = useStoreState((s) => s.appSettings);
 
-  const setWorkers = useStoreActions((a) => a.setWorkers);
   const setAppSettings = useStoreActions((a) => a.setAppSettings);
-
-  useEffect(() => {
-    const initWorkers = createWorker<typeof Workers>();
-    setWorkers(initWorkers);
-    // eslint-disable-next-line
-  }, []);
 
   useEffect(() => {
     if (!appSettings) {

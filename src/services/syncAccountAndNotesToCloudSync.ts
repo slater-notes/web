@@ -14,7 +14,6 @@ import getNoteFromCloudSync from '../api/cloudSync/getNote';
 import saveNoteDataFromBase64 from './saveNoteDataFromBase64';
 import { eachLimit } from 'async';
 import { debounce } from 'lodash';
-import * as Workers from '../webWorkers';
 import { FileCollection, FolderItem, NoteItem } from '../types/notes';
 import { mergeArrayOfObjectsBy } from '../utils/mergeArrayOfObject';
 import { StandardError, StandardSuccess } from '../types/response';
@@ -178,15 +177,12 @@ const syncAccountAndNotesToCloudSync = async (
   };
 };
 
-export const syncAccountAndNotesToCloudSyncWorkerized = async (
-  workers: Workerized<typeof Workers>,
-  payload: Payload,
-) => {
-  return await workers.worker__syncAccountAndNotesToCloudSync(payload);
+export const runSyncAccountAndNotesToCloudSyncInWorker = async (payload: Payload) => {
+  return await globalThis.webWorkers.worker__syncAccountAndNotesToCloudSync(payload);
 };
 
-export const syncAccountAndNotesToCloudSyncDebouncedWorkerized = debounce(
-  syncAccountAndNotesToCloudSyncWorkerized,
+export const syncAccountAndNotesToCloudSyncDebouncedWorker = debounce(
+  runSyncAccountAndNotesToCloudSyncInWorker,
   3000,
   { leading: false },
 );

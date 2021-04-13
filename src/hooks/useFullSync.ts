@@ -1,6 +1,6 @@
 import moment from 'moment';
 import checkSessionFromCloudSync from '../api/cloudSync/checkSession';
-import { syncAccountAndNotesToCloudSyncWorkerized } from '../services/syncAccountAndNotesToCloudSync';
+import { runSyncAccountAndNotesToCloudSyncInWorker } from '../services/syncAccountAndNotesToCloudSync';
 import { useStoreActions, useStoreState } from '../store/typedHooks';
 import useLoading, { ErrorOrNull } from './useLoading';
 
@@ -17,7 +17,6 @@ import useLoading, { ErrorOrNull } from './useLoading';
 const useFullSync = (): [() => Promise<void>, boolean, ErrorOrNull, boolean, () => void] => {
   const [isLoading, error, isComplete, setIsLoading, setError, setIsComplete, reset] = useLoading();
 
-  const workers = useStoreState((s) => s.workers);
   const user = useStoreState((s) => s.user);
   const passwordKey = useStoreState((s) => s.passwordKey);
   const cloudSyncPasswordKey = useStoreState((s) => s.cloudSyncPasswordKey);
@@ -29,7 +28,7 @@ const useFullSync = (): [() => Promise<void>, boolean, ErrorOrNull, boolean, () 
   const startSync = async () => {
     setIsLoading(true);
 
-    if (!workers || !user || !passwordKey || !fileCollection) {
+    if (!user || !passwordKey || !fileCollection) {
       setError({ error: 'Expected truthy values from store.' });
       return;
     }
@@ -57,7 +56,7 @@ const useFullSync = (): [() => Promise<void>, boolean, ErrorOrNull, boolean, () 
     }
 
     // start full sync
-    const sync = await syncAccountAndNotesToCloudSyncWorkerized(workers, {
+    const sync = await runSyncAccountAndNotesToCloudSyncInWorker({
       sessionToken: cloudSyncSessionToken,
       user,
       fileCollection,

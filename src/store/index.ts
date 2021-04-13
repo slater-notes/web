@@ -17,17 +17,13 @@ import { FILE_COLLECTION_KEY } from '../utils/DBIndexKeys';
 import { log } from '../utils/log';
 import { UserSettingsOptions } from '../config/defaultUserSettings';
 import saveUser from '../services/saveUser';
-import { syncAccountAndNotesToCloudSyncDebouncedWorkerized } from '../services/syncAccountAndNotesToCloudSync';
+import { syncAccountAndNotesToCloudSyncDebouncedWorker } from '../services/syncAccountAndNotesToCloudSync';
 import { AppSettingsOptions } from '../config/defaultAppSettings';
 import saveAppSettings from '../services/saveAppSettings';
-import * as Workers from '../webWorkers';
 import { FileCollection, FolderItem, NoteData, NoteItem } from '../types/notes';
 import disk from '../utils/disk';
 
 export interface StoreModel {
-  workers: Workerized<typeof Workers> | null;
-  setWorkers: Action<StoreModel, Workerized<typeof Workers>>;
-
   user: UserItem | null;
   setUser: Action<StoreModel, UserItem | null>;
 
@@ -79,11 +75,6 @@ export interface StoreModel {
 }
 
 const ApplicationStore: StoreModel = {
-  workers: null,
-  setWorkers: action((state, payload) => {
-    state.workers = payload;
-  }),
-
   user: null,
   setUser: action((state, payload) => {
     state.user = payload;
@@ -143,11 +134,11 @@ const ApplicationStore: StoreModel = {
   }),
 
   updateUser: thunk(async (actions, payload, { getState }) => {
-    const { workers, user, fileCollection, passwordKey, cloudSyncPasswordKey } = getState();
+    const { user, fileCollection, passwordKey, cloudSyncPasswordKey } = getState();
 
-    if (!workers || !user || !fileCollection || !passwordKey) {
+    if (!user || !fileCollection || !passwordKey) {
       // TODO: show error?
-      console.log({ workers, user, fileCollection, passwordKey });
+      console.log({ user, fileCollection, passwordKey });
       return;
     }
 
@@ -156,7 +147,7 @@ const ApplicationStore: StoreModel = {
     actions.setUser(payload.userItem);
 
     if (!payload.noCloudSync && user.cloudSyncSessionToken && cloudSyncPasswordKey) {
-      syncAccountAndNotesToCloudSyncDebouncedWorkerized(workers, {
+      syncAccountAndNotesToCloudSyncDebouncedWorker({
         sessionToken: user.cloudSyncSessionToken,
         user,
         fileCollection,
@@ -215,11 +206,11 @@ const ApplicationStore: StoreModel = {
   createNewNote: thunk(async (actions, payload, { getState }) => {
     log([`Creating new note...`, payload]);
 
-    const { workers, user, fileCollection, passwordKey, cloudSyncPasswordKey } = getState();
+    const { user, fileCollection, passwordKey, cloudSyncPasswordKey } = getState();
 
-    if (!workers || !user || !fileCollection || !passwordKey) {
+    if (!user || !fileCollection || !passwordKey) {
       // TODO: show error?
-      console.log({ workers, user, fileCollection, passwordKey });
+      console.log({ user, fileCollection, passwordKey });
       return;
     }
 
@@ -260,7 +251,7 @@ const ApplicationStore: StoreModel = {
     actions.setActiveNote({ noteItem, noteData });
 
     if (user.cloudSyncSessionToken && cloudSyncPasswordKey) {
-      syncAccountAndNotesToCloudSyncDebouncedWorkerized(workers, {
+      syncAccountAndNotesToCloudSyncDebouncedWorker({
         sessionToken: user.cloudSyncSessionToken,
         user,
         fileCollection,
@@ -274,9 +265,9 @@ const ApplicationStore: StoreModel = {
   createNewFolder: thunk(async (actions, payload, { getState }) => {
     log([`Creating new folder...`, payload]);
 
-    const { workers, user, fileCollection, passwordKey, cloudSyncPasswordKey } = getState();
+    const { user, fileCollection, passwordKey, cloudSyncPasswordKey } = getState();
 
-    if (!workers || !user || !fileCollection || !passwordKey) {
+    if (!user || !fileCollection || !passwordKey) {
       // TODO: show error?
       console.log({ user, fileCollection, passwordKey });
       return;
@@ -304,7 +295,7 @@ const ApplicationStore: StoreModel = {
     }
 
     if (user.cloudSyncSessionToken && cloudSyncPasswordKey) {
-      syncAccountAndNotesToCloudSyncDebouncedWorkerized(workers, {
+      syncAccountAndNotesToCloudSyncDebouncedWorker({
         sessionToken: user.cloudSyncSessionToken,
         user,
         fileCollection,
@@ -338,14 +329,7 @@ const ApplicationStore: StoreModel = {
   updateNoteItem: thunk(async (actions, payload, { getState }) => {
     log([`Updating note item ${payload.id}...`, payload.noteItem]);
 
-    const {
-      workers,
-      user,
-      fileCollection,
-      activeNote,
-      passwordKey,
-      cloudSyncPasswordKey,
-    } = getState();
+    const { user, fileCollection, activeNote, passwordKey, cloudSyncPasswordKey } = getState();
 
     if (!fileCollection) {
       // TODO: show error?
@@ -363,9 +347,9 @@ const ApplicationStore: StoreModel = {
 
     fileCollection.notes[noteIndex] = payload.noteItem;
 
-    if (!workers || !user || !passwordKey || !fileCollection) {
+    if (!user || !passwordKey || !fileCollection) {
       // TODO: show error?
-      console.log({ workers, user, passwordKey, fileCollection });
+      console.log({ user, passwordKey, fileCollection });
       return;
     }
 
@@ -378,7 +362,7 @@ const ApplicationStore: StoreModel = {
     }
 
     if (user.cloudSyncSessionToken && cloudSyncPasswordKey) {
-      syncAccountAndNotesToCloudSyncDebouncedWorkerized(workers, {
+      syncAccountAndNotesToCloudSyncDebouncedWorker({
         sessionToken: user.cloudSyncSessionToken,
         user,
         fileCollection,
@@ -392,14 +376,7 @@ const ApplicationStore: StoreModel = {
   updateNoteData: thunk(async (actions, payload, { getState }) => {
     log([`Updating note data ${payload.id}...`, payload.noteData]);
 
-    const {
-      workers,
-      user,
-      fileCollection,
-      activeNote,
-      passwordKey,
-      cloudSyncPasswordKey,
-    } = getState();
+    const { user, fileCollection, activeNote, passwordKey, cloudSyncPasswordKey } = getState();
 
     if (!fileCollection) {
       // TODO: show error?
@@ -415,9 +392,9 @@ const ApplicationStore: StoreModel = {
       return;
     }
 
-    if (!workers || !user || !fileCollection || !passwordKey) {
+    if (!user || !fileCollection || !passwordKey) {
       // TODO: show error?
-      console.log({ workers, user, fileCollection, passwordKey });
+      console.log({ user, fileCollection, passwordKey });
       return;
     }
 
@@ -428,7 +405,7 @@ const ApplicationStore: StoreModel = {
     }
 
     if (user.cloudSyncSessionToken && cloudSyncPasswordKey) {
-      syncAccountAndNotesToCloudSyncDebouncedWorkerized(workers, {
+      syncAccountAndNotesToCloudSyncDebouncedWorker({
         sessionToken: user.cloudSyncSessionToken,
         user,
         fileCollection,
@@ -442,7 +419,7 @@ const ApplicationStore: StoreModel = {
   updateFolder: thunk(async (actions, payload, { getState }) => {
     log([`Updating folder ${payload.id}...`, payload.folder]);
 
-    const { workers, user, fileCollection, passwordKey, cloudSyncPasswordKey } = getState();
+    const { user, fileCollection, passwordKey, cloudSyncPasswordKey } = getState();
 
     if (!fileCollection) {
       // TODO: show error?
@@ -460,9 +437,9 @@ const ApplicationStore: StoreModel = {
 
     fileCollection.folders[folderIndex] = payload.folder;
 
-    if (!workers || !user || !passwordKey) {
+    if (!user || !passwordKey) {
       // TODO: show error?
-      console.log({ workers, user, passwordKey });
+      console.log({ user, passwordKey });
       return;
     }
 
@@ -471,7 +448,7 @@ const ApplicationStore: StoreModel = {
     actions.setFileCollection({ ...fileCollection });
 
     if (user.cloudSyncSessionToken && cloudSyncPasswordKey) {
-      syncAccountAndNotesToCloudSyncDebouncedWorkerized(workers, {
+      syncAccountAndNotesToCloudSyncDebouncedWorker({
         sessionToken: user.cloudSyncSessionToken,
         user,
         fileCollection,
@@ -483,18 +460,11 @@ const ApplicationStore: StoreModel = {
   }),
 
   trashNote: thunk(async (actions, noteId, { getState }) => {
-    const {
-      workers,
-      user,
-      fileCollection,
-      activeNote,
-      passwordKey,
-      cloudSyncPasswordKey,
-    } = getState();
+    const { user, fileCollection, activeNote, passwordKey, cloudSyncPasswordKey } = getState();
 
-    if ( !workers || !user || !fileCollection || !passwordKey) {
+    if (!user || !fileCollection || !passwordKey) {
       // show error?
-      console.log({  workers, user, fileCollection, passwordKey });
+      console.log({ user, fileCollection, passwordKey });
       return;
     }
 
@@ -516,7 +486,7 @@ const ApplicationStore: StoreModel = {
     await actions.updateNoteItem({ id: noteId, noteItem });
 
     if (user.cloudSyncSessionToken && cloudSyncPasswordKey) {
-      syncAccountAndNotesToCloudSyncDebouncedWorkerized(workers, {
+      syncAccountAndNotesToCloudSyncDebouncedWorker({
         sessionToken: user.cloudSyncSessionToken,
         user,
         fileCollection,
@@ -528,18 +498,11 @@ const ApplicationStore: StoreModel = {
   }),
 
   trashFolder: thunk(async (actions, folderId, { getState }) => {
-    const {
-      workers,
-      user,
-      fileCollection,
-      activeFolderId,
-      passwordKey,
-      cloudSyncPasswordKey,
-    } = getState();
+    const { user, fileCollection, activeFolderId, passwordKey, cloudSyncPasswordKey } = getState();
 
-    if ( !workers || !user || !fileCollection || !passwordKey) {
+    if (!user || !fileCollection || !passwordKey) {
       // show error?
-      console.log({ workers, user, fileCollection, passwordKey });
+      console.log({ user, fileCollection, passwordKey });
       return;
     }
 
@@ -561,7 +524,7 @@ const ApplicationStore: StoreModel = {
     await actions.updateFolder({ id: folderId, folder });
 
     if (user.cloudSyncSessionToken && cloudSyncPasswordKey) {
-      syncAccountAndNotesToCloudSyncDebouncedWorkerized(workers, {
+      syncAccountAndNotesToCloudSyncDebouncedWorker({
         sessionToken: user.cloudSyncSessionToken,
         user,
         fileCollection,
@@ -576,7 +539,6 @@ const ApplicationStore: StoreModel = {
     log('Emptying trash...');
 
     const {
-      workers,
       user,
       fileCollection,
       activeNote,
@@ -585,9 +547,9 @@ const ApplicationStore: StoreModel = {
       cloudSyncPasswordKey,
     } = getState();
 
-    if (!fileCollection || !workers || !user || !passwordKey) {
+    if (!fileCollection || !user || !passwordKey) {
       // show error?
-      console.log({ fileCollection, workers, user, passwordKey });
+      console.log({ fileCollection, user, passwordKey });
       return;
     }
 
@@ -611,7 +573,7 @@ const ApplicationStore: StoreModel = {
     actions.setFileCollection({ ...fileCollection });
 
     if (user.cloudSyncSessionToken && cloudSyncPasswordKey) {
-      syncAccountAndNotesToCloudSyncDebouncedWorkerized(workers, {
+      syncAccountAndNotesToCloudSyncDebouncedWorker({
         sessionToken: user.cloudSyncSessionToken,
         user,
         fileCollection,
@@ -625,18 +587,11 @@ const ApplicationStore: StoreModel = {
   permanentlyDeleteNote: thunk(async (actions, noteId, { getState }) => {
     log(`Permanently deleting note ${noteId}...`);
 
-    const {
-      workers,
-      user,
-      fileCollection,
-      activeNote,
-      passwordKey,
-      cloudSyncPasswordKey,
-    } = getState();
+    const { user, fileCollection, activeNote, passwordKey, cloudSyncPasswordKey } = getState();
 
-    if (!fileCollection || !workers || !user || !passwordKey) {
+    if (!fileCollection || !user || !passwordKey) {
       // show error?
-      console.log({ fileCollection, workers, user, passwordKey });
+      console.log({ fileCollection, user, passwordKey });
       return;
     }
 
@@ -655,7 +610,7 @@ const ApplicationStore: StoreModel = {
     }
 
     if (user.cloudSyncSessionToken && cloudSyncPasswordKey) {
-      syncAccountAndNotesToCloudSyncDebouncedWorkerized(workers, {
+      syncAccountAndNotesToCloudSyncDebouncedWorker({
         sessionToken: user.cloudSyncSessionToken,
         user,
         fileCollection,
@@ -669,18 +624,11 @@ const ApplicationStore: StoreModel = {
   permanentlyDeleteFolder: thunk(async (actions, folderId, { getState }) => {
     log(`Permanently deleting folder ${folderId}...`);
 
-    const {
-      workers,
-      user,
-      fileCollection,
-      activeFolderId,
-      passwordKey,
-      cloudSyncPasswordKey,
-    } = getState();
+    const { user, fileCollection, activeFolderId, passwordKey, cloudSyncPasswordKey } = getState();
 
-    if (!fileCollection || !workers || !user || !passwordKey) {
+    if (!fileCollection || !user || !passwordKey) {
       // show error?
-      console.log({ fileCollection, workers, user, passwordKey });
+      console.log({ fileCollection, user, passwordKey });
       return;
     }
 
@@ -699,7 +647,7 @@ const ApplicationStore: StoreModel = {
     }
 
     if (user.cloudSyncSessionToken && cloudSyncPasswordKey) {
-      syncAccountAndNotesToCloudSyncDebouncedWorkerized(workers, {
+      syncAccountAndNotesToCloudSyncDebouncedWorker({
         sessionToken: user.cloudSyncSessionToken,
         user,
         fileCollection,

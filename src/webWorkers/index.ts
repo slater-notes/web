@@ -1,7 +1,6 @@
-import syncAccountAndNotesToCloudSync, {
-  Payload,
-} from '../services/syncAccountAndNotesToCloudSync';
+// eslint-disable-next-line import/no-webpack-loader-syntax
+import workerized from 'workerize-loader!./workerizedServices';
+import * as w from './workerizedServices';
 
-export const worker__syncAccountAndNotesToCloudSync = async (payload: Payload) => {
-  return await syncAccountAndNotesToCloudSync(payload);
-};
+const webWorkers = workerized<typeof w>();
+export default webWorkers;
