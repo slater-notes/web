@@ -10,21 +10,24 @@ import {
 import { defaultCloudSyncPasswordIterations } from '../../config/cloudSync';
 import { UserSettingsOptions } from '../../config/defaultUserSettings';
 import { FileCollection } from '../../types/notes';
+import { StandardError } from '../../types/response';
 import { FILE_COLLECTION_KEY, SETTINGS_KEY, USERS_KEY } from '../../utils/DBIndexKeys';
-import { ServiceResponse } from './services';
 
 interface Payload {
   username: string;
   password: string;
 }
 
-interface Response extends ServiceResponse {
-  user?: UserItem;
-  passwordKey?: CryptoKey;
-  cloudSyncPasswordKey?: CryptoKey;
-  fileCollection?: FileCollection;
-  settings?: Partial<UserSettingsOptions> | null;
-}
+type SuccessResponse = {
+  success: true;
+  user: UserItem;
+  passwordKey: CryptoKey;
+  cloudSyncPasswordKey: CryptoKey;
+  fileCollection: FileCollection;
+  settings: Partial<UserSettingsOptions> | null;
+};
+
+type Response = SuccessResponse | StandardError;
 
 const loadUser = async (db: localDB, payload: Payload): Promise<Response> => {
   const usersJson = (await db.get(USERS_KEY)) as string | undefined;
@@ -33,10 +36,8 @@ const loadUser = async (db: localDB, payload: Payload): Promise<Response> => {
 
   if (users.length === 0 || !user) {
     return {
-      error: {
-        code: 'no_user',
-        message: 'No user with that username.',
-      },
+      errorCode: 'no_user',
+      error: 'No user with that username.',
     };
   }
 
@@ -44,10 +45,8 @@ const loadUser = async (db: localDB, payload: Payload): Promise<Response> => {
 
   if (!(encryptedData instanceof Uint8Array)) {
     return {
-      error: {
-        code: 'no_file_collection',
-        message: 'User has no file collection database',
-      },
+      errorCode: 'no_file_collection',
+      error: 'User has no file collection database',
     };
   }
 
@@ -67,10 +66,8 @@ const loadUser = async (db: localDB, payload: Payload): Promise<Response> => {
     );
   } catch (_e) {
     return {
-      error: {
-        code: 'bad_key',
-        message: 'Bad decryption key.',
-      },
+      errorCode: 'bad_key',
+      error: 'Bad decryption key.',
     };
   }
 
@@ -90,10 +87,8 @@ const loadUser = async (db: localDB, payload: Payload): Promise<Response> => {
     } catch (_e) {
       console.log('meeep');
       return {
-        error: {
-          code: 'bad_key',
-          message: 'Bad decryption key.',
-        },
+        errorCode: 'bad_key',
+        error: 'Bad decryption key.',
       };
     }
 
@@ -108,6 +103,7 @@ const loadUser = async (db: localDB, payload: Payload): Promise<Response> => {
   );
 
   return {
+    success: true,
     user,
     passwordKey,
     cloudSyncPasswordKey,

@@ -1,36 +1,23 @@
 import { localDB, UserItem } from '@slater-notes/core';
+import { StandardResponse } from '../../types/response';
 import { USERS_KEY } from '../../utils/DBIndexKeys';
-import { ServiceResponse } from './services';
-
-interface Response extends ServiceResponse {
-  success?: boolean;
-}
 
 const changeUsername = async (
   db: localDB,
   userItem: UserItem,
   newUsername: string,
-): Promise<Response> => {
+): Promise<StandardResponse> => {
   const usersJson = (await db.get(USERS_KEY)) as string | undefined;
   const users: UserItem[] = usersJson ? JSON.parse(usersJson) : [];
 
   if (users.findIndex((u) => u.username === newUsername) > -1) {
-    return {
-      error: {
-        message: 'Username already in use',
-      },
-    };
+    return { error: 'Username already in use' };
   }
 
   const userIndex = users.findIndex((u) => u.username === userItem.username);
 
   if (users.length === 0 || userIndex < 0) {
-    return {
-      error: {
-        code: 'no_user',
-        message: 'No user with that username.',
-      },
-    };
+    return { errorCode: 'no_user', error: 'No user with that username.' };
   }
 
   users[userIndex].username = newUsername;

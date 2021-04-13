@@ -109,7 +109,11 @@ const Login = () => {
                 password: values.password,
               });
 
-              if (loadLocalUser.error?.code === 'no_user' && typeof sessionToken === 'string') {
+              if (
+                'error' in loadLocalUser &&
+                loadLocalUser.errorCode === 'no_user' &&
+                typeof sessionToken === 'string'
+              ) {
                 // download data
                 const getAccount = await getAccountFromCloudSync({
                   username: values.username,
@@ -129,8 +133,8 @@ const Login = () => {
                   getAccount.userItem,
                 );
 
-                if (!saveUser.userItem) {
-                  setErrors({ username: saveUser.error?.message || 'unknown error' });
+                if ('error' in saveUser) {
+                  setErrors({ username: saveUser.error });
                   setSubmitting(false);
                   return;
                 }
@@ -149,7 +153,7 @@ const Login = () => {
                 });
 
                 // download notes
-                if (loadLocalUser.fileCollection) {
+                if ('success' in loadLocalUser) {
                   await downloadNotesFromCloudSync({
                     username: values.username,
                     sessionToken,
@@ -161,23 +165,17 @@ const Login = () => {
 
               setSubmitting(false);
 
-              switch (loadLocalUser.error?.code) {
-                case 'no_user':
-                  return setErrors({ username: loadLocalUser.error.message });
-                case 'bad_key':
-                  return setErrors({ password: 'Password does not match.' });
-                default:
-                  if (
-                    loadLocalUser.error ||
-                    !loadLocalUser.user ||
-                    !loadLocalUser.passwordKey ||
-                    !loadLocalUser.cloudSyncPasswordKey ||
-                    !loadLocalUser.fileCollection
-                  ) {
+              if ('error' in loadLocalUser) {
+                switch (loadLocalUser.errorCode) {
+                  case 'no_user':
+                    return setErrors({ username: loadLocalUser.error });
+                  case 'bad_key':
+                    return setErrors({ password: 'Password does not match.' });
+                  default:
                     console.log(loadLocalUser);
-                    setErrors({ username: loadLocalUser.error?.message || 'unknown error' });
+                    setErrors({ username: loadLocalUser.error });
                     return;
-                  }
+                }
               }
 
               if (sessionToken) {

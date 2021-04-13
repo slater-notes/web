@@ -37,9 +37,9 @@ const useCloudSyncRegister = (): [
     const token = await generateTokenFromPassword(password, username);
     const verify = await verifyPassword(localDB, { username, password });
 
-    if (verify.error) {
-      if (verify.error.code === 'bad_key') setError({ error: 'Invalid password.' });
-      else setError({ error: verify.error.message });
+    if ('error' in verify) {
+      if (verify.errorCode === 'bad_key') setError({ error: 'Invalid password.' });
+      else setError({ error: verify.error });
 
       return;
     }

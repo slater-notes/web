@@ -8,13 +8,15 @@ import {
   UserItem,
 } from '@slater-notes/core';
 import { defaultCloudSyncPasswordIterations } from '../../config/cloudSync';
+import { StandardError } from '../../types/response';
 import saveUser from './saveUser';
-import { ServiceResponse } from './services';
 
-interface Response extends ServiceResponse {
-  success?: boolean;
-  userItem?: UserItem;
-}
+type SuccessResponse = {
+  success: true;
+  userItem: UserItem;
+};
+
+type Response = SuccessResponse | StandardError;
 
 const decryptAndSaveUserFromBase64 = async (
   db: localDB,
@@ -38,21 +40,15 @@ const decryptAndSaveUserFromBase64 = async (
     decryptedData = await decrypt(passwordKey, stringToBuffer(username), data);
   } catch (error) {
     return {
-      error: {
-        code: 'bad_key',
-        message: 'Bad decryption key.',
-      },
+      errorCode: 'bad_key',
+      error: 'Bad decryption key.',
     };
   }
 
   const userItem: UserItem = JSON.parse(bufferToString(decryptedData));
 
   //  save to localDB
-  const result = await saveUser(db, userItem);
-
-  if (!result.success) {
-    return result;
-  }
+  await saveUser(db, userItem);
 
   return { success: true, userItem };
 };

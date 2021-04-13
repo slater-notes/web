@@ -34,8 +34,8 @@ export const AppStarter = ({ children }: any) => {
   useEffect(() => {
     if (!appSettings && db) {
       (async () => {
-        const load = await loadAppSettings(db);
-        setAppSettings(load.appSettings);
+        const appSettings = await loadAppSettings(db);
+        setAppSettings(appSettings);
       })();
     }
     // eslint-disable-next-line

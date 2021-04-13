@@ -1,10 +1,12 @@
 import { bufferToString, base64ToBuffer, decrypt, localDB } from '@slater-notes/core';
 import { NoteData } from '../../types/notes';
-import { ServiceResponse } from './services';
+import { StandardError } from '../../types/response';
 
-interface Response extends ServiceResponse {
-  noteData?: NoteData;
-}
+type SuccessResponse = {
+  noteData: NoteData;
+};
+
+type Response = SuccessResponse | StandardError;
 
 const loadNoteData = async (
   db: localDB,
@@ -16,9 +18,7 @@ const loadNoteData = async (
 
   if (!(encryptedData instanceof Uint8Array)) {
     return {
-      error: {
-        message: 'note does not exist',
-      },
+      error: 'note does not exist',
     };
   }
 
@@ -27,9 +27,7 @@ const loadNoteData = async (
     decryptedData = await decrypt(passwordKey, base64ToBuffer(nonce), encryptedData);
   } catch (_e) {
     return {
-      error: {
-        message: 'Bad decryption key.',
-      },
+      error: 'Bad decryption key.',
     };
   }
 

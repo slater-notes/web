@@ -27,13 +27,11 @@ describe('user test', () => {
       iterations: 10000,
     });
 
-    expect(result.error).toBeUndefined();
-    expect(result.user).toBeTruthy();
-    expect(result.passwordKey).toBeTruthy();
-
-    store.getActions().setPasswordKey(result.passwordKey || null);
-    store.getActions().setUser(result.user || null);
-    store.getActions().setFileCollection(result.fileCollection || null);
+    if ('success' in result) {
+      store.getActions().setPasswordKey(result.passwordKey);
+      store.getActions().setUser(result.user);
+      store.getActions().setFileCollection(result.fileCollection);
+    }
 
     expect(store.getState().user?.username).toEqual('testuser');
     expect(store.getState().user?.iterations).toEqual(10000);
@@ -52,12 +50,11 @@ describe('user test', () => {
 
     const result = await loadUser(db, { username: 'nouser', password: 'nopass' });
 
+    if (!('error' in result)) fail();
+
     expect(result.error).toBeTruthy();
-    expect(result.error?.code).toEqual('no_user');
-    expect(result.error?.message).toEqual('No user with that username.');
-    expect(result.user).toBeUndefined();
-    expect(result.passwordKey).toBeUndefined();
-    expect(result.fileCollection).toBeUndefined();
+    expect(result.errorCode).toEqual('no_user');
+    expect(result.error).toEqual('No user with that username.');
   });
 
   test('loading user with wrong password should fail gracefully', async () => {
@@ -68,11 +65,9 @@ describe('user test', () => {
 
     const result = await loadUser(db, { username: 'testuser', password: 'PassThatDoesNotMatch' });
 
-    expect(result.error).toBeTruthy();
-    expect(result.error?.message).toEqual('Bad decryption key.');
-    expect(result.user).toBeUndefined();
-    expect(result.passwordKey).toBeUndefined();
-    expect(result.fileCollection).toBeUndefined();
+    if (!('error' in result)) fail();
+
+    expect(result.error).toEqual('Bad decryption key.');
   });
 
   test('load user data successfully', async () => {
@@ -82,7 +77,8 @@ describe('user test', () => {
 
     const result = await loadUser(db, { username: 'testuser', password: 'testpass' });
 
-    expect(result.error).toBeUndefined();
+    if ('error' in result) fail();
+
     expect(result.user?.username).toEqual('testuser');
     expect(result.passwordKey).toBeTruthy();
     expect(result.fileCollection?.userId).toEqual(result.user?.id);

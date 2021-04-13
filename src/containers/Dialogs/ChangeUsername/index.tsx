@@ -51,8 +51,8 @@ const ChangeUsername = (props: Props) => {
 
     const result = await changeUsername(localDB, user, un);
 
-    if (result.error) {
-      setError(result.error.message);
+    if ('error' in result) {
+      setError(result.error);
       setIsLoading(false);
       return;
     }

@@ -89,38 +89,25 @@ const Signup = () => {
                 iterations: values.iterations,
               });
 
-              if (createUserResult.error) {
+              if ('error' in createUserResult) {
                 setSubmitting(false);
-              }
 
-              switch (createUserResult.error?.code) {
-                case 'user_exist':
-                  return setErrors({ username: 'Username already in use.' });
-                case 'iterations_too_low':
-                  return setErrors({ iterations: 'PBKDF2 iterations amount too low.' });
-                default:
-                  if (
-                    createUserResult.error ||
-                    !createUserResult.user ||
-                    !createUserResult.passwordKey ||
-                    !createUserResult.fileCollection
-                  ) {
+                switch (createUserResult.errorCode) {
+                  case 'user_exist':
+                    return setErrors({ username: 'Username already in use.' });
+                  case 'iterations_too_low':
+                    return setErrors({ iterations: 'PBKDF2 iterations amount too low.' });
+                  default:
                     // unhandled error, ooops
                     console.log(createUserResult);
                     return;
-                  }
+                }
               }
 
               // Step 2. register to cloud sync, if enabled
               let cloudSyncSessionToken;
 
               if (values.enableCloudSync) {
-                if (!createUserResult.cloudSyncPasswordKey) {
-                  // unhandled error, ooops
-                  setSubmitting(false);
-                  return;
-                }
-
                 const token = await generateTokenFromPassword(values.password, values.username);
 
                 const registerCloudSyncResult = await prepareAndRegisterToCloudSync({

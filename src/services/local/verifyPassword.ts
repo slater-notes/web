@@ -5,17 +5,19 @@ import {
   localDB,
   UserItem,
 } from '@slater-notes/core';
+import { StandardError } from '../../types/response';
 import { FILE_COLLECTION_KEY, USERS_KEY } from '../../utils/DBIndexKeys';
-import { ServiceResponse } from './services';
 
 interface Payload {
   username: string;
   password: string;
 }
 
-interface Response extends ServiceResponse {
-  success?: boolean;
-}
+type SuccessResponse = {
+  success: boolean;
+};
+
+type Response = SuccessResponse | StandardError;
 
 const verifyPassword = async (db: localDB, payload: Payload): Promise<Response> => {
   const usersJson = (await db.get(USERS_KEY)) as string | undefined;
@@ -24,10 +26,8 @@ const verifyPassword = async (db: localDB, payload: Payload): Promise<Response> 
 
   if (users.length === 0 || !user) {
     return {
-      error: {
-        code: 'no_user',
-        message: 'No user with that username.',
-      },
+      errorCode: 'no_user',
+      error: 'No user with that username.',
     };
   }
 
@@ -35,10 +35,8 @@ const verifyPassword = async (db: localDB, payload: Payload): Promise<Response> 
 
   if (!(encryptedData instanceof Uint8Array)) {
     return {
-      error: {
-        code: 'no_file_collection',
-        message: 'User has no file collection database',
-      },
+      errorCode: 'no_file_collection',
+      error: 'User has no file collection database',
     };
   }
 
@@ -53,10 +51,8 @@ const verifyPassword = async (db: localDB, payload: Payload): Promise<Response> 
     await decrypt(passwordKey, base64ToBuffer(user.fileCollectionNonce), encryptedData);
   } catch (_e) {
     return {
-      error: {
-        code: 'bad_key',
-        message: 'Bad decryption key.',
-      },
+      errorCode: 'bad_key',
+      error: 'Bad decryption key.',
     };
   }
 

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { StandardError } from '../types/errors';
+import { StandardError } from '../types/response';
 
 const useLoading = (): [
   boolean,

@@ -20,10 +20,12 @@ describe('notes test', () => {
       password: 'testpass',
     });
 
-    const actions = store.getActions();
-    actions.setPasswordKey(result.passwordKey || null);
-    actions.setUser(result.user || null);
-    actions.setFileCollection(result.fileCollection || null);
+    if ('success' in result) {
+      const { setPasswordKey, setUser, setFileCollection } = store.getActions();
+      setPasswordKey(result.passwordKey);
+      setUser(result.user);
+      setFileCollection(result.fileCollection);
+    }
 
     const state = store.getState();
     expect(state.fileCollection?.userId).toBeTruthy();

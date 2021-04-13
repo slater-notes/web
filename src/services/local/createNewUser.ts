@@ -10,9 +10,9 @@ import {
   UserItem,
 } from '@slater-notes/core';
 import { FILE_COLLECTION_KEY, USERS_KEY } from '../../utils/DBIndexKeys';
-import { ServiceResponse } from './services';
 import { FileCollection } from '../../types/notes';
 import { defaultCloudSyncPasswordIterations } from '../../config/cloudSync';
+import { StandardError } from '../../types/response';
 
 interface Payload {
   username: string;
@@ -21,12 +21,15 @@ interface Payload {
   iterations?: number;
 }
 
-interface Response extends ServiceResponse {
-  user?: UserItem;
-  passwordKey?: CryptoKey;
-  cloudSyncPasswordKey?: CryptoKey;
-  fileCollection?: FileCollection;
-}
+type SuccessResponse = {
+  success: true;
+  user: UserItem;
+  passwordKey: CryptoKey;
+  cloudSyncPasswordKey: CryptoKey;
+  fileCollection: FileCollection;
+};
+
+type Response = SuccessResponse | StandardError;
 
 const createNewUser = async (db: localDB, payload: Payload): Promise<Response> => {
   const usersJson = (await db.get(USERS_KEY)) as string | undefined;
@@ -35,20 +38,16 @@ const createNewUser = async (db: localDB, payload: Payload): Promise<Response> =
   // check that this user does not exist
   if (users && users.findIndex((u) => u.username === payload.username) > -1) {
     return {
-      error: {
-        code: 'user_exist',
-        message: 'User already exist.',
-      },
+      errorCode: 'user_exist',
+      error: 'User already exist.',
     };
   }
 
   // minimum iterations
   if (payload.iterations && payload.iterations < 10000) {
     return {
-      error: {
-        code: 'iterations_too_low',
-        message: 'PBKDF2 iterations amount too low.',
-      },
+      errorCode: 'iterations_too_low',
+      error: 'PBKDF2 iterations amount too low.',
     };
   }
 
@@ -101,6 +100,7 @@ const createNewUser = async (db: localDB, payload: Payload): Promise<Response> =
   );
 
   return {
+    success: true,
     user,
     passwordKey,
     cloudSyncPasswordKey,

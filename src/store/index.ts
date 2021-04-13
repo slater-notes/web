@@ -63,6 +63,7 @@ export interface StoreModel {
   editingFolderId: string | null;
   setEditingFolderId: Action<StoreModel, string | null>;
 
+  /* Thunks */
   updateUser: Thunk<StoreModel, { userItem: UserItem; noCloudSync?: boolean }>;
   updateFileCollection: Thunk<StoreModel, FileCollection>;
   updateSettings: Thunk<StoreModel, Partial<UserSettingsOptions>>;
@@ -264,13 +265,7 @@ const ApplicationStore: StoreModel = {
       revisions: [],
     };
 
-    const result = await saveNoteData(localDB, passwordKey, noteItem.nonce, noteData);
-
-    if (result.error) {
-      // TODO: show error?
-      console.log(result.error);
-      return;
-    }
+    await saveNoteData(localDB, passwordKey, noteItem.nonce, noteData);
 
     const notes = fileCollection.notes;
     notes.push(noteItem);
@@ -328,13 +323,7 @@ const ApplicationStore: StoreModel = {
 
     fileCollection.folders.push(folder);
 
-    const result = await saveFileCollection(localDB, user, passwordKey, fileCollection);
-
-    if (result.error) {
-      // TODO: show error?
-      console.log(result);
-      return;
-    }
+    await saveFileCollection(localDB, user, passwordKey, fileCollection);
 
     actions.setFileCollection(fileCollection);
     actions.setActiveFolderId(folder.id);
@@ -366,15 +355,14 @@ const ApplicationStore: StoreModel = {
     }
 
     const result = await loadNoteData(db, noteItem.id, noteItem.nonce, passwordKey);
-    const noteData = result.noteData;
 
-    if (result.error || !noteData) {
+    if ('error' in result) {
       // TODO: show error?
       console.log(result);
       return;
     }
 
-    actions.setActiveNote({ noteItem, noteData });
+    actions.setActiveNote({ noteItem, noteData: result.noteData });
   }),
 
   updateNoteItem: thunk(async (actions, payload, { getState }) => {
@@ -412,13 +400,7 @@ const ApplicationStore: StoreModel = {
       return;
     }
 
-    const result = await saveFileCollection(localDB, user, passwordKey, fileCollection);
-
-    if (result.error) {
-      // TODO: show error?
-      console.log(result);
-      return;
-    }
+    await saveFileCollection(localDB, user, passwordKey, fileCollection);
 
     actions.setFileCollection({ ...fileCollection });
 
@@ -471,13 +453,7 @@ const ApplicationStore: StoreModel = {
       return;
     }
 
-    const result = await saveNoteData(localDB, passwordKey, noteItem.nonce, payload.noteData);
-
-    if (result.error) {
-      // TODO: show error?
-      console.log(result);
-      return;
-    }
+    await saveNoteData(localDB, passwordKey, noteItem.nonce, payload.noteData);
 
     if (activeNote?.noteItem.id === payload.id) {
       actions.setActiveNote({ noteItem: activeNote.noteItem, noteData: payload.noteData });
@@ -529,13 +505,7 @@ const ApplicationStore: StoreModel = {
       return;
     }
 
-    const result = await saveFileCollection(localDB, user, passwordKey, fileCollection);
-
-    if (result.error) {
-      // TODO: show error?
-      console.log(result);
-      return;
-    }
+    await saveFileCollection(localDB, user, passwordKey, fileCollection);
 
     actions.setFileCollection({ ...fileCollection });
 
@@ -669,13 +639,7 @@ const ApplicationStore: StoreModel = {
     fileCollection.notes = fileCollection.notes.filter((n) => !n.isDeleted);
     fileCollection.folders = fileCollection.folders.filter((f) => !f.isDeleted);
 
-    const result = await saveFileCollection(localDB, user, passwordKey, fileCollection);
-
-    if (result.error) {
-      // TODO: show error?
-      console.log(result);
-      return;
-    }
+    await saveFileCollection(localDB, user, passwordKey, fileCollection);
 
     // reset active note
     if (activeNote && noteIdsToDelete.includes(activeNote.noteItem.id)) {
@@ -725,13 +689,7 @@ const ApplicationStore: StoreModel = {
       fileCollection.notes.splice(noteIndex, 1);
     }
 
-    const result = await saveFileCollection(localDB, user, passwordKey, fileCollection);
-
-    if (result.error) {
-      // TODO: show error?
-      console.log(result);
-      return;
-    }
+    await saveFileCollection(localDB, user, passwordKey, fileCollection);
 
     actions.setFileCollection({ ...fileCollection });
 
@@ -776,13 +734,7 @@ const ApplicationStore: StoreModel = {
       fileCollection.folders.splice(folderIndex, 1);
     }
 
-    const result = await saveFileCollection(localDB, user, passwordKey, fileCollection);
-
-    if (result.error) {
-      // TODO: show error?
-      console.log(result);
-      return;
-    }
+    await saveFileCollection(localDB, user, passwordKey, fileCollection);
 
     actions.setFileCollection({ ...fileCollection });
 

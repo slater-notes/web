@@ -20,15 +20,19 @@ describe('settings test', () => {
       username: 'testuser',
       password: 'testpass',
     });
-    actions.setPasswordKey(newUserResult.passwordKey || null);
-    actions.setUser(newUserResult.user || null);
-    actions.setFileCollection(newUserResult.fileCollection || null);
-    const state = store.getState();
 
-    expect(state.user?.settingsNonce).toBeTruthy();
-    expect(state.settings).toBe(null);
+    if ('success' in newUserResult) {
+      actions.setPasswordKey(newUserResult.passwordKey || null);
+      actions.setUser(newUserResult.user || null);
+      actions.setFileCollection(newUserResult.fileCollection || null);
+    }
 
-    const encryptedData = await db?.get(`${SETTINGS_KEY}--${state.user?.id}`);
+    const { user, settings } = store.getState();
+
+    expect(user?.settingsNonce).toBeTruthy();
+    expect(settings).toBe(null);
+
+    const encryptedData = await db?.get(`${SETTINGS_KEY}--${user?.id}`);
 
     expect(encryptedData).toBeFalsy();
   });
@@ -55,6 +59,10 @@ describe('settings test', () => {
   test('loading users should load its settings', async () => {
     const result = await loadUser(db as any, { username: 'testuser', password: 'testpass' });
 
-    expect(result.settings?.alwaysShowSidebar).toBeTruthy();
+    if ('error' in result) {
+      fail();
+    } else {
+      expect(result.settings?.alwaysShowSidebar).toBeTruthy();
+    }
   });
 });
