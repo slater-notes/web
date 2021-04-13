@@ -15,12 +15,11 @@
   ],
   "license": "MIT",
   "keywords": [
-    "slater-notes",
-    "notes",
-    "editor",
     "react",
-    "javascript",
-    "typescript"
+    "editor",
+    "typescript",
+    "notes",
+    "slater-notes"
   ],
   "scripts": {
     "start": "react-scripts start",
