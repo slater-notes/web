@@ -10,18 +10,18 @@ import {
   bufferToBase64,
   base64ToBuffer,
 } from '@slater-notes/core';
-import loadNoteData from '../services/local/loadNoteData';
-import saveFileCollection from '../services/local/saveFileCollection';
-import saveNoteData from '../services/local/saveNoteData';
-import saveUserSettings from '../services/local/saveUserSettings';
+import loadNoteData from '../services/loadNoteData';
+import saveFileCollection from '../services/saveFileCollection';
+import saveNoteData from '../services/saveNoteData';
+import saveUserSettings from '../services/saveUserSettings';
 import { FILE_COLLECTION_KEY } from '../utils/DBIndexKeys';
 import { log } from '../utils/log';
 import { UserSettingsOptions } from '../config/defaultUserSettings';
-import saveUser from '../services/local/saveUser';
-import { syncAccountAndNotesToCloudSyncDebouncedWorkerized } from '../services/cloudSync/syncAccountAndNotes';
+import saveUser from '../services/saveUser';
+import { syncAccountAndNotesToCloudSyncDebouncedWorkerized } from '../services/syncAccountAndNotesToCloudSync';
 import { AppSettingsOptions } from '../config/defaultAppSettings';
-import saveAppSettings from '../services/local/saveAppSettings';
-import * as Workers from '../services/webWorkers';
+import saveAppSettings from '../services/saveAppSettings';
+import * as Workers from '../webWorkers';
 import { FileCollection, FolderItem, NoteData, NoteItem } from '../types/notes';
 
 export interface StoreModel {

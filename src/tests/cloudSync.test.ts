@@ -2,13 +2,13 @@ import { getKeyFromDerivedPassword, exportKey, stringToBuffer } from '@slater-no
 import axios from 'axios';
 import { defaultCloudSyncURL } from '../config/cloudSync';
 import { addPolyfill } from '../utils/testPolyfill';
-import getAccountFromCloudSync from '../services/cloudSync/api/getAccount';
-import getNewSessionFromCloudSync from '../services/cloudSync/api/getNewSession';
-import registerToCloudSync from '../services/cloudSync/api/registerAccount';
-import updateAccountToCloudSync from '../services/cloudSync/api/updateAccount';
-import putNoteToCloudSync from '../services/cloudSync/api/putNote';
-import getNoteFromCloudSync from '../services/cloudSync/api/getNote';
-import deleteNoteFromCloudSync from '../services/cloudSync/api/deleteNote';
+import getAccountFromCloudSync from '../api/cloudSync/getAccount';
+import getNewSessionFromCloudSync from '../api/cloudSync/getNewSession';
+import registerToCloudSync from '../api/cloudSync/registerAccount';
+import updateAccountToCloudSync from '../api/cloudSync/updateAccount';
+import putNoteToCloudSync from '../api/cloudSync/putNote';
+import getNoteFromCloudSync from '../api/cloudSync/getNote';
+import deleteNoteFromCloudSync from '../api/cloudSync/deleteNote';
 
 addPolyfill();
 

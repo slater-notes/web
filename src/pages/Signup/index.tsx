@@ -16,13 +16,13 @@ import * as yup from 'yup';
 import DefaultButton from '../../components/Buttons/DefaultButton';
 import { useStoreActions, useStoreState } from '../../store/typedHooks';
 import { Redirect } from 'wouter';
-import createNewUser from '../../services/local/createNewUser';
+import createNewUser from '../../services/createNewUser';
 import LoginPage from '../../components/LoginPage';
 import { ChevronDown } from 'react-feather';
 import { generateSalt, getKeyFromDerivedPassword } from '@slater-notes/core';
 import H1 from '../../components/Typography/H1';
 import Paragraph from '../../components/Typography/Paragraph';
-import prepareAndRegisterToCloudSync from '../../services/cloudSync/prepareAndRegister';
+import prepareAndRegisterToCloudSync from '../../services/prepareAndRegisterToCloudSync';
 import generateTokenFromPassword from '../../utils/generateTokenFromPassword';
 import moment from 'moment';
 

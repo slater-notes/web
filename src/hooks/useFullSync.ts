@@ -1,6 +1,6 @@
 import moment from 'moment';
-import checkSessionFromCloudSync from '../services/cloudSync/api/checkSession';
-import { syncAccountAndNotesToCloudSyncWorkerized } from '../services/cloudSync/syncAccountAndNotes';
+import checkSessionFromCloudSync from '../api/cloudSync/checkSession';
+import { syncAccountAndNotesToCloudSyncWorkerized } from '../services/syncAccountAndNotesToCloudSync';
 import { useStoreActions, useStoreState } from '../store/typedHooks';
 import useLoading, { ErrorOrNull } from './useLoading';
 

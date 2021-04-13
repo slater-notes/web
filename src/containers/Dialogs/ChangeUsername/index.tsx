@@ -1,7 +1,7 @@
 import { TextField, useTheme } from '@material-ui/core';
 import React from 'react';
 import DefaultDialog from '../../../components/Dialogs/DefaultDialog';
-import changeUsername from '../../../services/local/changeUsername';
+import changeUsername from '../../../services/changeUsername';
 import { useStoreActions, useStoreState } from '../../../store/typedHooks';
 import * as yup from 'yup';
 

@@ -9,10 +9,10 @@ import { useStoreActions, useStoreState } from './store/typedHooks';
 import { localDB } from '@slater-notes/core';
 import Signup from './pages/Signup';
 import { THEME } from './config/theme';
-import loadAppSettings from './services/local/loadAppSettings';
+import loadAppSettings from './services/loadAppSettings';
 // eslint-disable-next-line import/no-webpack-loader-syntax
-import createWorker from 'workerize-loader!./services/webWorkers';
-import * as Workers from './services/webWorkers';
+import createWorker from 'workerize-loader!./webWorkers';
+import * as Workers from './webWorkers';
 
 const store = createStore(ApplicationStore);
 const theme = createMuiTheme(THEME);

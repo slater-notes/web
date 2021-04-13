@@ -1,5 +1,5 @@
-import prepareAndRegisterToCloudSync from '../services/cloudSync/prepareAndRegister';
-import verifyPassword from '../services/local/verifyPassword';
+import prepareAndRegisterToCloudSync from '../services/prepareAndRegisterToCloudSync';
+import verifyPassword from '../services/verifyPassword';
 import { useStoreActions, useStoreState } from '../store/typedHooks';
 import generateTokenFromPassword from '../utils/generateTokenFromPassword';
 import useLoading, { ErrorOrNull } from './useLoading';

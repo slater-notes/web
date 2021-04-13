@@ -2,7 +2,7 @@ import { createStore } from 'easy-peasy';
 import moment from 'moment';
 import { bufferToString, base64ToBuffer, decrypt, localDB } from '@slater-notes/core';
 import ApplicationStore from '../store';
-import createNewUser from '../services/local/createNewUser';
+import createNewUser from '../services/createNewUser';
 import { FILE_COLLECTION_KEY } from '../utils/DBIndexKeys';
 import { addPolyfill } from '../utils/testPolyfill';
 import { FileCollection, NoteData } from '../types/notes';
