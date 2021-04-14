@@ -1,0 +1,3 @@
+/*
+  X-Frame-Options: DENY
+  Content-Security-Policy-Report-Only: default-src 'self'; connect-src 'self' https://us-central1-slater-notes.cloudfunctions.net;
