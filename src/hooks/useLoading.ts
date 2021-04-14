@@ -1,7 +1,9 @@
 import { useState } from 'react';
 import { StandardError } from '../types/response';
 
-const useLoading = (): [
+const useLoading = (
+  defaultIsLoading?: boolean,
+): [
   boolean,
   ErrorOrNull,
   boolean,
@@ -10,7 +12,7 @@ const useLoading = (): [
   (isComplete: boolean) => void,
   () => void,
 ] => {
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(defaultIsLoading || false);
   const [error, setError] = useState<ErrorOrNull>(null);
   const [isComplete, setIsComplete] = useState(false);
 

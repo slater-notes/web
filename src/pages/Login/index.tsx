@@ -4,7 +4,7 @@ import { Formik } from 'formik';
 import * as yup from 'yup';
 import DefaultButton from '../../components/Buttons/DefaultButton';
 import { useStoreActions, useStoreState } from '../../store/typedHooks';
-import { Redirect } from 'wouter';
+import { useLocation } from 'wouter';
 import loadUser from '../../services/loadUser';
 import LoginPage from '../../components/LoginPage';
 import { Cloud, CloudOff } from 'react-feather';
@@ -21,6 +21,8 @@ import Paragraph from '../../components/Typography/Paragraph';
 const Login = () => {
   const classes = useStyles();
 
+  const [, setLocation] = useLocation();
+
   const user = useStoreState((s) => s.user);
   const passwordKey = useStoreState((s) => s.passwordKey);
   const fileCollection = useStoreState((s) => s.fileCollection);
@@ -35,7 +37,8 @@ const Login = () => {
   const setActiveFolderId = useStoreActions((a) => a.setActiveFolderId);
 
   if (user && passwordKey && fileCollection) {
-    return <Redirect to='/' />;
+    setLocation('/');
+    return null;
   }
 
   return (
@@ -266,6 +269,10 @@ const Login = () => {
           color: 'primary',
           fullWidth: true,
           href: '/new',
+          onClick: (e) => {
+            e.preventDefault();
+            setLocation('/new');
+          },
         }}
         text='Create Account'
       />

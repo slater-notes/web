@@ -15,7 +15,7 @@ import { Formik } from 'formik';
 import * as yup from 'yup';
 import DefaultButton from '../../components/Buttons/DefaultButton';
 import { useStoreActions } from '../../store/typedHooks';
-import { Redirect } from 'wouter';
+import { useLocation } from 'wouter';
 import createNewUser from '../../services/createNewUser';
 import LoginPage from '../../components/LoginPage';
 import { ChevronDown } from 'react-feather';
@@ -29,6 +29,8 @@ import moment from 'moment';
 const Signup = () => {
   const classes = useStyles();
 
+  const [, setLocation] = useLocation();
+
   const [done, setDone] = React.useState(false);
   const [testingIterations, setTestingIterations] = React.useState(false);
   const [iterationsResult, setIterationsResult] = React.useState<number | null>(null);
@@ -40,7 +42,8 @@ const Signup = () => {
   const setCloudSyncPasswordKey = useStoreActions((a) => a.setCloudSyncPasswordKey);
 
   if (done) {
-    return <Redirect to='/' />;
+    setLocation('/');
+    return null;
   }
 
   return (
@@ -341,6 +344,10 @@ const Signup = () => {
             color: 'inherit',
             fullWidth: true,
             href: '/login',
+            onClick: (e) => {
+              e.preventDefault();
+              setLocation('/login');
+            },
           }}
         />
       </div>
