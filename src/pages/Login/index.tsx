@@ -208,11 +208,13 @@ const Login = () => {
                 />
 
                 <TextField
+                  type='text'
                   name='username'
                   label='Username'
                   variant='outlined'
                   fullWidth
                   autoFocus
+                  autoComplete='username'
                   value={values.username}
                   onChange={handleChange}
                   onBlur={handleBlur}
@@ -229,6 +231,7 @@ const Login = () => {
                   label='Password'
                   variant='outlined'
                   fullWidth
+                  autoComplete='current-password'
                   value={values.password}
                   onChange={handleChange}
                   onBlur={handleBlur}
