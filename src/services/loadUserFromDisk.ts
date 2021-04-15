@@ -19,7 +19,6 @@ interface Payload {
 }
 
 type SuccessResponse = {
-  success: true;
   user: UserItem;
   passwordKey: CryptoKey;
   cloudSyncPasswordKey: CryptoKey;
@@ -27,7 +26,7 @@ type SuccessResponse = {
   settings: Partial<UserSettingsOptions> | null;
 };
 
-const loadUser = async (payload: Payload): Promise<SuccessResponse | StandardError> => {
+const loadUserFromDisk = async (payload: Payload): Promise<SuccessResponse | StandardError> => {
   const usersJson = (await disk.get(USERS_KEY)) as string | undefined;
   const users: UserItem[] = usersJson ? JSON.parse(usersJson) : [];
   const user = users.find((u) => u.username === payload.username);
@@ -101,7 +100,6 @@ const loadUser = async (payload: Payload): Promise<SuccessResponse | StandardErr
   );
 
   return {
-    success: true,
     user,
     passwordKey,
     cloudSyncPasswordKey,
@@ -110,4 +108,4 @@ const loadUser = async (payload: Payload): Promise<SuccessResponse | StandardErr
   };
 };
 
-export default loadUser;
+export default loadUserFromDisk;

@@ -1,7 +1,7 @@
 import { createStore } from 'easy-peasy';
 import ApplicationStore from '../store';
 import createNewUser from '../services/createNewUser';
-import loadUser from '../services/loadUser';
+import loadUserFromDisk from '../services/loadUserFromDisk';
 import { addPolyfill } from '../utils/testPolyfill';
 
 addPolyfill();
@@ -31,7 +31,7 @@ describe('user test', () => {
   });
 
   test('loading user that does not exist should fail gracefully', async () => {
-    const result = await loadUser({ username: 'nouser', password: 'nopass' });
+    const result = await loadUserFromDisk({ username: 'nouser', password: 'nopass' });
 
     if (!('error' in result)) fail();
 
@@ -41,7 +41,10 @@ describe('user test', () => {
   });
 
   test('loading user with wrong password should fail gracefully', async () => {
-    const result = await loadUser({ username: 'testuser', password: 'PassThatDoesNotMatch' });
+    const result = await loadUserFromDisk({
+      username: 'testuser',
+      password: 'PassThatDoesNotMatch',
+    });
 
     if (!('error' in result)) fail();
 
@@ -49,7 +52,7 @@ describe('user test', () => {
   });
 
   test('load user data successfully', async () => {
-    const result = await loadUser({ username: 'testuser', password: 'testpass' });
+    const result = await loadUserFromDisk({ username: 'testuser', password: 'testpass' });
 
     if ('error' in result) fail();
 

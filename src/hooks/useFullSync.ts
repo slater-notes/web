@@ -1,6 +1,6 @@
 import moment from 'moment';
 import checkSessionFromCloudSync from '../api/cloudSync/checkSession';
-import { runSyncAccountAndNotesToCloudSyncInWorker } from '../services/syncAccountAndNotesToCloudSync';
+import syncAccountAndNotesToCloudSync from '../services/syncAccountAndNotesToCloudSync';
 import { useStoreActions, useStoreState } from '../store/typedHooks';
 import useLoading, { ErrorOrNull } from './useLoading';
 
@@ -56,7 +56,7 @@ const useFullSync = (): [() => Promise<void>, boolean, ErrorOrNull, boolean, () 
     }
 
     // start full sync
-    const sync = await runSyncAccountAndNotesToCloudSyncInWorker({
+    const sync = await syncAccountAndNotesToCloudSync({
       sessionToken: cloudSyncSessionToken,
       user,
       fileCollection,

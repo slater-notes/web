@@ -1,7 +1,6 @@
 import React from 'react';
 import { useStoreActions, useStoreState } from '../../store/typedHooks';
-import { Redirect } from 'wouter';
-import { Drawer, Grid, makeStyles } from '@material-ui/core';
+import { Drawer, Grid, LinearProgress, makeStyles } from '@material-ui/core';
 import Sidebar from '../../containers/Sidebar';
 import Note from '../../containers/Note';
 import MiniSidebar from '../../containers/Sidebar/MiniSidebar';
@@ -39,10 +38,6 @@ const MainApp = () => {
     };
   }, []);
 
-  if (!user || !passwordKey || !fileCollection) {
-    return <Redirect to='/login' />;
-  }
-
   const getDrawerVariant = () => {
     if (isMobile) {
       return 'temporary';
@@ -56,6 +51,10 @@ const MainApp = () => {
         : 'temporary';
     }
   };
+
+  if (!user || !passwordKey || !fileCollection) {
+    return <LinearProgress />;
+  }
 
   return (
     <Grid container className={classes.container}>

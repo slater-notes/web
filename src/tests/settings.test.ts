@@ -2,7 +2,7 @@ import { createStore } from 'easy-peasy';
 import { bufferToString, base64ToBuffer, decrypt } from '@slater-notes/core';
 import ApplicationStore from '../store';
 import createNewUser from '../services/createNewUser';
-import loadUser from '../services/loadUser';
+import loadUserFromDisk from '../services/loadUserFromDisk';
 import { SETTINGS_KEY } from '../utils/DBIndexKeys';
 import { addPolyfill } from '../utils/testPolyfill';
 import { UserSettingsOptions } from '../config/defaultUserSettings';
@@ -56,7 +56,7 @@ describe('settings test', () => {
   });
 
   test('loading users should load its settings', async () => {
-    const result = await loadUser({ username: 'testuser', password: 'testpass' });
+    const result = await loadUserFromDisk({ username: 'testuser', password: 'testpass' });
 
     if ('error' in result) {
       fail();

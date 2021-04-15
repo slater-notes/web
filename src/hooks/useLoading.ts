@@ -23,7 +23,11 @@ const useLoading = (
 
   const doSetIsComplete = (isComplete: boolean) => {
     setIsComplete(isComplete);
-    if (isComplete) setIsLoading(false);
+
+    if (isComplete) {
+      setError(null);
+      setIsLoading(false);
+    }
   };
 
   const reset = () => {

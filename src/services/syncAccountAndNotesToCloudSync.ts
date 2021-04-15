@@ -10,14 +10,13 @@ import {
 import getAccountFromCloudSync from '../api/cloudSync/getAccount';
 import updateAccountToCloudSync from '../api/cloudSync/updateAccount';
 import putNoteToCloudSync from '../api/cloudSync/putNote';
-import getNoteFromCloudSync from '../api/cloudSync/getNote';
-import saveNoteDataFromBase64 from './saveNoteDataFromBase64';
 import { eachLimit } from 'async';
 import { debounce } from 'lodash';
 import { FileCollection, FolderItem, NoteItem } from '../types/notes';
 import { mergeArrayOfObjectsBy } from '../utils/mergeArrayOfObject';
 import { StandardError, StandardSuccess } from '../types/response';
 import disk from '../utils/disk';
+import downloadNotesFromCloudSync from './downloadNotesFromCloudSync';
 
 export interface Payload {
   sessionToken: string;
@@ -87,11 +86,14 @@ const syncAccountAndNotesToCloudSync = async (
   const newOrOutdatedNoteIds: string[] = [];
 
   // loop through notes from cloud storage
-  fileCollection.notes.forEach((noteItem) => {
+  await eachLimit(fileCollection.notes, 1, async (noteItem) => {
     const localNoteItem = payload.fileCollection.notes.find((n) => n.id === noteItem.id);
     if (localNoteItem) {
-      // we have this note in local, see if it's outdated
-      if (localNoteItem.updated < noteItem.updated) {
+      // we have record of this note, see if it's outdated
+      // or if it doesn't have noteData on disk
+      const encryptedNoteData = await disk.get(noteItem.id);
+
+      if (localNoteItem.updated < noteItem.updated || !encryptedNoteData) {
         newOrOutdatedNoteIds.push(noteItem.id);
       }
     } else {
@@ -107,17 +109,11 @@ const syncAccountAndNotesToCloudSync = async (
     'updated',
   );
 
-  // download outdated and new noteData
-  await eachLimit(newOrOutdatedNoteIds, 2, async (noteId) => {
-    const getNote = await getNoteFromCloudSync({
-      username: payload.user.username,
-      sessionToken: payload.sessionToken,
-      noteId,
-    });
-
-    if ('success' in getNote && getNote.success) {
-      await saveNoteDataFromBase64(noteId, getNote.noteData);
-    }
+  // download new and outdated noteData
+  await downloadNotesFromCloudSync({
+    username: payload.user.username,
+    sessionToken: payload.sessionToken,
+    noteIds: newOrOutdatedNoteIds,
   });
 
   // upload other noteData
