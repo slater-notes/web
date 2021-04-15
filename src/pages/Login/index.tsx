@@ -88,7 +88,7 @@ const Login = () => {
     initialValues: {
       username: '',
       password: '',
-      enableCloudSyncLogin: true,
+      enableCloudSyncLogin: !!appSettings?.enableCloudSyncLogin,
     },
     validationSchema: () =>
       yup.object().shape({
