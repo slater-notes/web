@@ -7,6 +7,7 @@ import saveFileCollectionFromBase64 from '../services/saveFileCollectionFromBase
 import { useStoreActions } from '../store/typedHooks';
 import loadUserFromDisk from '../services/loadUserFromDisk';
 import syncAccountAndNotesToCloudSync from '../services/syncAccountAndNotesToCloudSync';
+import moment from 'moment';
 
 type LoginPayload = {
   username: string;
@@ -98,7 +99,9 @@ const useCloudSyncLogin = (): {
       return;
     }
 
-    setUser(loadUser.user);
+    const user = { ...loadUser.user, cloudLastSynced: moment().unix() };
+
+    setUser(user);
     setPasswordKey(loadUser.passwordKey);
     setCloudSyncPasswordKey(loadUser.cloudSyncPasswordKey);
     setFileCollection(loadUser.fileCollection);
