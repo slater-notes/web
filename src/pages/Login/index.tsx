@@ -25,7 +25,6 @@ import { upperFirst } from 'lodash';
 type FormFields = {
   username: string;
   password: string;
-  enableCloudSyncLogin: boolean;
 };
 
 const Login = () => {
@@ -88,23 +87,16 @@ const Login = () => {
     initialValues: {
       username: '',
       password: '',
-      enableCloudSyncLogin: !!appSettings?.enableCloudSyncLogin,
     },
     validationSchema: () =>
       yup.object().shape({
         username: yup.string().trim(),
         password: yup.string(),
-        enableCloudSyncLogin: yup.boolean(),
       }),
-    onSubmit: ({ username, password, enableCloudSyncLogin }) => {
+    onSubmit: ({ username, password }) => {
       reset();
 
-      updateAppSettings({
-        ...appSettings,
-        enableCloudSyncLogin,
-      });
-
-      if (enableCloudSyncLogin) cloudSyncLogin.start({ username, password });
+      if (appSettings?.enableCloudSyncLogin) cloudSyncLogin.start({ username, password });
       else offlineLogin();
     },
   });
@@ -143,13 +135,18 @@ const Login = () => {
                 name='enableCloudSyncLogin'
                 icon={<CloudOff />}
                 checkedIcon={<Cloud />}
-                checked={formik.values.enableCloudSyncLogin}
-                onChange={formik.handleChange}
+                checked={!!appSettings?.enableCloudSyncLogin}
+                onChange={(_e, checked) => {
+                  updateAppSettings({
+                    ...appSettings,
+                    enableCloudSyncLogin: checked,
+                  });
+                }}
               />
             }
             label={
               <Typography color='textSecondary'>
-                {formik.values.enableCloudSyncLogin ? 'Log in to cloud sync account' : 'Offline'}
+                {appSettings?.enableCloudSyncLogin ? 'Log in to cloud sync account' : 'Offline'}
               </Typography>
             }
           />
