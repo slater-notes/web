@@ -27,6 +27,7 @@ const useCloudSyncLogin = (): {
   const setPasswordKey = useStoreActions((a) => a.setPasswordKey);
   const setCloudSyncPasswordKey = useStoreActions((a) => a.setCloudSyncPasswordKey);
   const setFileCollection = useStoreActions((a) => a.setFileCollection);
+  const setSettings = useStoreActions((a) => a.setSettings);
 
   const startLogin = async ({ username, password }: LoginPayload) => {
     setIsLoading(true);
@@ -105,6 +106,7 @@ const useCloudSyncLogin = (): {
     setPasswordKey(loadUser.passwordKey);
     setCloudSyncPasswordKey(loadUser.cloudSyncPasswordKey);
     setFileCollection(loadUser.fileCollection);
+    setSettings(loadUser.settings);
 
     setIsComplete(true);
   };
