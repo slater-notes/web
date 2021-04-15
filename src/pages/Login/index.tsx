@@ -96,7 +96,7 @@ const Login = () => {
         password: yup.string(),
         enableCloudSyncLogin: yup.boolean(),
       }),
-    onSubmit: async ({ username, password, enableCloudSyncLogin }) => {
+    onSubmit: ({ username, password, enableCloudSyncLogin }) => {
       reset();
 
       updateAppSettings({
