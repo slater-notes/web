@@ -2,6 +2,31 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.3.3](https://github.com/slater-notes/web/compare/v0.3.2...v0.3.3) (2021-04-16)
+
+
+### Features
+
+* add autocomplete attributes to login fields ([9329c6b](https://github.com/slater-notes/web/commit/9329c6b8d4cfb82efc67ea4075a0c9f8b0af3a34))
+* add headers for netlify ([600e218](https://github.com/slater-notes/web/commit/600e218dc5ebca1047e8f4dc3cb00925b94e9203))
+* lazy load pages ([efa4f63](https://github.com/slater-notes/web/commit/efa4f63aca3e8f9f2ead80ff3e56d3378a508983))
+* **security:** set default-src to none on csp header ([9495817](https://github.com/slater-notes/web/commit/9495817b025a6d5198e3a29a2eb907906d781ada))
+
+
+### Bug Fixes
+
+* allow css in js on csp ([d569e30](https://github.com/slater-notes/web/commit/d569e30d4dbdd9b0d671dc21d12130e22e2b7f67))
+* disable inline chunks ([7e39146](https://github.com/slater-notes/web/commit/7e39146e0b7a81ad77b50370269d18c185981e5c))
+* fix app settings on login page ([8d828f7](https://github.com/slater-notes/web/commit/8d828f7abb71741f78454ced69ab3021df56eea8))
+* fix cloud sync timestamp when logging in ([4f83502](https://github.com/slater-notes/web/commit/4f83502096126d4f8c07b27fa33dd11eb21709fb))
+* fix cloud sync toggle on login page ([2e7a8f2](https://github.com/slater-notes/web/commit/2e7a8f247d85324e205a6b2db57159ac1bb3aa32))
+* fix loading issue when logging in ([bf1bcc1](https://github.com/slater-notes/web/commit/bf1bcc15658c9fe4f104a76f32b18afef48a9ba2))
+* fix syncing issue on login ([40da5d4](https://github.com/slater-notes/web/commit/40da5d4b69a2b73bdb9480fe313e436256a42d41))
+* fix user settings not being set correctly ([5aee3fb](https://github.com/slater-notes/web/commit/5aee3fbdb117761904fafe5ecf8b2a2bb31778bc))
+* **security:** add script-src in csp header ([2c1e271](https://github.com/slater-notes/web/commit/2c1e27174f1c83a75c32fe12f6ff71c3ff54b15b))
+* **security:** change default-src to self in csp header ([a6aceb4](https://github.com/slater-notes/web/commit/a6aceb4d7d70ca887a17ef119d8a93da27047e4b))
+* revert slate to 0.59.0 ([f7c82a1](https://github.com/slater-notes/web/commit/f7c82a171608e536de56d1038ab3f958d3dcfde1))
+
 ### [0.3.2](https://github.com/slater-notes/web/compare/v0.3.1...v0.3.2) (2021-04-04)
 
 
