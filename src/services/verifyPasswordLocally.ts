@@ -1,7 +1,8 @@
-import { base64ToBuffer, decrypt, getKeyFromDerivedPassword, UserItem } from '@slater-notes/core';
+import { base64ToBuffer, decrypt, getKeyFromDerivedPassword } from '@slater-notes/core';
 import { StandardError } from '../types/response';
-import { FILE_COLLECTION_KEY, USERS_KEY } from '../utils/DBIndexKeys';
+import { FILE_COLLECTION_KEY } from '../utils/DBIndexKeys';
 import disk from '../utils/disk';
+import getUserItemFromDisk from './getUserItemFromDisk';
 
 interface Payload {
   username: string;
@@ -15,11 +16,9 @@ type SuccessResponse = {
 const verifyPasswordLocally = async (
   payload: Payload,
 ): Promise<SuccessResponse | StandardError> => {
-  const usersJson = (await disk.get(USERS_KEY)) as string | undefined;
-  const users: UserItem[] = usersJson ? JSON.parse(usersJson) : [];
-  const user = users.find((u) => u.username === payload.username);
+  const user = await getUserItemFromDisk(payload.username);
 
-  if (users.length === 0 || !user) {
+  if (!user) {
     return {
       errorCode: 'no_user',
       error: 'No user with that username.',

@@ -2,13 +2,13 @@ import { UserItem } from '@slater-notes/core';
 import { StandardResponse } from '../types/response';
 import { USERS_KEY } from '../utils/DBIndexKeys';
 import disk from '../utils/disk';
+import getAllUserItemsFromDisk from './getAllUserItemsFromDisk';
 
 const changeUsernameOnDisk = async (
   userItem: UserItem,
   newUsername: string,
 ): Promise<StandardResponse> => {
-  const usersJson = (await disk.get(USERS_KEY)) as string | undefined;
-  const users: UserItem[] = usersJson ? JSON.parse(usersJson) : [];
+  const users = await getAllUserItemsFromDisk();
 
   if (users.findIndex((u) => u.username === newUsername) > -1) {
     return { error: 'Username already in use' };

@@ -13,6 +13,7 @@ import { FileCollection } from '../types/notes';
 import { defaultCloudSyncPasswordIterations } from '../config/cloudSync';
 import { StandardError } from '../types/response';
 import disk from '../utils/disk';
+import getAllUserItemsFromDisk from './getAllUserItemsFromDisk';
 
 interface Payload {
   username: string;
@@ -30,8 +31,7 @@ type SuccessResponse = {
 };
 
 const createUserOnDisk = async (payload: Payload): Promise<SuccessResponse | StandardError> => {
-  const usersJson = (await disk.get(USERS_KEY)) as string | undefined;
-  let users: UserItem[] = usersJson ? JSON.parse(usersJson) : [];
+  let users = await getAllUserItemsFromDisk();
 
   // check that this user does not exist
   if (users && users.findIndex((u) => u.username === payload.username) > -1) {

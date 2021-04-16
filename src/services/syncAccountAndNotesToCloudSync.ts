@@ -9,7 +9,6 @@ import {
 } from '@slater-notes/core';
 import getAccountFromCloudSync from '../api/cloudSync/getAccount';
 import updateAccountToCloudSync from '../api/cloudSync/updateAccount';
-import putNoteToCloudSync from '../api/cloudSync/putNote';
 import { eachLimit } from 'async';
 import { debounce } from 'lodash';
 import { FileCollection, FolderItem, NoteItem } from '../types/notes';
@@ -17,6 +16,7 @@ import { mergeArrayOfObjectsBy } from '../utils/mergeArrayOfObject';
 import { StandardError, StandardSuccess } from '../types/response';
 import disk from '../utils/disk';
 import getNotesFromCloudSyncAndSaveToDisk from './getNotesFromCloudSyncAndSaveToDisk';
+import saveNotesToCloudSyncFromDisk from './saveNotesToCloudSyncFromDisk';
 
 export interface Payload {
   sessionToken: string;
@@ -121,16 +121,10 @@ const syncAccountAndNotesToCloudSync = async (
     .map((n) => n.id)
     .filter((id) => !newOrOutdatedNoteIds.includes(id));
 
-  await eachLimit(otherNoteIds, 2, async (noteId) => {
-    const encryptedNoteData = await disk.get(noteId);
-    if (encryptedNoteData instanceof Uint8Array) {
-      await putNoteToCloudSync({
-        username: payload.user.username,
-        sessionToken: payload.sessionToken,
-        noteId: noteId,
-        noteData: bufferToBase64(encryptedNoteData),
-      });
-    }
+  saveNotesToCloudSyncFromDisk({
+    username: payload.user.username,
+    sessionToken: payload.sessionToken,
+    noteIds: otherNoteIds,
   });
 
   // create a new fileCollection object

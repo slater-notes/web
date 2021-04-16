@@ -1,10 +1,10 @@
 import { UserItem } from '@slater-notes/core';
 import { USERS_KEY } from '../utils/DBIndexKeys';
 import disk from '../utils/disk';
+import getAllUserItemsFromDisk from './getAllUserItemsFromDisk';
 
 const saveUserItemToDisk = async (userItem: UserItem) => {
-  const usersJson = (await disk.get(USERS_KEY)) as string | undefined;
-  const users: UserItem[] = usersJson ? JSON.parse(usersJson) : [];
+  const users = await getAllUserItemsFromDisk();
   const userIndex = users.findIndex((u) => u.username === userItem.username);
 
   if (userIndex > -1) {
