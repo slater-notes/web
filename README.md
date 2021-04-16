@@ -10,7 +10,7 @@
   <img src="https://img.shields.io/github/last-commit/slater-notes/web" />
   <img src="https://img.shields.io/github/license/slater-notes/web?color=blue" />
 </p>
-<p align="center">Open-source, end-to-end encrypted notes app 📝 — <a href="https://slaternotes.com">https://slaternotes.com</a></p>
+<p align="center">A secure, end-to-end encrypted notes app 🔏 — <a href="https://slaternotes.com">https://slaternotes.com</a></p>
 
 > **NOTE:** Slater Notes is still a pre-release project (v0.x.x). Please use at your own risk. If you find this project useful, please consider leaving a star so others can find it. Thanks!
 

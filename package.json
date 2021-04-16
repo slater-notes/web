@@ -1,7 +1,7 @@
 {
   "name": "@slater-notes/web",
   "version": "0.3.2",
-  "description": "Open-source, end-to-end encrypted notes app",
+  "description": "🔏 A secure, end-to-end encrypted notes app.",
   "homepage": "https://slaternotes.com",
   "author": {
     "name": "Jeff Bocala",
@@ -16,9 +16,10 @@
   "license": "MIT",
   "keywords": [
     "react",
-    "editor",
     "typescript",
     "notes",
+    "end-to-end-encryption",
+    "encrypted-notes",
     "slater-notes"
   ],
   "scripts": {
