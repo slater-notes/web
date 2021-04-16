@@ -26,7 +26,9 @@ type SuccessResponse = {
   settings: Partial<UserSettingsOptions> | null;
 };
 
-const loadUserFromDisk = async (payload: Payload): Promise<SuccessResponse | StandardError> => {
+const getDecryptedAccountFromDisk = async (
+  payload: Payload,
+): Promise<SuccessResponse | StandardError> => {
   const usersJson = (await disk.get(USERS_KEY)) as string | undefined;
   const users: UserItem[] = usersJson ? JSON.parse(usersJson) : [];
   const user = users.find((u) => u.username === payload.username);
@@ -108,4 +110,4 @@ const loadUserFromDisk = async (payload: Payload): Promise<SuccessResponse | Sta
   };
 };
 
-export default loadUserFromDisk;
+export default getDecryptedAccountFromDisk;

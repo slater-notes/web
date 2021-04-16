@@ -1,8 +1,8 @@
 import { createStore } from 'easy-peasy';
 import { bufferToString, base64ToBuffer, decrypt } from '@slater-notes/core';
 import ApplicationStore from '../store';
-import createNewUser from '../services/createNewUser';
-import loadUserFromDisk from '../services/loadUserFromDisk';
+import createUserOnDisk from '../services/createUserOnDisk';
+import getDecryptedAccountFromDisk from '../services/getDecryptedAccountFromDisk';
 import { SETTINGS_KEY } from '../utils/DBIndexKeys';
 import { addPolyfill } from '../utils/testPolyfill';
 import { UserSettingsOptions } from '../config/defaultUserSettings';
@@ -15,7 +15,7 @@ describe('settings test', () => {
   const actions = store.getActions();
 
   test('new users should have empty settings', async () => {
-    const newUserResult = await createNewUser({
+    const newUserResult = await createUserOnDisk({
       username: 'testuser',
       password: 'testpass',
     });
@@ -56,7 +56,10 @@ describe('settings test', () => {
   });
 
   test('loading users should load its settings', async () => {
-    const result = await loadUserFromDisk({ username: 'testuser', password: 'testpass' });
+    const result = await getDecryptedAccountFromDisk({
+      username: 'testuser',
+      password: 'testpass',
+    });
 
     if ('error' in result) {
       fail();

@@ -29,7 +29,7 @@ type SuccessResponse = {
   fileCollection: FileCollection;
 };
 
-const createNewUser = async (payload: Payload): Promise<SuccessResponse | StandardError> => {
+const createUserOnDisk = async (payload: Payload): Promise<SuccessResponse | StandardError> => {
   const usersJson = (await disk.get(USERS_KEY)) as string | undefined;
   let users: UserItem[] = usersJson ? JSON.parse(usersJson) : [];
 
@@ -106,4 +106,4 @@ const createNewUser = async (payload: Payload): Promise<SuccessResponse | Standa
   };
 };
 
-export default createNewUser;
+export default createUserOnDisk;

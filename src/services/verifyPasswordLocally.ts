@@ -12,7 +12,9 @@ type SuccessResponse = {
   success: boolean;
 };
 
-const verifyPassword = async (payload: Payload): Promise<SuccessResponse | StandardError> => {
+const verifyPasswordLocally = async (
+  payload: Payload,
+): Promise<SuccessResponse | StandardError> => {
   const usersJson = (await disk.get(USERS_KEY)) as string | undefined;
   const users: UserItem[] = usersJson ? JSON.parse(usersJson) : [];
   const user = users.find((u) => u.username === payload.username);
@@ -52,4 +54,4 @@ const verifyPassword = async (payload: Payload): Promise<SuccessResponse | Stand
   return { success: true };
 };
 
-export default verifyPassword;
+export default verifyPasswordLocally;

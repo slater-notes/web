@@ -8,7 +8,7 @@ import {
 } from '@slater-notes/core';
 import { defaultCloudSyncPasswordIterations } from '../config/cloudSync';
 import { StandardError } from '../types/response';
-import saveUser from './saveUser';
+import saveUserItemToDisk from './saveUserItemToDisk';
 
 type SuccessResponse = {
   success: true;
@@ -17,7 +17,7 @@ type SuccessResponse = {
 
 type Response = SuccessResponse | StandardError;
 
-const decryptAndSaveUserFromBase64 = async (
+const decryptAndSaveUserToDisk = async (
   username: string,
   password: string,
   userItemData: string,
@@ -46,9 +46,9 @@ const decryptAndSaveUserFromBase64 = async (
   const userItem: UserItem = JSON.parse(bufferToString(decryptedData));
 
   //  save to disk
-  await saveUser(userItem);
+  await saveUserItemToDisk(userItem);
 
   return { success: true, userItem };
 };
 
-export default decryptAndSaveUserFromBase64;
+export default decryptAndSaveUserToDisk;

@@ -12,7 +12,7 @@ import * as yup from 'yup';
 import DefaultButton from '../../components/Buttons/DefaultButton';
 import { useStoreActions, useStoreState } from '../../store/typedHooks';
 import { useLocation } from 'wouter';
-import loadUserFromDisk from '../../services/loadUserFromDisk';
+import getDecryptedAccountFromDisk from '../../services/getDecryptedAccountFromDisk';
 import LoginPage from '../../components/LoginPage';
 import { Cloud, CloudOff } from 'react-feather';
 import H1 from '../../components/Typography/H1';
@@ -56,7 +56,7 @@ const Login = () => {
 
     formik.setSubmitting(true);
 
-    const loadUser = await loadUserFromDisk({ username, password });
+    const loadUser = await getDecryptedAccountFromDisk({ username, password });
 
     if ('error' in loadUser) {
       switch (loadUser.errorCode) {

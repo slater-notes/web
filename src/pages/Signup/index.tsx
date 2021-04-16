@@ -16,7 +16,7 @@ import * as yup from 'yup';
 import DefaultButton from '../../components/Buttons/DefaultButton';
 import { useStoreActions } from '../../store/typedHooks';
 import { useLocation } from 'wouter';
-import createNewUser from '../../services/createNewUser';
+import createUserOnDisk from '../../services/createUserOnDisk';
 import LoginPage from '../../components/LoginPage';
 import { ChevronDown } from 'react-feather';
 import { generateSalt, getKeyFromDerivedPassword } from '@slater-notes/core';
@@ -83,7 +83,7 @@ const Signup = () => {
           onSubmit={(values, { setErrors, setSubmitting }) => {
             (async () => {
               // Step 1. create local user
-              const createUserResult = await createNewUser({
+              const createUserResult = await createUserOnDisk({
                 username: values.username,
                 password: values.password,
                 enableCloudSync: values.enableCloudSync,

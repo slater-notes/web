@@ -3,7 +3,7 @@ import { UserSettingsOptions } from '../config/defaultUserSettings';
 import { SETTINGS_KEY } from '../utils/DBIndexKeys';
 import disk from '../utils/disk';
 
-const saveUserSettings = async (
+const saveUserSettingsToDisk = async (
   user: UserItem,
   passwordKey: CryptoKey,
   settings: Partial<UserSettingsOptions>,
@@ -20,4 +20,4 @@ const saveUserSettings = async (
   await disk.set(`${SETTINGS_KEY}--${user.id}`, encryptedData);
 };
 
-export default saveUserSettings;
+export default saveUserSettingsToDisk;

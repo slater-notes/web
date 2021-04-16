@@ -1,6 +1,6 @@
 import { bufferToBase64, encrypt, stringToBuffer, UserItem } from '@slater-notes/core';
 import { StandardError, StandardSuccess } from '../types/response';
-import getFileCollectionAsBase64 from './getFileCollectionAsBase64';
+import getFileCollectionFromDiskAsBase64 from './getFileCollectionFromDiskAsBase64';
 import registerToCloudSync from '../api/cloudSync/registerAccount';
 
 interface Payload {
@@ -27,7 +27,7 @@ const prepareAndRegisterToCloudSync = async (
   const userItem = bufferToBase64(encryptedData);
 
   // get fileColleciton as base64
-  const fileCollection = await getFileCollectionAsBase64(payload.user.id);
+  const fileCollection = await getFileCollectionFromDiskAsBase64(payload.user.id);
 
   if (!fileCollection) {
     return { error: 'unknown error' };

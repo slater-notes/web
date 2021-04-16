@@ -3,7 +3,7 @@ import { FileCollection } from '../types/notes';
 import { FILE_COLLECTION_KEY } from '../utils/DBIndexKeys';
 import disk from '../utils/disk';
 
-const saveFileCollection = async (
+const saveFileCollectionToDisk = async (
   user: UserItem,
   passwordKey: CryptoKey,
   fileCollection: FileCollection,
@@ -20,4 +20,4 @@ const saveFileCollection = async (
   await disk.set(`${FILE_COLLECTION_KEY}--${user.id}`, new Uint8Array(encryptedData).valueOf());
 };
 
-export default saveFileCollection;
+export default saveFileCollectionToDisk;

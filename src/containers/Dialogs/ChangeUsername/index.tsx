@@ -1,7 +1,7 @@
 import { TextField, useTheme } from '@material-ui/core';
 import React from 'react';
 import DefaultDialog from '../../../components/Dialogs/DefaultDialog';
-import changeUsername from '../../../services/changeUsername';
+import changeUsernameOnDisk from '../../../services/changeUsernameOnDisk';
 import { useStoreActions, useStoreState } from '../../../store/typedHooks';
 import * as yup from 'yup';
 
@@ -48,7 +48,7 @@ const ChangeUsername = (props: Props) => {
       return;
     }
 
-    const result = await changeUsername(user, un);
+    const result = await changeUsernameOnDisk(user, un);
 
     if ('error' in result) {
       setError(result.error);

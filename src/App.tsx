@@ -5,7 +5,7 @@ import ApplicationStore from './store';
 import { Route, Switch, useLocation, useRoute } from 'wouter';
 import { useStoreActions } from './store/typedHooks';
 import { THEME } from './config/theme';
-import loadAppSettings from './services/loadAppSettings';
+import getAppSettingsFromDisk from './services/getAppSettingsFromDisk';
 
 const Login = lazy(() => import('./pages/Login'));
 const Signup = lazy(() => import('./pages/Signup'));
@@ -21,7 +21,7 @@ export const AppStarter = memo(({ children }: any) => {
 
   useEffect(() => {
     (async () => {
-      setAppSettings(await loadAppSettings());
+      setAppSettings(await getAppSettingsFromDisk());
     })();
 
     if (isRoot) {

@@ -3,7 +3,7 @@ import { StandardResponse } from '../types/response';
 import { USERS_KEY } from '../utils/DBIndexKeys';
 import disk from '../utils/disk';
 
-const changeUsername = async (
+const changeUsernameOnDisk = async (
   userItem: UserItem,
   newUsername: string,
 ): Promise<StandardResponse> => {
@@ -27,4 +27,4 @@ const changeUsername = async (
   return { success: true };
 };
 
-export default changeUsername;
+export default changeUsernameOnDisk;

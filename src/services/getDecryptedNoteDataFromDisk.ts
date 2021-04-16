@@ -7,7 +7,7 @@ type SuccessResponse = {
   noteData: NoteData;
 };
 
-const loadNoteData = async (
+const getDecryptedNoteDataFromDisk = async (
   noteId: string,
   nonce: string,
   passwordKey: CryptoKey,
@@ -40,4 +40,4 @@ const loadNoteData = async (
   return { noteData };
 };
 
-export default loadNoteData;
+export default getDecryptedNoteDataFromDisk;

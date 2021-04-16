@@ -9,17 +9,17 @@ import {
   bufferToBase64,
   base64ToBuffer,
 } from '@slater-notes/core';
-import loadNoteData from '../services/loadNoteData';
-import saveFileCollection from '../services/saveFileCollection';
-import saveNoteData from '../services/saveNoteData';
-import saveUserSettings from '../services/saveUserSettings';
+import getDecryptedNoteDataFromDisk from '../services/getDecryptedNoteDataFromDisk';
+import saveFileCollectionToDisk from '../services/saveFileCollectionToDisk';
+import saveNoteDataToDisk from '../services/saveNoteDataToDisk';
+import saveUserSettingsToDisk from '../services/saveUserSettingsToDisk';
 import { FILE_COLLECTION_KEY } from '../utils/DBIndexKeys';
 import { log } from '../utils/log';
 import { UserSettingsOptions } from '../config/defaultUserSettings';
-import saveUser from '../services/saveUser';
+import saveUserItemToDisk from '../services/saveUserItemToDisk';
 import { syncAccountAndNotesToCloudSyncDebouncedWorker } from '../services/syncAccountAndNotesToCloudSync';
 import { AppSettingsOptions } from '../config/defaultAppSettings';
-import saveAppSettings from '../services/saveAppSettings';
+import saveAppSettingsToDisk from '../services/saveAppSettingsToDisk';
 import { FileCollection, FolderItem, NoteData, NoteItem } from '../types/notes';
 import disk from '../utils/disk';
 
@@ -142,7 +142,7 @@ const ApplicationStore: StoreModel = {
       return;
     }
 
-    await saveUser(payload.userItem);
+    await saveUserItemToDisk(payload.userItem);
 
     actions.setUser(payload.userItem);
 
@@ -167,7 +167,7 @@ const ApplicationStore: StoreModel = {
       return;
     }
 
-    await saveFileCollection(user, passwordKey, payload);
+    await saveFileCollectionToDisk(user, passwordKey, payload);
     actions.setFileCollection({ ...payload });
   }),
 
@@ -184,7 +184,7 @@ const ApplicationStore: StoreModel = {
       return;
     }
 
-    await saveUserSettings(user, passwordKey, settings || {});
+    await saveUserSettingsToDisk(user, passwordKey, settings || {});
   }),
 
   updateAppSettings: thunk(async (actions, payload, { getState }) => {
@@ -200,7 +200,7 @@ const ApplicationStore: StoreModel = {
       return;
     }
 
-    await saveAppSettings(appSettings);
+    await saveAppSettingsToDisk(appSettings);
   }),
 
   createNewNote: thunk(async (actions, payload, { getState }) => {
@@ -234,7 +234,7 @@ const ApplicationStore: StoreModel = {
       revisions: [],
     };
 
-    await saveNoteData(passwordKey, noteItem.nonce, noteData);
+    await saveNoteDataToDisk(passwordKey, noteItem.nonce, noteData);
 
     const notes = fileCollection.notes;
     notes.push(noteItem);
@@ -285,7 +285,7 @@ const ApplicationStore: StoreModel = {
 
     fileCollection.folders.push(folder);
 
-    await saveFileCollection(user, passwordKey, fileCollection);
+    await saveFileCollectionToDisk(user, passwordKey, fileCollection);
 
     actions.setFileCollection(fileCollection);
     actions.setActiveFolderId(folder.id);
@@ -315,7 +315,7 @@ const ApplicationStore: StoreModel = {
       return;
     }
 
-    const result = await loadNoteData(noteItem.id, noteItem.nonce, passwordKey);
+    const result = await getDecryptedNoteDataFromDisk(noteItem.id, noteItem.nonce, passwordKey);
 
     if ('error' in result) {
       // TODO: show error?
@@ -353,7 +353,7 @@ const ApplicationStore: StoreModel = {
       return;
     }
 
-    await saveFileCollection(user, passwordKey, fileCollection);
+    await saveFileCollectionToDisk(user, passwordKey, fileCollection);
 
     actions.setFileCollection({ ...fileCollection });
 
@@ -398,7 +398,7 @@ const ApplicationStore: StoreModel = {
       return;
     }
 
-    await saveNoteData(passwordKey, noteItem.nonce, payload.noteData);
+    await saveNoteDataToDisk(passwordKey, noteItem.nonce, payload.noteData);
 
     if (activeNote?.noteItem.id === payload.id) {
       actions.setActiveNote({ noteItem: activeNote.noteItem, noteData: payload.noteData });
@@ -443,7 +443,7 @@ const ApplicationStore: StoreModel = {
       return;
     }
 
-    await saveFileCollection(user, passwordKey, fileCollection);
+    await saveFileCollectionToDisk(user, passwordKey, fileCollection);
 
     actions.setFileCollection({ ...fileCollection });
 
@@ -559,7 +559,7 @@ const ApplicationStore: StoreModel = {
     fileCollection.notes = fileCollection.notes.filter((n) => !n.isDeleted);
     fileCollection.folders = fileCollection.folders.filter((f) => !f.isDeleted);
 
-    await saveFileCollection(user, passwordKey, fileCollection);
+    await saveFileCollectionToDisk(user, passwordKey, fileCollection);
 
     // reset active note
     if (activeNote && noteIdsToDelete.includes(activeNote.noteItem.id)) {
@@ -601,7 +601,7 @@ const ApplicationStore: StoreModel = {
       fileCollection.notes.splice(noteIndex, 1);
     }
 
-    await saveFileCollection(user, passwordKey, fileCollection);
+    await saveFileCollectionToDisk(user, passwordKey, fileCollection);
 
     actions.setFileCollection({ ...fileCollection });
 
@@ -638,7 +638,7 @@ const ApplicationStore: StoreModel = {
       fileCollection.folders.splice(folderIndex, 1);
     }
 
-    await saveFileCollection(user, passwordKey, fileCollection);
+    await saveFileCollectionToDisk(user, passwordKey, fileCollection);
 
     actions.setFileCollection({ ...fileCollection });
 

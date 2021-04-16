@@ -16,7 +16,7 @@ import { FileCollection, FolderItem, NoteItem } from '../types/notes';
 import { mergeArrayOfObjectsBy } from '../utils/mergeArrayOfObject';
 import { StandardError, StandardSuccess } from '../types/response';
 import disk from '../utils/disk';
-import downloadNotesFromCloudSync from './downloadNotesFromCloudSync';
+import getNotesFromCloudSyncAndSaveToDisk from './getNotesFromCloudSyncAndSaveToDisk';
 
 export interface Payload {
   sessionToken: string;
@@ -110,7 +110,7 @@ const syncAccountAndNotesToCloudSync = async (
   );
 
   // download new and outdated noteData
-  await downloadNotesFromCloudSync({
+  await getNotesFromCloudSyncAndSaveToDisk({
     username: payload.user.username,
     sessionToken: payload.sessionToken,
     noteIds: newOrOutdatedNoteIds,

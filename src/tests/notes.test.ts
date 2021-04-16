@@ -2,7 +2,7 @@ import { createStore } from 'easy-peasy';
 import moment from 'moment';
 import { bufferToString, base64ToBuffer, decrypt } from '@slater-notes/core';
 import ApplicationStore from '../store';
-import createNewUser from '../services/createNewUser';
+import createUserOnDisk from '../services/createUserOnDisk';
 import { FILE_COLLECTION_KEY } from '../utils/DBIndexKeys';
 import { addPolyfill } from '../utils/testPolyfill';
 import { FileCollection, NoteData } from '../types/notes';
@@ -14,7 +14,7 @@ describe('notes test', () => {
   const store = createStore(ApplicationStore);
 
   test('file collection is loaded on user load', async () => {
-    const result = await createNewUser({
+    const result = await createUserOnDisk({
       username: 'testuser',
       password: 'testpass',
     });

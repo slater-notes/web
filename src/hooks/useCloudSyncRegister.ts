@@ -1,5 +1,5 @@
 import prepareAndRegisterToCloudSync from '../services/prepareAndRegisterToCloudSync';
-import verifyPassword from '../services/verifyPassword';
+import verifyPasswordLocally from '../services/verifyPasswordLocally';
 import { useStoreActions, useStoreState } from '../store/typedHooks';
 import generateTokenFromPassword from '../utils/generateTokenFromPassword';
 import useLoading, { ErrorOrNull } from './useLoading';
@@ -34,7 +34,7 @@ const useCloudSyncRegister = (): [
     const { username } = user;
 
     const token = await generateTokenFromPassword(password, username);
-    const verify = await verifyPassword({ username, password });
+    const verify = await verifyPasswordLocally({ username, password });
 
     if ('error' in verify) {
       if (verify.errorCode === 'bad_key') setError({ error: 'Invalid password.' });

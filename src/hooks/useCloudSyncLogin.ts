@@ -2,10 +2,10 @@ import useLoading, { ErrorOrNull } from './useLoading';
 import generateTokenFromPassword from '../utils/generateTokenFromPassword';
 import getNewSessionFromCloudSync from '../api/cloudSync/getNewSession';
 import getAccountFromCloudSync from '../api/cloudSync/getAccount';
-import decryptAndSaveUserFromBase64 from '../services/decryptAndSaveUserFromBase64';
-import saveFileCollectionFromBase64 from '../services/saveFileCollectionFromBase64';
+import decryptAndSaveUserToDisk from '../services/decryptAndSaveUserToDisk';
+import saveBase64FileCollectionToDisk from '../services/saveBase64FileCollectionToDisk';
 import { useStoreActions } from '../store/typedHooks';
-import loadUserFromDisk from '../services/loadUserFromDisk';
+import getDecryptedAccountFromDisk from '../services/getDecryptedAccountFromDisk';
 import syncAccountAndNotesToCloudSync from '../services/syncAccountAndNotesToCloudSync';
 import moment from 'moment';
 
@@ -68,17 +68,17 @@ const useCloudSyncLogin = (): {
       return;
     }
 
-    const saveUser = await decryptAndSaveUserFromBase64(username, password, fetchAccount.userItem);
+    const saveUser = await decryptAndSaveUserToDisk(username, password, fetchAccount.userItem);
 
     if ('error' in saveUser) {
       setError(saveUser);
       return;
     }
 
-    await saveFileCollectionFromBase64(saveUser.userItem, fetchAccount.fileCollection);
+    await saveBase64FileCollectionToDisk(saveUser.userItem, fetchAccount.fileCollection);
 
     // Load user from disk
-    const loadUser = await loadUserFromDisk({ username, password });
+    const loadUser = await getDecryptedAccountFromDisk({ username, password });
 
     if ('error' in loadUser) {
       setError(loadUser);

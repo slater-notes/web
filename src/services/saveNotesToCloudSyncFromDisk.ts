@@ -1,6 +1,6 @@
 import { eachLimit } from 'async';
 import putNote from '../api/cloudSync/putNote';
-import getNoteDataAsBase64 from './getNoteDataAsBase64';
+import getNoteDataFromDiskAsBase64 from './getNoteDataFromDiskAsBase64';
 import { StandardResponse } from '../types/response';
 
 interface Payload {
@@ -9,9 +9,9 @@ interface Payload {
   noteIds: string[];
 }
 
-const uploadNotesToCloudSync = async (payload: Payload): Promise<StandardResponse> => {
+const saveNotesToCloudSyncFromDisk = async (payload: Payload): Promise<StandardResponse> => {
   await eachLimit(payload.noteIds, 2, async (noteId) => {
-    const noteData = await getNoteDataAsBase64(noteId);
+    const noteData = await getNoteDataFromDiskAsBase64(noteId);
 
     if (!noteData) {
       // TODO: show error?
@@ -29,4 +29,4 @@ const uploadNotesToCloudSync = async (payload: Payload): Promise<StandardRespons
   return { success: true };
 };
 
-export default uploadNotesToCloudSync;
+export default saveNotesToCloudSyncFromDisk;
