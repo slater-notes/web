@@ -76,7 +76,7 @@ const useStyles = makeStyles((theme) => ({
 
     '& .MuiListItemIcon-root': {
       minWidth: 'auto',
-      marginRight: theme.spacing(4),
+      marginRight: theme.spacing(3),
       color: theme.palette.text.primary,
     },
   },

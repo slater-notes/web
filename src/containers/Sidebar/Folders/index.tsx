@@ -166,7 +166,6 @@ const Folders = () => {
                     secondaryAction: editingFolderId ? null : (
                       <IconButtonWithMenu
                         icon={MoreVertical}
-                        size='small'
                         menuItems={[
                           {
                             label: 'Rename',

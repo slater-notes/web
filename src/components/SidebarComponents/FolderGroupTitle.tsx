@@ -1,4 +1,4 @@
-import { makeStyles } from '@material-ui/core';
+import { List, ListItem, ListItemSecondaryAction, makeStyles } from '@material-ui/core';
 import { Icon } from 'react-feather';
 import DefaultIconButton from '../Buttons/DefaultIconButton';
 
@@ -14,35 +14,24 @@ const FolderGroupTitle = (props: Props) => {
   const classes = useStyles();
 
   return (
-    <div className={classes.container}>
-      <div>{props.title}</div>
-      <div className={classes.iconButton}>
+    <List>
+      <ListItem className={classes.listItem}>{props.title}</ListItem>
+      <ListItemSecondaryAction>
         <DefaultIconButton
           label='Add Folder'
           icon={props.iconButton.icon}
           onClick={props.iconButton.onClick}
         />
-      </div>
-    </div>
+      </ListItemSecondaryAction>
+    </List>
   );
 };
 
 const useStyles = makeStyles((theme) => ({
-  container: {
-    display: 'flex',
-    padding: `${theme.spacing(1)}px ${theme.spacing(4)}px`,
-    fontSize: '0.9rem',
-    fontWeight: theme.typography.fontWeightMedium,
-    textTransform: 'uppercase',
-    justifyContent: 'space-between',
-    position: 'relative',
-    opacity: 0.6,
-  },
-
-  iconButton: {
-    position: 'relative',
-    top: `-${theme.spacing(1.5)}px`,
-    right: `-${theme.spacing(1.5)}px`,
+  listItem: {
+    '&.MuiListItem-gutters': {
+      padding: `${theme.spacing(1)}px ${theme.spacing(5)}px`,
+    },
   },
 }));
 
