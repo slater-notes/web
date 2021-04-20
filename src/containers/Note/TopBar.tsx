@@ -1,5 +1,5 @@
-import { makeStyles, useTheme } from '@material-ui/core';
-import React, { useState } from 'react';
+import { Box, makeStyles, useTheme } from '@material-ui/core';
+import React, { PropsWithChildren, useState } from 'react';
 import { RotateCcw, Star, Trash } from 'react-feather';
 import DefaultButton from '../../components/Buttons/DefaultButton';
 import DefaultIconButton from '../../components/Buttons/DefaultIconButton';
@@ -29,7 +29,7 @@ const TopBar = (props: Props) => {
   return (
     <div className={classes.container}>
       <div>
-        <FolderPicker noteItem={props.note.noteItem} />
+        {!props.note.noteItem.isDeleted && <FolderPicker noteItem={props.note.noteItem} />}
 
         {props.note.noteItem.isDeleted && (
           <DefaultButton
@@ -65,6 +65,10 @@ const TopBar = (props: Props) => {
             }}
           />
         )}
+      </div>
+
+      <div className={classes.rightItems}>
+        {props.saved ? <StatusText>✓ Saved</StatusText> : <StatusText>Unsaved</StatusText>}
 
         {!props.note.noteItem.isDeleted && (
           <React.Fragment>
@@ -90,41 +94,43 @@ const TopBar = (props: Props) => {
             />
           </React.Fragment>
         )}
-
-        {deleteConfirm && (
-          <DefaultDialog
-            title='Move Note to Trash?'
-            text={`Are you sure you want to move this note to the trash folder? You can still recover this note after.`}
-            withCancel
-            withConfirm
-            confirmLabel='Trash Note'
-            confirmButtonStyle={{ color: theme.palette.error.main }}
-            onCancel={() => setDeleteConfirm(false)}
-            onConfirm={() => {
-              setDeleteConfirm(false);
-
-              const noteItem = props.note.noteItem;
-              noteItem.isDeleted = true;
-              setActiveNote(null);
-              updateNoteItem({ id: props.note.noteItem.id, noteItem });
-            }}
-          />
-        )}
       </div>
 
-      <div className={classes.rightItems}>
-        {props.saved ? <span>✓ Saved</span> : <span>Unsaved</span>}
-      </div>
+      {deleteConfirm && (
+        <DefaultDialog
+          title='Move Note to Trash?'
+          text={`Are you sure you want to move this note to the trash folder? You can still recover this note after.`}
+          withCancel
+          withConfirm
+          confirmLabel='Trash Note'
+          confirmButtonStyle={{ color: theme.palette.error.main }}
+          onCancel={() => setDeleteConfirm(false)}
+          onConfirm={() => {
+            setDeleteConfirm(false);
+
+            const noteItem = props.note.noteItem;
+            noteItem.isDeleted = true;
+            setActiveNote(null);
+            updateNoteItem({ id: props.note.noteItem.id, noteItem });
+          }}
+        />
+      )}
     </div>
   );
 };
+
+const StatusText = (props: PropsWithChildren<{}>) => (
+  <Box padding={1.5} marginRight={1}>
+    {props.children}
+  </Box>
+);
 
 const useStyles = makeStyles((theme) => ({
   container: {
     display: 'flex',
     justifyContent: 'space-between',
+    alignItems: 'center',
     padding: `${theme.spacing(3)}px ${theme.spacing(8)}px`,
-    // color: theme.palette.text.hint,
 
     '& > * > *': {
       marginRight: theme.spacing(1),
@@ -135,6 +141,8 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     alignItems: 'center',
   },
+
+  status: {},
 }));
 
 export default TopBar;
