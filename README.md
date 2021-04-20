@@ -24,6 +24,14 @@
 - 🙅‍♂️ No telemetry/analytics/data collection
 - 🌙 _Dark mode coming soon!_
 
+## Web App
+
+Use **slaternotes.com** for stable releases.
+
+And if you'd like to use an up-to-date, but non-stable, release of Slater Notes go to: next.slaternotes.com
+
+**Next** builds from the **main** branch – which is updated almost daily.
+
 ## Changelog
 
 `// TODO`
