@@ -8,6 +8,7 @@ import {
   Folder,
   MoreVertical,
   Plus,
+  PlusCircle,
   Settings as SettingsIcon,
   Star,
   Trash,
@@ -23,6 +24,7 @@ import FolderItemEdit from './FolderItemEdit';
 import ListGroup, { Props as ListGroupProps } from './ListGroup';
 import CloudSync from '../../Dialogs/CloudSync';
 import { throttle } from 'lodash';
+import FolderGroupTitle from '../../../components/SidebarComponents/FolderGroupTitle';
 
 const Folders = () => {
   const theme = useTheme();
@@ -130,9 +132,13 @@ const Folders = () => {
           />
         </div>
 
-        <div className={classes.folderGroupTitle}>
-          <span>Folders</span>
-        </div>
+        <FolderGroupTitle
+          title='Folders'
+          iconButton={{
+            icon: PlusCircle,
+            onClick: () => createNewFolder({ title: '', editOnCreate: true }),
+          }}
+        />
 
         {useMemo(
           () => {
@@ -185,17 +191,6 @@ const Folders = () => {
                     onClick: () => setActiveFolderId(folder.id),
                   }))
               : [];
-
-            items.unshift({
-              key: 'addfolder',
-              text: 'Add Folder',
-              icon: Plus,
-              isDisabled: !!editingFolderId,
-              hasNormalTextColor: true,
-              onClick: async () => {
-                await createNewFolder({ title: '', editOnCreate: true });
-              },
-            });
 
             return <ListGroup items={items} />;
           },
@@ -268,17 +263,6 @@ const useStyles = makeStyles((theme) => ({
     '&.has--shadow': {
       boxShadow: 'inset 0px 20px 10px -10px rgb(0 0 0 / 15%)',
     },
-  },
-
-  folderGroupTitle: {
-    display: 'flex',
-    padding: `${theme.spacing(1)}px ${theme.spacing(4)}px`,
-    fontSize: '0.9rem',
-    fontWeight: theme.typography.fontWeightMedium,
-    textTransform: 'uppercase',
-    justifyContent: 'space-between',
-    position: 'relative',
-    opacity: 0.6,
   },
 
   bottomControl: {
