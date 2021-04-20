@@ -138,6 +138,8 @@ const NotePage = ({ note }: Props) => {
 const useStyles = makeStyles((theme) => ({
   container: {
     backgroundColor: theme.palette.background.default,
+    width: 1000,
+    margin: '0 auto',
   },
 
   content: {

@@ -38,7 +38,6 @@ const SlateEditor = (props: Props) => {
 
 const useStyles = makeStyles((theme) => ({
   editor: {
-    maxWidth: 900,
     paddingBottom: 300,
     cursor: 'text',
     color: theme.palette.text.primary,

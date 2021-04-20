@@ -74,7 +74,7 @@ const MainApp = () => {
       <div
         className={classes.content}
         style={{
-          marginLeft: (!isMobile && sidebarOpen) || getDrawerVariant() === 'permanent' ? 700 : 80,
+          marginLeft: (!isMobile && sidebarOpen) || getDrawerVariant() === 'permanent' ? 700 : 70,
         }}
         onFocus={() => setSidebarOpen(false)}
       >
