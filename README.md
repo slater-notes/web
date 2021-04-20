@@ -10,7 +10,7 @@
   <img src="https://img.shields.io/github/last-commit/slater-notes/web" />
   <img src="https://img.shields.io/github/license/slater-notes/web?color=blue" />
 </p>
-<p align="center">A secure, end-to-end encrypted notes app 🔏 — <a href="https://slaternotes.com">https://slaternotes.com</a></p>
+<p align="center">A secure, end-to-end encrypted notes app 🔏 — <a href="https://slaternotes.com">slaternotes.com</a></p>
 
 > **NOTE:** Slater Notes is still a pre-release project (v0.x.x). Please use at your own risk. If you find this project useful, please consider leaving a star so others can find it. Thanks!
 
@@ -26,9 +26,9 @@
 
 ## Web App
 
-Use **slaternotes.com** for stable releases.
+Use **[slaternotes.com](https://slaternotes.com)** for stable releases.
 
-And if you'd like to use an up-to-date, but non-stable, release of Slater Notes go to: next.slaternotes.com
+And if you'd like to use an up-to-date, but non-stable, release of Slater Notes go to: **[next.slaternotes.com](https://next.slaternotes.com)**
 
 **Next** builds from the **main** branch – which is updated almost daily.
 
