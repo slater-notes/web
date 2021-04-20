@@ -7,8 +7,13 @@ import { useStoreState } from '../../../store/typedHooks';
 import { useEffect, useState, Fragment } from 'react';
 import useFullSync from '../../../hooks/useFullSync';
 import useCloudSyncRegister from '../../../hooks/useCloudSyncRegister';
+import FullDialog from '../../../components/Dialogs/FullDialog';
 
-const CloudSync = () => {
+interface Props {
+  handleClose: () => void;
+}
+
+const CloudSync = (props: Props) => {
   const theme = useTheme();
   const classes = useStyles();
 
@@ -103,121 +108,128 @@ const CloudSync = () => {
   }, []);
 
   return (
-    <div className={classes.content}>
-      <List>
-        <ListItem>
-          <ListItemText primary='Cloud Sync Server URL' secondary={defaultCloudSyncURL} />
-        </ListItem>
-        <ListItem>
-          <ListItemText
-            secondaryTypographyProps={{ component: 'div' }}
-            secondary={
-              <Fragment>
-                <DefaultButton
-                  text='Start Sync'
-                  isLoading={isSyncing || isRegistering}
-                  buttonProps={{
-                    variant: 'contained',
-                    color: 'secondary',
-                    disabled: isSyncing || isRegistering,
-                    onClick: doSync,
-                  }}
-                />
-                {(isSyncing || isRegistering) && (
-                  <span style={{ marginLeft: theme.spacing(2) }}>
-                    Syncing your account... Do not close this window.
-                  </span>
-                )}
-              </Fragment>
-            }
-          />
-        </ListItem>
-        {typeof user?.cloudLastSynced === 'number' && (
+    <FullDialog
+      title='Cloud Sync'
+      onClose={props.handleClose}
+      nonCloseable={isSyncing || isRegistering}
+      dialogContentProps={{ style: { padding: 0 } }}
+    >
+      <div className={classes.content}>
+        <List>
+          <ListItem>
+            <ListItemText primary='Cloud Sync Server URL' secondary={defaultCloudSyncURL} />
+          </ListItem>
           <ListItem>
             <ListItemText
-              primary='Last Full Sync'
-              secondary={`${lastSyncTime.fromNow} — ${lastSyncTime.exact}`}
+              secondaryTypographyProps={{ component: 'div' }}
+              secondary={
+                <Fragment>
+                  <DefaultButton
+                    text='Start Sync'
+                    isLoading={isSyncing || isRegistering}
+                    buttonProps={{
+                      variant: 'contained',
+                      color: 'secondary',
+                      disabled: isSyncing || isRegistering,
+                      onClick: doSync,
+                    }}
+                  />
+                  {(isSyncing || isRegistering) && (
+                    <span style={{ marginLeft: theme.spacing(2) }}>
+                      Syncing your account... Do not close this window.
+                    </span>
+                  )}
+                </Fragment>
+              }
             />
           </ListItem>
-        )}
-      </List>
+          {typeof user?.cloudLastSynced === 'number' && (
+            <ListItem>
+              <ListItemText
+                primary='Last Full Sync'
+                secondary={`${lastSyncTime.fromNow} — ${lastSyncTime.exact}`}
+              />
+            </ListItem>
+          )}
+        </List>
 
-      {passPrompt && (
-        <DefaultDialog
-          title='Enter your Password'
-          text={
-            <Fragment>
-              <div style={{ marginBottom: theme.spacing(2) }}>
-                To start cloud sync, enter your account password.
-              </div>
-              <div>
-                <TextField
-                  name='password'
-                  type='password'
-                  label='Password'
-                  variant='standard'
-                  fullWidth
-                  autoFocus
-                  onChange={(e) => setPlainTextPassword(e.target.value)}
-                  onKeyPress={(e) => {
-                    if (e.key === 'Enter') {
-                      setPassPrompt(false);
-                      doSync();
-                    }
-                  }}
-                />
-              </div>
-            </Fragment>
-          }
-          withCancel
-          withConfirm
-          autoFocusCancelButton={false}
-          confirmLabel='Start Sync'
-          confirmButtonColor='secondary'
-          onCancel={resetAll}
-          onConfirm={() => {
-            setPassPrompt(false);
-            doSync();
-          }}
-        />
-      )}
-
-      {(syncError || registerError) && (
-        <DefaultDialog
-          title='Error'
-          text={
-            registerError?.error === 'username already exist' ? (
+        {passPrompt && (
+          <DefaultDialog
+            title='Enter your Password'
+            text={
               <Fragment>
-                <p>
-                  The username <b>{user?.username}</b> is already in use at{' '}
-                  <b>{defaultCloudSyncURL}</b>.
-                </p>
-                <p>
-                  You can change your username under <b>Settings &gt; Account</b>.
-                </p>
+                <div style={{ marginBottom: theme.spacing(2) }}>
+                  To start cloud sync, enter your account password.
+                </div>
+                <div>
+                  <TextField
+                    name='password'
+                    type='password'
+                    label='Password'
+                    variant='standard'
+                    fullWidth
+                    autoFocus
+                    onChange={(e) => setPlainTextPassword(e.target.value)}
+                    onKeyPress={(e) => {
+                      if (e.key === 'Enter') {
+                        setPassPrompt(false);
+                        doSync();
+                      }
+                    }}
+                  />
+                </div>
               </Fragment>
-            ) : (
-              <p>An error occured: {syncError?.error || registerError?.error}</p>
-            )
-          }
-          withCancel
-          autoFocusCancelButton
-          cancelLabel='Close'
-          onCancel={resetAll}
-        />
-      )}
+            }
+            withCancel
+            withConfirm
+            autoFocusCancelButton={false}
+            confirmLabel='Start Sync'
+            confirmButtonColor='secondary'
+            onCancel={resetAll}
+            onConfirm={() => {
+              setPassPrompt(false);
+              doSync();
+            }}
+          />
+        )}
 
-      {syncComplete && (
-        <DefaultDialog
-          title='All Synced'
-          text={`Your account and notes have been synced to ${defaultCloudSyncURL}`}
-          withCancel
-          autoFocusCancelButton
-          cancelLabel='Close'
-          onCancel={resetAll}
-        />
-      )}
-    </div>
+        {(syncError || registerError) && (
+          <DefaultDialog
+            title='Error'
+            text={
+              registerError?.error === 'username already exist' ? (
+                <Fragment>
+                  <p>
+                    The username <b>{user?.username}</b> is already in use at{' '}
+                    <b>{defaultCloudSyncURL}</b>.
+                  </p>
+                  <p>
+                    You can change your username under <b>Settings &gt; Account</b>.
+                  </p>
+                </Fragment>
+              ) : (
+                <p>An error occured: {syncError?.error || registerError?.error}</p>
+              )
+            }
+            withCancel
+            autoFocusCancelButton
+            cancelLabel='Close'
+            onCancel={resetAll}
+          />
+        )}
+
+        {syncComplete && (
+          <DefaultDialog
+            title='All Synced'
+            text={`Your account and notes have been synced to ${defaultCloudSyncURL}`}
+            withCancel
+            autoFocusCancelButton
+            cancelLabel='Close'
+            onCancel={resetAll}
+          />
+        )}
+      </div>
+    </FullDialog>
   );
 };
 

@@ -246,15 +246,7 @@ const Folders = () => {
             <Settings />
           </FullDialog>
         )}
-        {openCloudSync && (
-          <FullDialog
-            title='Cloud Sync'
-            onClose={() => setOpenCloudSync(false)}
-            dialogContentProps={{ style: { padding: 0 } }}
-          >
-            <CloudSync />
-          </FullDialog>
-        )}
+        {openCloudSync && <CloudSync handleClose={() => setOpenCloudSync(false)} />}
       </div>
     </div>
   );

@@ -13,6 +13,7 @@ import DefaultIconButton from '../Buttons/DefaultIconButton';
 interface Props {
   title: string;
   onClose: () => void;
+  nonCloseable?: boolean;
   dialogContentProps?: DialogContentProps;
   children?: React.ReactChild;
 }
@@ -21,7 +22,14 @@ export const FullDialog = (props: Props) => {
   const classes = useStyles();
 
   return (
-    <Dialog onClose={props.onClose} open={true} fullWidth maxWidth='md'>
+    <Dialog
+      onClose={props.onClose}
+      open={true}
+      fullWidth
+      maxWidth='md'
+      disableBackdropClick={props.nonCloseable}
+      disableEscapeKeyDown={props.nonCloseable}
+    >
       <DialogTitle className={classes.titleContainer}>
         {props.title}
         <div className={classes.closeButtonContainer}>
