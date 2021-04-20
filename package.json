@@ -26,6 +26,7 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
+    "analyze": "source-map-explorer build/static/js/*.js",
     "commit": "cz",
     "bump": "standard-version",
     "pub": "git push --follow-tags origin main"
@@ -97,6 +98,7 @@
     "@types/jest": "^26.0.22",
     "commitizen": "^4.2.3",
     "cz-conventional-changelog": "^3.3.0",
+    "source-map-explorer": "~2.5.2",
     "standard-version": "^9.1.1",
     "web-vitals": "^1.1.0"
   }
