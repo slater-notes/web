@@ -20,7 +20,7 @@ import Paragraph from '../../components/Typography/Paragraph';
 import useCloudSyncLogin from '../../hooks/useCloudSyncLogin';
 import { useEffect, useState } from 'react';
 import { ErrorOrNull } from '../../hooks/useLoading';
-import { upperFirst } from 'lodash';
+import { defer, upperFirst } from 'lodash';
 
 type FormFields = {
   username: string;
@@ -102,7 +102,7 @@ const Login = () => {
   });
 
   useEffect(() => {
-    if (cloudSyncLogin.isComplete) setLocation('/');
+    if (cloudSyncLogin.isComplete) defer(() => setLocation('/'));
   }, [cloudSyncLogin.isComplete]);
 
   useEffect(() => {
