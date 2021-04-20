@@ -1,91 +1,133 @@
 import { makeStyles } from '@material-ui/core';
 import { debounce } from 'lodash';
 import moment from 'moment';
-import React from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import EditableTypography from '../../components/EditableTypography';
 import { useStoreActions } from '../../store/typedHooks';
 import TopBar from './TopBar';
 import Editor from '../../components/Editor';
-import { NoteData, NoteItem } from '../../types/notes';
+import { ActiveNote } from '../../types/activeNote';
+import { Node } from 'slate';
+import getLatestContentFromNoteRevision from '../../utils/getLatestContentFromNoteRevision';
+import now from '../../utils/now';
 
 interface Props {
-  noteItem: NoteItem;
-  noteData: NoteData;
+  note: ActiveNote;
 }
 
-const NotePage = ({ noteItem, noteData }: Props) => {
+const NotePage = ({ note }: Props) => {
   const classes = useStyles();
 
-  const [title, setTitle] = React.useState(noteItem.title);
-  const [saved, setSaved] = React.useState(true);
-  const [lastSaved, setLastSaved] = React.useState(0);
+  const initialContent = useMemo(
+    () =>
+      getLatestContentFromNoteRevision(note.noteData) || [
+        {
+          type: 'paragraph',
+          children: [{ text: '' }],
+        },
+      ],
+    [],
+  );
 
-  const inputRef = React.useRef<HTMLInputElement | null>(null);
+  const [title, setTitle] = useState(note.noteItem.title);
+  const [lastTitleEdit, setLastTitleEdit] = useState(now());
+  const [content, setContent] = useState<Node[]>(initialContent);
+  const [lastContentEdit, setLastContentEdit] = useState(now());
+  const [saved, setSaved] = useState(true);
+
+  const inputRef = useRef<HTMLInputElement | null>(null);
 
   const updateNoteItem = useStoreActions((a) => a.updateNoteItem);
   const updateNoteData = useStoreActions((a) => a.updateNoteData);
 
-  const getLatestNoteRevision = () => {
-    const data = noteData.revisions.sort((d1, d2) => (d2.time || 0) - (d1.time || 0)).shift();
-    return data && typeof data.content === 'string' ? data.content : undefined;
-  };
-
   const saveNoteItem = async (title?: string) => {
     if (typeof title === 'string') {
-      noteItem.title = title;
+      note.noteItem.title = title;
     }
 
-    noteItem.updated = moment().unix();
-
-    await updateNoteItem({ id: noteItem.id, noteItem });
-
-    setLastSaved(moment().unix());
+    note.noteItem.updated = now();
+    await updateNoteItem({ id: note.noteItem.id, noteItem: note.noteItem });
     setSaved(true);
   };
 
-  const saveNoteItemDebounced = React.useMemo(
-    () => debounce(saveNoteItem, 1000, { leading: false }),
+  const saveNoteItemDebounced = useMemo(() => debounce(saveNoteItem, 1000, { leading: false }), []);
+
+  const handleSaveNoteContentDebounced = useMemo(
+    () =>
+      debounce(
+        (content: Node[]) => {
+          const json = JSON.stringify(content);
+
+          note.noteData.revisions.push({
+            version: 1,
+            time: moment().valueOf(),
+            content: json,
+          });
+
+          saveNoteItem();
+          updateNoteData({ id: note.noteItem.id, noteData: note.noteData });
+        },
+        1000,
+        { leading: false },
+      ),
     [],
   );
 
+  useEffect(() => {
+    // set title if there's newer one incoming
+    if (note.noteItem.updated > lastTitleEdit) {
+      setTitle(note.noteItem.title);
+      setLastTitleEdit(now());
+    }
+
+    // set content if there's newer one incoming
+    if (note.noteItem.updated > lastContentEdit) {
+      const content = getLatestContentFromNoteRevision(note.noteData);
+      if (content) {
+        setContent(content);
+        setLastContentEdit(now());
+      }
+    }
+  }, [note]);
+
   return (
     <div
-      id={`note-page-${noteItem.id}`}
+      id={`note-page-${note.noteItem.id}`}
       className={classes.container}
       style={{ height: '100vh', overflowX: 'auto' }}
     >
-      <TopBar note={{ noteItem, noteData }} saved={saved} lastSaved={lastSaved} />
+      <TopBar note={note} saved={saved} />
 
-      <div className={classes.content} style={{ opacity: noteItem.isDeleted ? 0.3 : undefined }}>
+      <div
+        className={classes.content}
+        style={{ opacity: note.noteItem.isDeleted ? 0.3 : undefined }}
+      >
         <EditableTypography
           ref={inputRef}
           text={title}
           placeholder='Untitled'
-          disabled={noteItem.isDeleted}
+          disabled={note.noteItem.isDeleted}
           className={[classes.title, 'note-page__title-input'].join(' ')}
           typographyProps={{
             variant: 'h4',
             component: 'div',
           }}
           onChange={(value) => {
-            setSaved(false);
             setTitle(value);
+            setLastTitleEdit(now());
+            setSaved(false);
             saveNoteItemDebounced(value);
           }}
         />
 
         <Editor
-          readOnly={!!noteItem.isDeleted}
-          initialContent={getLatestNoteRevision()}
-          onChange={() => setSaved(false)}
-          handleSave={(content) => {
-            noteData.revisions.push({
-              version: 1,
-              time: moment().valueOf(),
-              content,
-            });
-            saveNoteItem();
-            updateNoteData({ id: noteItem.id, noteData });
+          readOnly={!!note.noteItem.isDeleted}
+          value={content}
+          setValue={(content) => {
+            setContent(content);
+            setLastContentEdit(now());
+            setSaved(false);
+            handleSaveNoteContentDebounced(content);
           }}
         />
       </div>

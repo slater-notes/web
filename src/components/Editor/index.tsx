@@ -1,6 +1,5 @@
 import { makeStyles } from '@material-ui/core';
-import { debounce } from 'lodash';
-import React from 'react';
+import { useCallback, useMemo } from 'react';
 import { createEditor, Node } from 'slate';
 import { withHistory } from 'slate-history';
 import { Slate, Editable, withReact } from 'slate-react';
@@ -10,36 +9,20 @@ import HoveringToolbar from './HoveringToolbar';
 import keyboardShortcutHandler from './keyboardShortcutHandler';
 
 interface Props {
-  initialContent?: string; // JSON
+  value: Node[];
+  setValue: (value: Node[]) => void;
   readOnly: boolean;
-  onChange: () => void;
-  handleSave: (content: string) => void; // content is JSON
 }
 
 const SlateEditor = (props: Props) => {
   const classes = useStyles();
-  const editor = React.useMemo(() => withHistory(withReact(createEditor())), []);
+  const editor = useMemo(() => withHistory(withReact(createEditor())), []);
 
-  const [value, setValue] = React.useState<Node[]>(
-    props.initialContent ? JSON.parse(props.initialContent) : defaultInitialContent,
-  );
-
-  const renderElement = React.useCallback(RenderElement, []);
-  const renderLeaf = React.useCallback(RenderLeaf, []);
-
-  const handleSaveDebounced = React.useMemo(
-    () => debounce(props.handleSave, 2500, { leading: false }),
-    [],
-  );
-
-  const handleChange = (newValue: Node[]) => {
-    setValue(newValue);
-    props.onChange();
-    handleSaveDebounced(JSON.stringify(newValue));
-  };
+  const renderElement = useCallback(RenderElement, []);
+  const renderLeaf = useCallback(RenderLeaf, []);
 
   return (
-    <Slate editor={editor} value={value} onChange={handleChange}>
+    <Slate editor={editor} value={props.value} onChange={props.setValue}>
       <HoveringToolbar />
       <Editable
         className={classes.editor}
@@ -62,12 +45,5 @@ const useStyles = makeStyles((theme) => ({
     fontSize: '1.1rem',
   },
 }));
-
-const defaultInitialContent = [
-  {
-    type: 'paragraph',
-    children: [{ text: '' }],
-  },
-];
 
 export default SlateEditor;

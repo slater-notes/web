@@ -26,6 +26,7 @@ const Files = () => {
 
   const loadNote = useStoreActions((a) => a.loadNote);
   const emptyTrash = useStoreActions((a) => a.emptyTrash);
+  const setSidebarOpen = useStoreActions((a) => a.setSidebarOpen);
 
   const handleContainerScroll = () => {
     if (containerRef.current) {
@@ -192,7 +193,10 @@ const Files = () => {
                     disableRipple
                     className={classes.noteItem}
                     selected={activeNote?.noteItem.id === note.id}
-                    onClick={() => loadNote(note)}
+                    onClick={async () => {
+                      await loadNote(note);
+                      setSidebarOpen(false);
+                    }}
                   >
                     <ListItemText
                       primary={note.title || 'Untitled'}

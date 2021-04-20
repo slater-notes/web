@@ -1,50 +1,53 @@
 import { defer } from 'lodash';
-import React from 'react';
-import { useStoreActions, useStoreState } from '../../store/typedHooks';
-import { NoteData, NoteItem } from '../../types/notes';
+import { useEffect, useState } from 'react';
+import { useStoreState } from '../../store/typedHooks';
+import { ActiveNote } from '../../types/activeNote';
 import NotePage from './NotePage';
 
 const Note = () => {
-  const [notes, setNotes] = React.useState<{ noteItem: NoteItem; noteData: NoteData }[]>([]);
+  const [notes, setNotes] = useState<ActiveNote[]>([]);
 
   const activeNote = useStoreState((s) => s.activeNote);
 
-  const setSidebarOpen = useStoreActions((a) => a.setSidebarOpen);
+  const focusTitleInput = () => {
+    if (activeNote?.noteItem.title.trim().length === 0) {
+      document
+        .querySelector<HTMLInputElement>(
+          `#note-page-${activeNote.noteItem.id} .note-page__title-input input`,
+        )
+        ?.focus();
+    }
+  };
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (!activeNote) return;
 
-    if (notes.findIndex((n) => n.noteItem.id === activeNote?.noteItem.id) < 0) {
+    const existingNoteIndex = notes.findIndex((n) => n.noteItem.id === activeNote.noteItem.id);
+
+    if (existingNoteIndex > -1) {
+      notes[existingNoteIndex] = activeNote;
+    } else {
       notes.push(activeNote);
-      setNotes(notes);
     }
 
-    defer(() => {
-      setSidebarOpen(false);
+    setNotes(notes);
 
-      if (activeNote.noteItem.title.trim().length === 0) {
-        document
-          .querySelector<HTMLInputElement>(
-            `#note-page-${activeNote.noteItem.id} .note-page__title-input input`,
-          )
-          ?.focus();
-      }
-    });
+    defer(() => focusTitleInput());
 
     // eslint-disable-next-line
-  }, [activeNote?.noteItem.id]);
+  }, [activeNote]);
 
   return (
-    <React.Fragment>
+    <>
       {notes.map((note) => (
         <div
           key={note.noteItem.id}
           style={{ display: activeNote?.noteItem.id === note.noteItem.id ? 'block' : 'none' }}
         >
-          <NotePage noteItem={note.noteItem} noteData={note.noteData} />
+          <NotePage note={note} />
         </div>
       ))}
-    </React.Fragment>
+    </>
   );
 };
 

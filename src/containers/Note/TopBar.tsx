@@ -5,13 +5,12 @@ import DefaultButton from '../../components/Buttons/DefaultButton';
 import DefaultIconButton from '../../components/Buttons/DefaultIconButton';
 import DefaultDialog from '../../components/Dialogs/DefaultDialog';
 import { useStoreActions, useStoreState } from '../../store/typedHooks';
-import { NoteData, NoteItem } from '../../types/notes';
+import { ActiveNote } from '../../types/activeNote';
 import FolderPicker from './FolderPicker';
 
 interface Props {
-  note: { noteItem: NoteItem; noteData: NoteData };
+  note: ActiveNote;
   saved: boolean;
-  lastSaved: number;
 }
 
 const TopBar = (props: Props) => {
@@ -114,8 +113,7 @@ const TopBar = (props: Props) => {
       </div>
 
       <div className={classes.rightItems}>
-        {props.saved && props.lastSaved > 0 && <span>✓ Saved</span>}
-        {!props.saved && <span>Unsaved</span>}
+        {props.saved ? <span>✓ Saved</span> : <span>Unsaved</span>}
       </div>
     </div>
   );

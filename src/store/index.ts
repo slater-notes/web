@@ -22,6 +22,7 @@ import { AppSettingsOptions } from '../config/defaultAppSettings';
 import saveAppSettingsToDisk from '../services/saveAppSettingsToDisk';
 import { FileCollection, FolderItem, NoteData, NoteItem } from '../types/notes';
 import disk from '../utils/disk';
+import { ActiveNote } from '../types/activeNote';
 
 export interface StoreModel {
   user: UserItem | null;
@@ -45,8 +46,8 @@ export interface StoreModel {
   sidebarOpen: boolean;
   setSidebarOpen: Action<StoreModel, boolean>;
 
-  activeNote: { noteItem: NoteItem; noteData: NoteData } | null;
-  setActiveNote: Action<StoreModel, { noteItem: NoteItem; noteData: NoteData } | null>;
+  activeNote: ActiveNote | null;
+  setActiveNote: Action<StoreModel, ActiveNote | null>;
 
   activeFolderId: string;
   setActiveFolderId: Action<StoreModel, string>;
@@ -67,6 +68,7 @@ export interface StoreModel {
   updateNoteItem: Thunk<StoreModel, { id: string; noteItem: NoteItem }>;
   updateNoteData: Thunk<StoreModel, { id: string; noteData: NoteData }>;
   updateFolder: Thunk<StoreModel, { id: string; folder: FolderItem }>;
+  refreshActiveNote: Thunk<StoreModel>;
   trashNote: Thunk<StoreModel, string>;
   trashFolder: Thunk<StoreModel, string>;
   emptyTrash: Thunk<StoreModel>;
@@ -329,7 +331,7 @@ const ApplicationStore: StoreModel = {
   updateNoteItem: thunk(async (actions, payload, { getState }) => {
     log([`Updating note item ${payload.id}...`, payload.noteItem]);
 
-    const { user, fileCollection, activeNote, passwordKey, cloudSyncPasswordKey } = getState();
+    const { user, fileCollection, passwordKey, cloudSyncPasswordKey } = getState();
 
     if (!fileCollection) {
       // TODO: show error?
@@ -357,10 +359,6 @@ const ApplicationStore: StoreModel = {
 
     actions.setFileCollection({ ...fileCollection });
 
-    if (activeNote?.noteItem.id === payload.id) {
-      actions.setActiveNote({ noteItem: payload.noteItem, noteData: activeNote.noteData });
-    }
-
     if (user.cloudSyncSessionToken && cloudSyncPasswordKey) {
       syncAccountAndNotesToCloudSyncDebouncedWorker({
         sessionToken: user.cloudSyncSessionToken,
@@ -376,7 +374,7 @@ const ApplicationStore: StoreModel = {
   updateNoteData: thunk(async (actions, payload, { getState }) => {
     log([`Updating note data ${payload.id}...`, payload.noteData]);
 
-    const { user, fileCollection, activeNote, passwordKey, cloudSyncPasswordKey } = getState();
+    const { user, fileCollection, passwordKey, cloudSyncPasswordKey } = getState();
 
     if (!fileCollection) {
       // TODO: show error?
@@ -399,10 +397,6 @@ const ApplicationStore: StoreModel = {
     }
 
     await saveNoteDataToDisk(passwordKey, noteItem.nonce, payload.noteData);
-
-    if (activeNote?.noteItem.id === payload.id) {
-      actions.setActiveNote({ noteItem: activeNote.noteItem, noteData: payload.noteData });
-    }
 
     if (user.cloudSyncSessionToken && cloudSyncPasswordKey) {
       syncAccountAndNotesToCloudSyncDebouncedWorker({
@@ -456,6 +450,25 @@ const ApplicationStore: StoreModel = {
         passwordKey,
         cloudSyncPasswordKey,
       });
+    }
+  }),
+
+  refreshActiveNote: thunk(async (actions, _payload, { getState }) => {
+    const { fileCollection, activeNote, passwordKey } = getState();
+
+    if (fileCollection && activeNote && passwordKey) {
+      log('Reloading active note..');
+
+      const { id, nonce } = activeNote.noteItem;
+      const noteItem = fileCollection.notes.find((n) => n.id === id);
+
+      if (noteItem) {
+        const result = await getDecryptedNoteDataFromDisk(id, nonce, passwordKey);
+
+        if (!('error' in result)) {
+          actions.setActiveNote({ noteItem, noteData: result.noteData });
+        }
+      }
     }
   }),
 

@@ -1,4 +1,5 @@
 import moment from 'moment';
+import { useEffect } from 'react';
 import checkSessionFromCloudSync from '../api/cloudSync/checkSession';
 import syncAccountAndNotesToCloudSync from '../services/syncAccountAndNotesToCloudSync';
 import { useStoreActions, useStoreState } from '../store/typedHooks';
@@ -24,6 +25,14 @@ const useFullSync = (): [() => Promise<void>, boolean, ErrorOrNull, boolean, () 
 
   const updateUser = useStoreActions((s) => s.updateUser);
   const updateFileCollection = useStoreActions((s) => s.updateFileCollection);
+  const refreshActiveNote = useStoreActions((s) => s.refreshActiveNote);
+
+  // Update the active note, if any
+  useEffect(() => {
+    if (isComplete) {
+      refreshActiveNote();
+    }
+  }, [isComplete, fileCollection]);
 
   const startSync = async () => {
     setIsLoading(true);
