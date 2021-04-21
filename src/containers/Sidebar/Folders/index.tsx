@@ -79,12 +79,7 @@ const Folders = () => {
         className={[classes.main, mainContainerShadow ? 'has--shadow' : ''].join(' ')}
         onScroll={handleMainContainerScrollThrottled}
       >
-        <div
-          style={{
-            padding: `${theme.spacing(3)}px ${theme.spacing(5)}px`,
-            marginBottom: theme.spacing(2),
-          }}
-        >
+        <div className={classes.mainButtonContainer}>
           <DefaultButton
             buttonProps={{
               variant: 'contained',
@@ -262,6 +257,11 @@ const useStyles = makeStyles((theme) => ({
     '&.has--shadow': {
       boxShadow: 'inset 0px 20px 10px -10px rgb(0 0 0 / 15%)',
     },
+  },
+
+  mainButtonContainer: {
+    padding: `${theme.spacing(3)}px ${theme.spacing(3)}px`,
+    marginBottom: theme.spacing(2),
   },
 
   bottomControl: {

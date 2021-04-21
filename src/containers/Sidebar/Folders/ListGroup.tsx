@@ -40,13 +40,15 @@ const ListGroup = (props: Props) => {
           className={classes.listItem}
           style={{ color: item.hasNormalTextColor ? theme.palette.text.primary : undefined }}
         >
-          <ListItemIcon>
-            <item.icon size={theme.typography.fontSize * 1.5} />
-          </ListItemIcon>
-          <ListItemText primary={item.text} secondary={item.sub} />
-          {item.secondaryAction && (
-            <ListItemSecondaryAction>{item.secondaryAction}</ListItemSecondaryAction>
-          )}
+          <div className={classes.listItemInner}>
+            <ListItemIcon>
+              <item.icon size={theme.typography.fontSize * 1.5} />
+            </ListItemIcon>
+            <ListItemText primary={item.text} secondary={item.sub} />
+            {item.secondaryAction && (
+              <ListItemSecondaryAction>{item.secondaryAction}</ListItemSecondaryAction>
+            )}
+          </div>
         </ListItem>
       ))}
     </List>
@@ -59,12 +61,17 @@ const useStyles = makeStyles((theme) => ({
     background: 'none !important',
 
     '&.MuiListItem-gutters': {
-      padding: `${theme.spacing(1)}px ${theme.spacing(5)}px`,
+      padding: `0 ${theme.spacing(1)}px`,
     },
 
-    '&.Mui-selected': {
+    '&.Mui-selected $listItemInner': {
       color: theme.palette.text.primary,
-      boxShadow: `inset 4px 0px 0px ${theme.palette.secondary.main}`,
+      backgroundColor: `${theme.palette.background.paper} !important`,
+    },
+
+    '& $listItemInner': {
+      padding: `${theme.spacing(0.8)}px ${theme.spacing(2)}px`,
+      borderRadius: theme.shape.borderRadius,
     },
 
     '& .MuiListItemText-root': {
@@ -76,9 +83,15 @@ const useStyles = makeStyles((theme) => ({
 
     '& .MuiListItemIcon-root': {
       minWidth: 'auto',
-      marginRight: theme.spacing(3),
+      marginRight: theme.spacing(2),
       color: theme.palette.text.primary,
     },
+  },
+
+  listItemInner: {
+    display: 'flex',
+    flex: 1,
+    alignItems: 'center',
   },
 }));
 

@@ -30,7 +30,7 @@ const FolderGroupTitle = (props: Props) => {
 const useStyles = makeStyles((theme) => ({
   listItem: {
     '&.MuiListItem-gutters': {
-      padding: `${theme.spacing(1)}px ${theme.spacing(5)}px`,
+      padding: `${theme.spacing(0.8)}px ${theme.spacing(3)}px`,
     },
   },
 }));
