@@ -1,3 +1,4 @@
+import { makeStyles } from '@material-ui/core';
 import { defer } from 'lodash';
 import { useEffect, useState } from 'react';
 import { useStoreState } from '../../store/typedHooks';
@@ -5,6 +6,8 @@ import { ActiveNote } from '../../types/activeNote';
 import NotePage from './NotePage';
 
 const Note = () => {
+  const classes = useStyles();
+
   const [notes, setNotes] = useState<ActiveNote[]>([]);
 
   const activeNote = useStoreState((s) => s.activeNote);
@@ -38,7 +41,7 @@ const Note = () => {
   }, [activeNote]);
 
   return (
-    <>
+    <div className={classes.container}>
       {notes.map((note) => (
         <div
           key={note.noteItem.id}
@@ -47,8 +50,15 @@ const Note = () => {
           <NotePage note={note} />
         </div>
       ))}
-    </>
+    </div>
   );
 };
+
+const useStyles = makeStyles((theme) => ({
+  container: {
+    height: '100vh',
+    overflowX: 'auto',
+  },
+}));
 
 export default Note;

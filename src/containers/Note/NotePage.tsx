@@ -91,11 +91,7 @@ const NotePage = ({ note }: Props) => {
   }, [note]);
 
   return (
-    <div
-      id={`note-page-${note.noteItem.id}`}
-      className={classes.container}
-      style={{ height: '100vh', overflowX: 'auto' }}
-    >
+    <div id={`note-page-${note.noteItem.id}`} className={classes.container}>
       <TopBar note={note} saved={saved} />
 
       <div
@@ -137,7 +133,6 @@ const NotePage = ({ note }: Props) => {
 
 const useStyles = makeStyles((theme) => ({
   container: {
-    backgroundColor: theme.palette.background.default,
     width: 1000,
     margin: '0 auto',
   },
