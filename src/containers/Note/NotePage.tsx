@@ -148,7 +148,7 @@ const useStyles = makeStyles((theme) => ({
 
   title: {
     color: theme.palette.text.primary,
-    fontWeight: theme.typography.fontWeightMedium,
+    fontWeight: theme.typography.fontWeightBold,
     marginBottom: theme.spacing(6),
   },
 }));
