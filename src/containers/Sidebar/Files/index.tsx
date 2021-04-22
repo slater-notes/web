@@ -1,14 +1,16 @@
-import { Box, List, ListItem, ListItemText, makeStyles, useTheme } from '@material-ui/core';
+import { Box, makeStyles, useTheme } from '@material-ui/core';
 import { grey } from '@material-ui/core/colors';
 import moment from 'moment';
-import React, { useMemo } from 'react';
+import React from 'react';
 import { NoteItem } from '@slater-notes/core';
 import { useStoreActions, useStoreState } from '../../../store/typedHooks';
 import DefaultDialog from '../../../components/Dialogs/DefaultDialog';
-import { Star, Trash } from 'react-feather';
+import { FileText, Star, Trash } from 'react-feather';
 import DefaultIconButton from '../../../components/Buttons/DefaultIconButton';
 import FilterFiles from './FilterFiles';
 import { throttle } from 'lodash';
+import ListGroup, { Item } from './ListGroup';
+import NotifBox from '../../../components/NotifBox';
 
 const Files = () => {
   const theme = useTheme();
@@ -69,21 +71,115 @@ const Files = () => {
   const shouldShowNote = (note: NoteItem) => {
     if (filter && note.title.toLocaleLowerCase().indexOf(filter.trim().toLocaleLowerCase()) < 0) {
       return false;
-    }
-
-    if (note.isDeleted) {
+    } else if (note.isDeleted) {
       return activeFolderId === 'trash';
-    }
-
-    if (note.isStarred && activeFolderId === 'starred') {
+    } else if (note.isStarred && activeFolderId === 'starred') {
       return true;
-    }
-
-    if (activeFolderId === 'all') {
+    } else if (activeFolderId === 'all') {
       return true;
+    } else {
+      return note.parentId === activeFolderId;
+    }
+  };
+
+  const getNoteItems = (): NoteItem[] =>
+    fileCollection?.notes
+      ? fileCollection.notes
+          .filter((n) => shouldShowNote(n))
+          .sort((n1, n2) => n2.updated - n1.updated)
+      : [];
+
+  const getNotifItem = (noteItemsLength: number): Item | null => {
+    if (noteItemsLength > 0) {
+      return null;
     }
 
-    return note.parentId === activeFolderId;
+    switch (activeFolderId) {
+      case 'all':
+        return {
+          key: '0',
+          primaryText: (
+            <NotifBox>
+              <>
+                You don't have any notes yet.
+                <br />
+                Press the <b>New Note</b> button to add a new note.
+              </>
+            </NotifBox>
+          ),
+        };
+      case 'trash':
+        return {
+          key: '0',
+          primaryText: (
+            <NotifBox>
+              <>
+                When you trash notes, they end up here.
+                <br />
+                Press the{' '}
+                <Trash
+                  size={16}
+                  fill={theme.palette.primary.contrastText}
+                  style={{ margin: `0 ${theme.spacing(1)}px -2px` }}
+                />{' '}
+                icon above to empty the trash.
+              </>
+            </NotifBox>
+          ),
+        };
+      case 'starred':
+        return {
+          key: '0',
+          primaryText: (
+            <NotifBox>
+              <>
+                Add notes here by pressing the{' '}
+                <Star
+                  size={16}
+                  fill={theme.palette.primary.contrastText}
+                  style={{ margin: `0 ${theme.spacing(1)}px -2px` }}
+                />{' '}
+                icon.
+              </>
+            </NotifBox>
+          ),
+        };
+      default:
+        return {
+          key: '0',
+          primaryText: (
+            <NotifBox>
+              <>
+                Press the <b style={{ fontWeight: theme.typography.fontWeightBold }}>New Note</b>{' '}
+                button to add a new note in this folder.
+              </>
+            </NotifBox>
+          ),
+        };
+    }
+  };
+
+  const getListItems = (): Item[] => {
+    const noteItems: Item[] = getNoteItems().map((item) => ({
+      key: item.id,
+      icon: FileText,
+      isButton: true,
+      isActive: activeNote?.noteItem.id === item.id,
+      primaryText: item.title || 'Untitled',
+      secondaryText: <>Updated {moment.unix(item.updated).fromNow(true)}</>,
+      onClick: async () => {
+        await loadNote(item);
+        setSidebarOpen(false);
+      },
+    }));
+
+    const notifItem = getNotifItem(noteItems.length);
+
+    if (notifItem) {
+      noteItems.unshift(notifItem);
+    }
+
+    return noteItems;
   };
 
   return (
@@ -117,113 +213,7 @@ const Files = () => {
           {activeFolderId === 'all' && <FilterFiles onChange={(value) => setFilter(value)} />}
         </div>
 
-        {useMemo(
-          () => {
-            const items: NoteItem[] = fileCollection?.notes
-              ? fileCollection.notes
-                  .filter((n) => shouldShowNote(n))
-                  .sort((n1, n2) => n2.created - n1.created)
-              : [];
-
-            return (
-              <List disablePadding>
-                {activeFolderId === 'all' && items.length === 0 && (
-                  <ListItem className={classes.noteItem}>
-                    <ListItemText
-                      primary={
-                        <Box color='text.secondary' style={{ lineHeight: 2 }}>
-                          You don't have any notes yet.
-                          <br />
-                          Press the <b>New Note</b> button to add a new note.
-                        </Box>
-                      }
-                    />
-                  </ListItem>
-                )}
-
-                {activeFolderId === 'starred' && items.length === 0 && (
-                  <ListItem className={classes.noteItem}>
-                    <ListItemText
-                      primary={
-                        <Box color='text.secondary' style={{ lineHeight: 2 }}>
-                          Add notes here by pressing the{' '}
-                          <Star size={16} style={{ margin: `0 ${theme.spacing(1)}px -2px` }} />{' '}
-                          icon.
-                        </Box>
-                      }
-                    />
-                  </ListItem>
-                )}
-
-                {activeFolderId === 'trash' && items.length === 0 && (
-                  <ListItem className={classes.noteItem}>
-                    <ListItemText
-                      primary={
-                        <Box color='text.secondary' style={{ lineHeight: 2 }}>
-                          When you trash notes, they end up here.
-                          <br />
-                          Press the{' '}
-                          <Trash
-                            size={16}
-                            style={{ margin: `0 ${theme.spacing(1)}px -2px` }}
-                          />{' '}
-                          icon above to empty the trash.
-                        </Box>
-                      }
-                    />
-                  </ListItem>
-                )}
-
-                {!['all', 'starred', 'trash'].includes(activeFolderId) && items.length === 0 && (
-                  <ListItem className={classes.noteItem}>
-                    <ListItemText
-                      primary={
-                        <Box color='text.secondary' style={{ lineHeight: 2 }}>
-                          Press the <b>New Note</b> button to add a new note in this folder.
-                        </Box>
-                      }
-                    />
-                  </ListItem>
-                )}
-
-                {items.map((note) => (
-                  <ListItem
-                    key={note.id}
-                    button
-                    disableRipple
-                    className={classes.noteItem}
-                    selected={activeNote?.noteItem.id === note.id}
-                    onClick={async () => {
-                      await loadNote(note);
-                      setSidebarOpen(false);
-                    }}
-                  >
-                    <ListItemText
-                      primary={note.title || 'Untitled'}
-                      secondary={(() => {
-                        const folder = fileCollection?.folders.find((f) => f.id === note.parentId);
-                        return (
-                          <React.Fragment>
-                            {['all', 'starred'].includes(activeFolderId) && (
-                              <span>
-                                {folder
-                                  ? `Saved in ${folder.title || 'Untitled'}`
-                                  : `Not saved in a folder`}
-                              </span>
-                            )}
-                            <span>{moment.unix(note.updated).fromNow(true)}</span>
-                          </React.Fragment>
-                        );
-                      })()}
-                    />
-                  </ListItem>
-                ))}
-              </List>
-            );
-          },
-          // eslint-disable-next-line
-          [activeFolderId, fileCollection, activeNote, filter],
-        )}
+        <ListGroup items={getListItems()} />
 
         {emptyTrashConfirm && (
           <DefaultDialog

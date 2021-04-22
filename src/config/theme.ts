@@ -33,6 +33,9 @@ export const THEME: ThemeOptions = {
     borderRadius: 5,
   },
   props: {
+    MuiButtonBase: {
+      disableRipple: true,
+    },
     MuiListItemText: {
       secondaryTypographyProps: {
         component: 'div' as any,

@@ -68,10 +68,10 @@ const TopBar = (props: Props) => {
       </div>
 
       <div className={classes.rightItems}>
-        {props.saved ? <StatusText>✓ Saved</StatusText> : <StatusText>Unsaved</StatusText>}
-
         {!props.note.noteItem.isDeleted && (
-          <React.Fragment>
+          <>
+            {props.saved ? <StatusText>✓ Saved</StatusText> : <StatusText>Unsaved</StatusText>}
+
             <DefaultIconButton
               label={props.note.noteItem.isStarred ? 'Remove from Favorites' : 'Add to Favorites'}
               icon={Star}
@@ -86,13 +86,14 @@ const TopBar = (props: Props) => {
                 updateNoteItem({ id: props.note.noteItem.id, noteItem });
               }}
             />
+
             <DefaultIconButton
               label='Move to Trash'
               icon={Trash}
               size={20}
               onClick={() => setDeleteConfirm(true)}
             />
-          </React.Fragment>
+          </>
         )}
       </div>
 
