@@ -1,9 +1,10 @@
-import { makeStyles, Menu, MenuItem } from '@material-ui/core';
+import { ListItem, makeStyles, Menu } from '@material-ui/core';
+import { grey } from '@material-ui/core/colors';
 import React from 'react';
 
 export interface MenuItemObject {
   label?: React.ReactNode;
-  replacementLabel?: React.ReactNode;
+  isSubheader?: boolean;
   isSelected?: boolean;
   onClick?: () => void;
 }
@@ -26,29 +27,25 @@ const SimpleTextMenu = (props: Props) => {
       onClose={props.onClose}
     >
       {props.items.map((item, index) => {
-        if (item.replacementLabel) {
-          return (
-            <MenuItem key={index} disabled>
-              {item.replacementLabel}
-            </MenuItem>
-          );
-        }
-
         return (
-          <MenuItem
+          <ListItem
             key={index}
+            className={item.isSubheader ? classes.subheader : undefined}
+            button={!item.isSubheader as any}
             dense
+            disabled={item.isSubheader}
             selected={item.isSelected}
-            onClick={() => {
-              if (item.onClick) {
-                item.onClick();
-              }
-
-              props.onClose();
-            }}
+            onClick={
+              item.onClick
+                ? () => {
+                    if (item.onClick) item.onClick();
+                    props.onClose();
+                  }
+                : undefined
+            }
           >
             {item.label}
-          </MenuItem>
+          </ListItem>
         );
       })}
     </Menu>
@@ -57,9 +54,31 @@ const SimpleTextMenu = (props: Props) => {
 
 const useStyles = makeStyles((theme) => ({
   menu: {
-    '& .MuiListItem-root': {
-      fontWeight: theme.typography.fontWeightMedium,
+    '& .MuiList-root': {
+      padding: theme.spacing(1),
+      minWidth: 150,
     },
+
+    '& .MuiListItem-root': {
+      paddingLeft: theme.spacing(1.5),
+      paddingRight: theme.spacing(1.5),
+      borderRadius: theme.shape.borderRadius,
+      fontWeight: theme.typography.fontWeightMedium,
+
+      '&:not(:last-child)': {
+        marginBottom: theme.spacing(0.5),
+      },
+
+      '&:not($subheader)': {
+        '&.Mui-selected, &:hover': {
+          backgroundColor: grey[100],
+        },
+      },
+    },
+  },
+
+  subheader: {
+    fontSize: '0.9em',
   },
 }));
 

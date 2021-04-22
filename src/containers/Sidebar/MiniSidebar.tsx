@@ -1,5 +1,5 @@
 import { makeStyles } from '@material-ui/core';
-import React from 'react';
+import { grey } from '@material-ui/core/colors';
 import { Menu } from 'react-feather';
 import { useStoreActions } from '../../store/typedHooks';
 
@@ -28,7 +28,7 @@ const useStyles = makeStyles((theme) => ({
     cursor: 'pointer',
 
     '&:hover': {
-      background: theme.palette.background.paper,
+      background: grey[100],
       color: theme.palette.text.primary,
     },
 

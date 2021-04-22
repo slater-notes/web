@@ -17,7 +17,7 @@ export const THEME: ThemeOptions = {
     },
     background: {
       default: '#fff',
-      paper: grey[100],
+      paper: '#fff',
     },
     divider: grey[200],
   },

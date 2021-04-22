@@ -7,6 +7,7 @@ interface Props {
   color?: 'primary' | 'secondary';
   menuItems?: MenuItemObject[];
   onDelete?: () => void;
+  className?: string;
 }
 
 const Tag = (props: Props) => {
@@ -16,6 +17,7 @@ const Tag = (props: Props) => {
   return (
     <div ref={ref} style={{ display: 'inline-block' }}>
       <Chip
+        className={props.className}
         label={props.text}
         color={props.color}
         onClick={

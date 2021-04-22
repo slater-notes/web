@@ -1,10 +1,11 @@
-import { Box, Divider, makeStyles, Typography, useTheme } from '@material-ui/core';
+import { Box, makeStyles, useTheme } from '@material-ui/core';
 import React from 'react';
 import { FolderItem, NoteItem } from '@slater-notes/core';
 import { MenuItemObject } from '../../components/Menus/SimpleTextMenu';
 import Tag from '../../components/Tag';
 import { useStoreActions, useStoreState } from '../../store/typedHooks';
 import moment from 'moment';
+import { grey } from '@material-ui/core/colors';
 
 interface Props {
   noteItem: NoteItem;
@@ -65,33 +66,23 @@ const FolderPicker = (props: Props) => {
             : [];
 
         items.unshift({
-          replacementLabel: (
-            <Typography display='block' variant='caption'>
-              Save note to:
-            </Typography>
-          ),
+          label: 'Folders',
+          isSubheader: true,
         });
-
-        if (props.noteItem.parentId) {
-          items.unshift({
-            replacementLabel: <Divider />,
-          });
-
-          items.unshift({
-            label: <span className={classes.removeFromFolderText}>Remove From Folder</span>,
-            onClick: () => updateFolder(null),
-          });
-        }
 
         return (
           <div className={classes.container}>
             <Tag
+              className={classes.tag}
               text={
-                <Box component='span' fontWeight={theme.typography.fontWeightMedium}>
+                <Box
+                  component='span'
+                  fontSize='0.9rem'
+                  fontWeight={theme.typography.fontWeightMedium}
+                >
                   {folder ? folder.title || 'Untitled' : 'Save to folder...'}
                 </Box>
               }
-              color={folder ? 'primary' : undefined}
               menuItems={items}
               onDelete={props.noteItem.parentId ? () => updateFolder(null) : undefined}
             />
@@ -110,6 +101,18 @@ const useStyles = makeStyles((theme) => ({
 
   removeFromFolderText: {
     color: theme.palette.error.main,
+  },
+
+  tag: {
+    background: '0 !important',
+    borderRadius: theme.shape.borderRadius,
+    border: `1px solid ${theme.palette.divider}`,
+    padding: `${theme.spacing(1.25)}px ${theme.spacing(1)}px`,
+    height: 'auto',
+
+    '&:hover': {
+      borderColor: grey[300],
+    },
   },
 }));
 

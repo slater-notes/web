@@ -1,5 +1,4 @@
 import { Box, makeStyles, useTheme } from '@material-ui/core';
-import { grey } from '@material-ui/core/colors';
 import moment from 'moment';
 import React from 'react';
 import { NoteItem } from '@slater-notes/core';
@@ -257,43 +256,6 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: 'space-between',
     padding: `${theme.spacing(3)}px 0`,
     marginBottom: theme.spacing(2),
-  },
-
-  noteItem: {
-    marginBottom: theme.spacing(1),
-
-    '&.MuiListItem-gutters': {
-      padding: `${theme.spacing(2)}px ${theme.spacing(3)}px`,
-    },
-
-    '&.Mui-selected, &.Mui-selected:hover': {
-      background: theme.palette.background.paper,
-
-      '& .MuiListItemText-root': {
-        '& .MuiListItemText-secondary': {
-          color: grey[600],
-        },
-      },
-    },
-
-    '& .MuiListItemText-root': {
-      '& .MuiListItemText-primary': {
-        fontSize: '0.9rem',
-        fontWeight: theme.typography.fontWeightMedium,
-        marginBottom: theme.spacing(1),
-      },
-
-      '& .MuiListItemText-secondary': {
-        '& > *': {
-          display: 'flex',
-          justifyContent: 'space-between',
-
-          '&:not(:last-child)': {
-            marginBottom: theme.spacing(1),
-          },
-        },
-      },
-    },
   },
 }));
 
