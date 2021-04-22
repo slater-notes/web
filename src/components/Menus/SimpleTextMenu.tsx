@@ -71,7 +71,7 @@ const useStyles = makeStyles((theme) => ({
 
       '&:not($subheader)': {
         '&.Mui-selected, &:hover': {
-          backgroundColor: grey[100],
+          backgroundColor: grey[200],
         },
       },
     },
