@@ -98,34 +98,36 @@ const NotePage = ({ note }: Props) => {
         className={classes.content}
         style={{ opacity: note.noteItem.isDeleted ? 0.3 : undefined }}
       >
-        <EditableTypography
-          ref={inputRef}
-          text={title}
-          placeholder='Untitled'
-          disabled={note.noteItem.isDeleted}
-          className={[classes.title, 'note-page__title-input'].join(' ')}
-          typographyProps={{
-            variant: 'h4',
-            component: 'div',
-          }}
-          onChange={(value) => {
-            setTitle(value);
-            setLastTitleEdit(now());
-            setSaved(false);
-            saveNoteItemDebounced(value);
-          }}
-        />
+        <div className={classes.contentInner}>
+          <EditableTypography
+            ref={inputRef}
+            text={title}
+            placeholder='Untitled'
+            disabled={note.noteItem.isDeleted}
+            className={[classes.title, 'note-page__title-input'].join(' ')}
+            typographyProps={{
+              variant: 'h4',
+              component: 'div',
+            }}
+            onChange={(value) => {
+              setTitle(value);
+              setLastTitleEdit(now());
+              setSaved(false);
+              saveNoteItemDebounced(value);
+            }}
+          />
 
-        <Editor
-          readOnly={!!note.noteItem.isDeleted}
-          value={content}
-          setValue={(content) => {
-            setContent(content);
-            setLastContentEdit(now());
-            setSaved(false);
-            handleSaveNoteContentDebounced(content);
-          }}
-        />
+          <Editor
+            readOnly={!!note.noteItem.isDeleted}
+            value={content}
+            setValue={(content) => {
+              setContent(content);
+              setLastContentEdit(now());
+              setSaved(false);
+              handleSaveNoteContentDebounced(content);
+            }}
+          />
+        </div>
       </div>
     </div>
   );
@@ -133,12 +135,20 @@ const NotePage = ({ note }: Props) => {
 
 const useStyles = makeStyles((theme) => ({
   container: {
-    width: 1000,
-    margin: '0 auto',
+    display: 'flex',
+    flexDirection: 'column',
+    height: '100vh',
   },
 
   content: {
+    flex: 1,
+    overflowX: 'auto',
     padding: `${theme.spacing(6)}px ${theme.spacing(8)}px`,
+  },
+
+  contentInner: {
+    width: 1000,
+    margin: '0 auto',
   },
 
   title: {

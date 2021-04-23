@@ -7,7 +7,6 @@ import {
   ListSubheader,
   makeStyles,
   Paper,
-  Switch,
   Tab,
   Tabs,
   useTheme,
@@ -15,8 +14,7 @@ import {
 import { useState } from 'react';
 import DefaultButton from '../../../components/Buttons/DefaultButton';
 import DefaultDialog from '../../../components/Dialogs/DefaultDialog';
-import defaultUserSettings from '../../../config/defaultUserSettings';
-import { useStoreActions, useStoreState } from '../../../store/typedHooks';
+import { useStoreState } from '../../../store/typedHooks';
 import ChangeUsername from '../ChangeUsername';
 
 const latestVersion = process.env.REACT_APP_VERSION;
@@ -31,11 +29,6 @@ const Settings = () => {
 
   const user = useStoreState((s) => s.user);
 
-  const mySettings = useStoreState((s) => s.settings);
-  const settings = { ...defaultUserSettings, ...mySettings };
-
-  const updateSettings = useStoreActions((a) => a.updateSettings);
-
   return (
     <div>
       <Paper square>
@@ -45,31 +38,12 @@ const Settings = () => {
           textColor='primary'
           onChange={(_e, tab) => setTab(tab)}
         >
-          <Tab label='Appearance' />
           <Tab label='Account' />
           <Tab label='About' />
         </Tabs>
       </Paper>
 
       <div className={classes.tabContent} style={{ display: tab === 0 ? 'block' : 'none' }}>
-        <List subheader={<ListSubheader>Sidebar</ListSubheader>}>
-          <ListItem>
-            <ListItemText
-              primary='Show sidebar'
-              secondary='Prefer to show the sidebar when it fits within the screen.'
-            />
-            <ListItemSecondaryAction>
-              <Switch
-                checked={settings.alwaysShowSidebar}
-                color='primary'
-                onChange={(e) => updateSettings({ alwaysShowSidebar: e.target.checked })}
-              />
-            </ListItemSecondaryAction>
-          </ListItem>
-        </List>
-      </div>
-
-      <div className={classes.tabContent} style={{ display: tab === 1 ? 'block' : 'none' }}>
         <List subheader={<ListSubheader>Username</ListSubheader>}>
           <ListItem>
             <ListItemText
@@ -98,7 +72,7 @@ const Settings = () => {
           </ListItem>
         </List>
       </div>
-      <div className={classes.tabContent} style={{ display: tab === 2 ? 'block' : 'none' }}>
+      <div className={classes.tabContent} style={{ display: tab === 1 ? 'block' : 'none' }}>
         <List>
           <ListItem>
             <ListItemText primary={<b>Slater Notes (v{latestVersion})</b>} />

@@ -1,9 +1,5 @@
-export interface UserSettingsOptions {
-  alwaysShowSidebar: boolean;
-}
+export interface UserSettingsOptions {}
 
-export const defaultUserSettings: UserSettingsOptions = {
-  alwaysShowSidebar: false,
-};
+export const defaultUserSettings: UserSettingsOptions = {};
 
 export default defaultUserSettings;
