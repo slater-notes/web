@@ -1,5 +1,4 @@
 import {
-  Box,
   Button,
   List,
   ListItem,
@@ -13,16 +12,14 @@ import {
   Tabs,
   useTheme,
 } from '@material-ui/core';
-import moment from 'moment';
-import React, { useState } from 'react';
+import { useState } from 'react';
 import DefaultButton from '../../../components/Buttons/DefaultButton';
 import DefaultDialog from '../../../components/Dialogs/DefaultDialog';
 import defaultUserSettings from '../../../config/defaultUserSettings';
 import { useStoreActions, useStoreState } from '../../../store/typedHooks';
 import ChangeUsername from '../ChangeUsername';
 
-const latestVersion = '0.3.2';
-const latestReleaseTime = moment.unix(1617523832);
+const latestVersion = process.env.REACT_APP_VERSION;
 
 const Settings = () => {
   const theme = useTheme();
@@ -104,39 +101,24 @@ const Settings = () => {
       <div className={classes.tabContent} style={{ display: tab === 2 ? 'block' : 'none' }}>
         <List>
           <ListItem>
+            <ListItemText primary={<b>Slater Notes (v{latestVersion})</b>} />
+          </ListItem>
+          <ListItem>
             <ListItemText
-              primary={<b>Slater Notes (Pre-Release)</b>}
               secondary={
-                <span>
-                  Version: <b>{latestVersion}</b>
+                <>
+                  Slater Notes is still a pre-release project (v0.x.x). Please use at your own risk.
                   <br />
-                  Release Date: <b>{latestReleaseTime.fromNow()}</b> ({latestReleaseTime.format()})
-                </span>
-              }
-            />
-          </ListItem>
-          <ListItem>
-            <ListItemText
-              secondary={
-                <span>
-                  Release Notes:
-                  <Box marginTop={`${theme.spacing(2)}px`} marginLeft={`${theme.spacing(2)}px`}>
-                    <b>🐞 Bug Fixes</b>
-                    <ul>
-                      <li>fix favorites folder on login (c8cfd8e)</li>
-                      <li>refactor full sync code to fix duplication error (6db09bd)</li>
-                    </ul>
-                  </Box>
-                </span>
-              }
-            />
-          </ListItem>
-          <ListItem>
-            <ListItemText
-              secondary={
-                <a href='https://github.com/slater-notes/web' target='_blank' rel='noreferrer'>
-                  https://github.com/slater-notes/web
-                </a>
+                  <br />
+                  To see the latest changes, see:{' '}
+                  <a
+                    href='https://github.com/slater-notes/web/releases'
+                    target='_blank'
+                    rel='noreferrer noopener'
+                  >
+                    https://github.com/slater-notes/web/releases
+                  </a>
+                </>
               }
             />
           </ListItem>
