@@ -2,6 +2,31 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.3.4](https://github.com/slater-notes/web/compare/v0.3.3...v0.3.4) (2021-04-23)
+
+
+### Features
+
+* improve folder picker ui ([9128c17](https://github.com/slater-notes/web/commit/9128c17d273c1712f3af5e55c40453d19b1f56c4))
+* improve ui for files list in sidebar ([0d4e96d](https://github.com/slater-notes/web/commit/0d4e96de6f675dbeed2755c385d154df20890e4c))
+* improve ui for folder list in sidebar ([d6c5ad2](https://github.com/slater-notes/web/commit/d6c5ad2505bdfb9df980fcf85323343611f59fe6))
+* make note title bold ([3f4cbc7](https://github.com/slater-notes/web/commit/3f4cbc7b785ae8fbb3441ecee5affa106d5aaaf4))
+* make the 'add folder' button as an icon button ([c98d4b0](https://github.com/slater-notes/web/commit/c98d4b08d680be7a9a18de7690118369335fd5b5))
+* middlize note ([321bff4](https://github.com/slater-notes/web/commit/321bff47462b0a6ead9438d5535e3a9ae1fda250))
+* rearrange top bar items ([a4522e8](https://github.com/slater-notes/web/commit/a4522e8967b6ed235c26d37e138cbaacf6a4fb5e))
+* simplify the about section ([2a01632](https://github.com/slater-notes/web/commit/2a01632451caae26b3ebf730fafefcd71e30535b))
+* **security:** enable csp header ([5af8135](https://github.com/slater-notes/web/commit/5af8135e21c75728d7c16fa58ac8782b83046e2f))
+
+
+### Bug Fixes
+
+* fix active menu item bg color ([e4aabe9](https://github.com/slater-notes/web/commit/e4aabe9c53aedaa4c7a99c2d8730cc0b959de452))
+* fix error on login page unmounting too early ([387e15b](https://github.com/slater-notes/web/commit/387e15b2f8005de0b40f87c3013b3e33faee42f8))
+* fix notes not updating after sync ([0933d76](https://github.com/slater-notes/web/commit/0933d76226bd7c39034210cf5af238bc23de662a))
+* fix scroll on notes page ([d02a42b](https://github.com/slater-notes/web/commit/d02a42b872c54aa1ef90603ab338219c431490f4))
+* fix sidebar spacing ([0a541fe](https://github.com/slater-notes/web/commit/0a541fe0dcda7a6e254c6982621cb8b35ee0404b))
+* prevent sync dialog from closing while syncing ([0ad9796](https://github.com/slater-notes/web/commit/0ad9796547ab6e45f025804794d9adcd9e3c7cf7))
+
 ### [0.3.3](https://github.com/slater-notes/web/compare/v0.3.2...v0.3.3) (2021-04-16)
 
 
