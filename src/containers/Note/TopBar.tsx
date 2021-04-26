@@ -11,6 +11,7 @@ import FolderPicker from './FolderPicker';
 interface Props {
   note: ActiveNote;
   saved: boolean;
+  hasShadow: boolean;
 }
 
 const TopBar = (props: Props) => {
@@ -28,16 +29,17 @@ const TopBar = (props: Props) => {
   const setSidebarOpen = useStoreActions((a) => a.setSidebarOpen);
 
   return (
-    <div className={classes.container}>
+    <div className={[classes.container, props.hasShadow ? 'has--shadow' : ''].join(' ')}>
+      <div className={classes.menuContainer}>
+        <DefaultIconButton
+          icon={Menu}
+          size={20}
+          label='Show Sidebar'
+          onClick={() => setSidebarOpen(true)}
+        />
+      </div>
       <div className={classes.inner}>
         <div>
-          <DefaultIconButton
-            icon={Menu}
-            size='1.5rem'
-            label='Show Sidebar'
-            onClick={() => setSidebarOpen(true)}
-          />
-
           {!props.note.noteItem.isDeleted && <FolderPicker noteItem={props.note.noteItem} />}
 
           {props.note.noteItem.isDeleted && (
@@ -137,15 +139,29 @@ const StatusText = (props: PropsWithChildren<{}>) => (
 
 const useStyles = makeStyles((theme) => ({
   container: {
+    position: 'relative',
     backgroundColor: theme.palette.background.default,
     padding: theme.spacing(1),
-    borderBottom: `1px solid ${theme.palette.divider}`,
+    borderBottom: '1px solid transparent',
+
+    '&.has--shadow': {
+      borderBottomColor: theme.palette.divider,
+      boxShadow: '0px -3px 10px 0px rgb(0 0 0 / 15%)',
+    },
+  },
+
+  menuContainer: {
+    position: 'absolute',
+    top: theme.spacing(1),
+    left: theme.spacing(1),
   },
 
   inner: {
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'center',
+    maxWidth: 1000,
+    margin: '0 auto',
 
     '& > *': {
       display: 'flex',

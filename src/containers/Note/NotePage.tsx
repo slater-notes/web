@@ -10,6 +10,7 @@ import { ActiveNote } from '../../types/activeNote';
 import { Node } from 'slate';
 import getLatestContentFromNoteRevision from '../../utils/getLatestContentFromNoteRevision';
 import now from '../../utils/now';
+import useScrollDetect from '../../hooks/useScrollDetect';
 
 interface Props {
   note: ActiveNote;
@@ -34,6 +35,8 @@ const NotePage = ({ note }: Props) => {
   const [content, setContent] = useState<Node[]>(initialContent);
   const [lastContentEdit, setLastContentEdit] = useState(now());
   const [saved, setSaved] = useState(true);
+
+  const scrollDetect = useScrollDetect();
 
   const inputRef = useRef<HTMLInputElement | null>(null);
 
@@ -92,9 +95,11 @@ const NotePage = ({ note }: Props) => {
 
   return (
     <div id={`note-page-${note.noteItem.id}`} className={classes.container}>
-      <TopBar note={note} saved={saved} />
+      <TopBar note={note} saved={saved} hasShadow={scrollDetect.isScrolled} />
 
       <div
+        ref={scrollDetect.element}
+        onScroll={scrollDetect.handleScroll}
         className={classes.content}
         style={{ opacity: note.noteItem.isDeleted ? 0.3 : undefined }}
       >
@@ -143,7 +148,8 @@ const useStyles = makeStyles((theme) => ({
   content: {
     flex: 1,
     overflowX: 'auto',
-    padding: `${theme.spacing(6)}px ${theme.spacing(8)}px`,
+    padding: theme.spacing(1),
+    paddingTop: theme.spacing(6),
   },
 
   contentInner: {

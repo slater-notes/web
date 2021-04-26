@@ -70,6 +70,7 @@ const Folders = () => {
   React.useEffect(() => {
     handleMainContainerScroll();
     globalThis.addEventListener('resize', handleMainContainerScrollThrottled);
+    return () => globalThis.removeEventListener('resize', handleMainContainerScrollThrottled);
   }, []);
 
   return (
