@@ -14,6 +14,7 @@ import {
 import { useState } from 'react';
 import DefaultButton from '../../../components/Buttons/DefaultButton';
 import DefaultDialog from '../../../components/Dialogs/DefaultDialog';
+import ExternalAnchor from '../../../components/Typography/ExternalAnchor';
 import { useStoreState } from '../../../store/typedHooks';
 import ChangeUsername from '../ChangeUsername';
 
@@ -85,13 +86,9 @@ const Settings = () => {
                   <br />
                   <br />
                   To see the latest changes, see:{' '}
-                  <a
-                    href='https://github.com/slater-notes/web/releases'
-                    target='_blank'
-                    rel='noreferrer noopener'
-                  >
+                  <ExternalAnchor href='https://github.com/slater-notes/web/releases'>
                     https://github.com/slater-notes/web/releases
-                  </a>
+                  </ExternalAnchor>
                 </>
               }
             />

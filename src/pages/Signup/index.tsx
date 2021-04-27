@@ -25,6 +25,7 @@ import Paragraph from '../../components/Typography/Paragraph';
 import prepareAndRegisterToCloudSync from '../../services/prepareAndRegisterToCloudSync';
 import generateTokenFromPassword from '../../utils/generateTokenFromPassword';
 import moment from 'moment';
+import ExternalAnchor from '../../components/Typography/ExternalAnchor';
 
 const Signup = () => {
   const classes = useStyles();
@@ -247,13 +248,9 @@ const Signup = () => {
                     <Typography variant='body2' color='textSecondary'>
                       A higher iteration count means slow login time{' '}
                       <strong>but higher resistance to password cracking attacks</strong>.{' '}
-                      <a
-                        href='https://support.1password.com/pbkdf2/'
-                        target='_blank'
-                        rel='noreferrer'
-                      >
+                      <ExternalAnchor href='https://support.1password.com/pbkdf2/'>
                         Learn more
-                      </a>
+                      </ExternalAnchor>
                     </Typography>
                     <TextField
                       type='number'
