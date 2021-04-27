@@ -196,7 +196,12 @@ const Folders = () => {
         {deleteFolderConfirm && (
           <DefaultDialog
             title='Delete Folder?'
-            text={`Are you sure you want to delete ${deleteFolderConfirm.title}? Notes are NOT deleted along with the folder — you must delete notes individually.`}
+            text={
+              <>
+                Are you sure you want to delete <b>{deleteFolderConfirm.title || 'Untitled'}</b>?
+                Notes are NOT deleted along with the folder — you must delete notes individually.
+              </>
+            }
             withCancel
             withConfirm
             confirmLabel='Delete Folder'
