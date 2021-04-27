@@ -7,7 +7,6 @@ import DefaultDialog from '../../../components/Dialogs/DefaultDialog';
 import { FileText, Star, Trash } from 'react-feather';
 import DefaultIconButton from '../../../components/Buttons/DefaultIconButton';
 import FilterFiles from './FilterFiles';
-import { throttle } from 'lodash';
 import ListGroup, { Item } from './ListGroup';
 import NotifBox from '../../../components/NotifBox';
 
@@ -15,11 +14,8 @@ const Files = () => {
   const theme = useTheme();
   const classes = useStyles();
 
-  const containerRef = React.useRef<HTMLDivElement>(null);
-
   const [filter, setFilter] = React.useState<string>('');
   const [emptyTrashConfirm, setEmptyTrashConfirm] = React.useState(false);
-  const [, setContainerShadow] = React.useState(false);
 
   const fileCollection = useStoreState((s) => s.fileCollection);
   const activeNote = useStoreState((s) => s.activeNote);
@@ -28,22 +24,6 @@ const Files = () => {
   const loadNote = useStoreActions((a) => a.loadNote);
   const emptyTrash = useStoreActions((a) => a.emptyTrash);
   const setSidebarOpen = useStoreActions((a) => a.setSidebarOpen);
-
-  const handleContainerScroll = () => {
-    if (containerRef.current) {
-      setContainerShadow(containerRef.current.scrollTop > 0);
-    }
-  };
-
-  const handleContainerScrollThrottled = React.useMemo(
-    () => throttle(handleContainerScroll, 250),
-    [],
-  );
-
-  React.useEffect(() => {
-    handleContainerScroll();
-    globalThis.addEventListener('resize', handleContainerScrollThrottled);
-  }, []);
 
   // Reset filter when changing folders
   React.useEffect(() => {
@@ -182,60 +162,54 @@ const Files = () => {
   };
 
   return (
-    <React.Fragment>
-      <div className={classes.topShadow}></div>
-      <div
-        ref={containerRef}
-        className={classes.container}
-        onScroll={handleContainerScrollThrottled}
-      >
-        <div className={classes.titleContainer}>
-          <div className={classes.title}>
-            <Box fontSize='1.8rem' fontWeight={theme.typography.fontWeightMedium}>
-              {getTitle()}
-            </Box>
-            {activeFolderId === 'trash' && (
-              <DefaultIconButton
-                icon={Trash}
-                size={18}
-                disabled={!fileCollection?.notes.find((n) => n.isDeleted)}
-                style={{
-                  marginTop: `-${theme.spacing(0.5)}px`,
-                }}
-                onClick={() => {
-                  setEmptyTrashConfirm(true);
-                }}
-              />
-            )}
-          </div>
-
-          {activeFolderId === 'all' && <FilterFiles onChange={(value) => setFilter(value)} />}
+    <div className={classes.container}>
+      <div className={classes.titleContainer}>
+        <div className={classes.title}>
+          <Box fontSize='1.8rem' fontWeight={theme.typography.fontWeightMedium}>
+            {getTitle()}
+          </Box>
+          {activeFolderId === 'trash' && (
+            <DefaultIconButton
+              icon={Trash}
+              size={18}
+              disabled={!fileCollection?.notes.find((n) => n.isDeleted)}
+              style={{
+                marginTop: `-${theme.spacing(0.5)}px`,
+              }}
+              onClick={() => {
+                setEmptyTrashConfirm(true);
+              }}
+            />
+          )}
         </div>
 
-        <ListGroup items={getListItems()} />
-
-        {emptyTrashConfirm && (
-          <DefaultDialog
-            title='Empty Trash?'
-            text='Are you sure you want to empty the trash? Notes in the trash will be deleted permanently.'
-            withCancel
-            withConfirm
-            confirmLabel='Empty Trash'
-            confirmButtonStyle={{ color: theme.palette.error.main }}
-            onCancel={() => setEmptyTrashConfirm(false)}
-            onConfirm={() => {
-              setEmptyTrashConfirm(false);
-              emptyTrash();
-            }}
-          />
-        )}
+        {activeFolderId === 'all' && <FilterFiles onChange={(value) => setFilter(value)} />}
       </div>
-    </React.Fragment>
+
+      <ListGroup items={getListItems()} />
+
+      {emptyTrashConfirm && (
+        <DefaultDialog
+          title='Empty Trash?'
+          text='Are you sure you want to empty the trash? Notes in the trash will be deleted permanently.'
+          withCancel
+          withConfirm
+          confirmLabel='Empty Trash'
+          confirmButtonStyle={{ color: theme.palette.error.main }}
+          onCancel={() => setEmptyTrashConfirm(false)}
+          onConfirm={() => {
+            setEmptyTrashConfirm(false);
+            emptyTrash();
+          }}
+        />
+      )}
+    </div>
   );
 };
 
 const useStyles = makeStyles((theme) => ({
   topShadow: {
+    width: '100%',
     position: 'absolute',
     zIndex: 2,
     height: 1,
@@ -243,6 +217,7 @@ const useStyles = makeStyles((theme) => ({
   },
 
   container: {
+    width: '100%',
     overflowY: 'auto',
     backgroundColor: theme.palette.background.default,
   },

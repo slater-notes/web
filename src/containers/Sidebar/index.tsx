@@ -1,6 +1,4 @@
 import { Grid, makeStyles } from '@material-ui/core';
-import { grey } from '@material-ui/core/colors';
-import React from 'react';
 import Files from './Files';
 import Folders from './Folders';
 
@@ -9,10 +7,10 @@ const Sidebar = () => {
 
   return (
     <Grid container className={classes.container}>
-      <Grid item className={classes.gridItems} style={{ width: 300 }}>
+      <Grid item className={`${classes.gridItem} ${classes.foldersContainer}`}>
         <Folders />
       </Grid>
-      <Grid item className={classes.gridItems} style={{ flex: 1, borderColor: grey[100] }}>
+      <Grid item className={`${classes.gridItem} ${classes.filesContainer}`}>
         <Files />
       </Grid>
     </Grid>
@@ -25,16 +23,18 @@ const useStyles = makeStyles((theme) => ({
     width: 700,
   },
 
-  gridItems: {
+  gridItem: {
     height: '100vh',
     display: 'flex',
-    justifyContent: 'stretch',
-    alignItems: 'stretch',
-    borderRight: `1px solid ${theme.palette.divider}`,
+  },
 
-    '& > *': {
-      width: '100%',
-    },
+  foldersContainer: {
+    width: 300,
+    borderRight: `1px solid ${theme.palette.divider}`,
+  },
+
+  filesContainer: {
+    flex: 1,
   },
 }));
 
