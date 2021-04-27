@@ -1,5 +1,5 @@
-import { FormControl, makeStyles, TextField } from '@material-ui/core';
-import React from 'react';
+import { FormControl, makeStyles } from '@material-ui/core';
+import SingleLineInput from '../../../components/Input/SingleLineInput';
 
 interface Props {
   onChange: (input: string) => void;
@@ -10,8 +10,8 @@ const FilterFiles = (props: Props) => {
 
   return (
     <FormControl fullWidth className={classes.formControl}>
-      <TextField
-        label='Search Files'
+      <SingleLineInput
+        placeholder='Search for notes'
         variant='outlined'
         autoComplete='off'
         size='small'
@@ -23,7 +23,6 @@ const FilterFiles = (props: Props) => {
 
 const useStyles = makeStyles((theme) => ({
   formControl: {
-    display: 'flex',
     marginTop: `-${theme.spacing(3)}px`,
     marginBottom: `${theme.spacing(3)}px`,
   },

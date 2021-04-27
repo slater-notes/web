@@ -6,7 +6,6 @@ import {
   Divider,
   FormControlLabel,
   makeStyles,
-  TextField,
   Typography,
   withStyles,
 } from '@material-ui/core';
@@ -26,6 +25,7 @@ import prepareAndRegisterToCloudSync from '../../services/prepareAndRegisterToCl
 import generateTokenFromPassword from '../../utils/generateTokenFromPassword';
 import moment from 'moment';
 import ExternalAnchor from '../../components/Typography/ExternalAnchor';
+import SingleLineInput from '../../components/Input/SingleLineInput';
 
 const Signup = () => {
   const classes = useStyles();
@@ -158,7 +158,7 @@ const Signup = () => {
           {({ handleSubmit, handleChange, handleBlur, values, isSubmitting, errors, touched }) => (
             <React.Fragment>
               <form onSubmit={handleSubmit} autoComplete='off'>
-                <TextField
+                <SingleLineInput
                   name='username'
                   label='Username'
                   variant='outlined'
@@ -177,7 +177,7 @@ const Signup = () => {
 
                 <Divider />
 
-                <TextField
+                <SingleLineInput
                   type='password'
                   name='password'
                   label='Password'
@@ -194,7 +194,7 @@ const Signup = () => {
                   }
                 />
 
-                <TextField
+                <SingleLineInput
                   type='password'
                   name='password2'
                   label='Confirm Password'
@@ -225,8 +225,7 @@ const Signup = () => {
                   <AccordionDetails>
                     <Typography variant='body2' color='textSecondary'>
                       You can choose to disable cloud sync. This means that your account and notes
-                      stay on your device. Nothing touches a server. No one knows your account
-                      exists.
+                      stay on your device/browser. Nothing touches a cloud server.
                     </Typography>
                     <FormControlLabel
                       control={
@@ -246,7 +245,7 @@ const Signup = () => {
                         Learn more
                       </ExternalAnchor>
                     </Typography>
-                    <TextField
+                    <SingleLineInput
                       type='number'
                       name='iterations'
                       label='PBKDF2 Iterations'

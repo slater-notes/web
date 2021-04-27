@@ -3,7 +3,6 @@ import {
   Checkbox,
   FormControlLabel,
   makeStyles,
-  TextField,
   Typography,
   useTheme,
 } from '@material-ui/core';
@@ -21,6 +20,7 @@ import useCloudSyncLogin from '../../hooks/useCloudSyncLogin';
 import { useEffect, useState } from 'react';
 import { ErrorOrNull } from '../../hooks/useLoading';
 import { defer, upperFirst } from 'lodash';
+import SingleLineInput from '../../components/Input/SingleLineInput';
 
 type FormFields = {
   username: string;
@@ -151,7 +151,7 @@ const Login = () => {
             }
           />
 
-          <TextField
+          <SingleLineInput
             type='text'
             name='username'
             label='Username'
@@ -169,7 +169,7 @@ const Login = () => {
               upperFirst(formik.errors.username)
             }
           />
-          <TextField
+          <SingleLineInput
             type='password'
             name='password'
             label='Password'
