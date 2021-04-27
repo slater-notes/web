@@ -158,11 +158,6 @@ const Signup = () => {
           {({ handleSubmit, handleChange, handleBlur, values, isSubmitting, errors, touched }) => (
             <React.Fragment>
               <form onSubmit={handleSubmit} autoComplete='off'>
-                <Typography variant='body2' color='textSecondary'>
-                  Slater Notes is a privacy-focused notes platform therefore we do not collect any
-                  information that may personally identify you. That includes your email address.
-                </Typography>
-
                 <TextField
                   name='username'
                   label='Username'
@@ -181,12 +176,6 @@ const Signup = () => {
                 />
 
                 <Divider />
-
-                <Typography variant='body2' color='textSecondary'>
-                  Your notes are end-to-end encrypted with your password. If you forget your
-                  password, there is no way to recover your notes. We recommend storing your
-                  password in a password manager.
-                </Typography>
 
                 <TextField
                   type='password'
@@ -221,6 +210,11 @@ const Signup = () => {
                     errors.password2.charAt(0).toUpperCase() + errors.password2.slice(1)
                   }
                 />
+                <Typography variant='body2' color='textSecondary'>
+                  Your notes are end-to-end encrypted with your password. If you forget your
+                  password, there is no way to recover your notes. We recommend storing your
+                  password in a password manager.
+                </Typography>
 
                 <Divider />
 
@@ -368,11 +362,13 @@ const useStyles = makeStyles({
   },
 });
 
-const Accordion = withStyles({
+const Accordion = withStyles((theme) => ({
   root: {
     color: 'inherit',
     border: '1px solid rgba(0, 0, 0, .125)',
+    borderRadius: theme.shape.borderRadius,
     boxShadow: 'none',
+
     '&:before': {
       display: 'none',
     },
@@ -380,16 +376,17 @@ const Accordion = withStyles({
       margin: 'auto',
     },
   },
-})(MuiAccordion);
+}))(MuiAccordion);
 
 const AccordionSummary = withStyles((theme) => ({
   root: {
     color: theme.palette.text.secondary,
-    backgroundColor: theme.palette.background.default,
-    borderBottom: '1px solid rgba(0, 0, 0, .125)',
+    backgroundColor: 'transparent',
     marginBottom: -1,
     minHeight: 56,
+
     '&$expanded': {
+      borderBottom: '1px solid rgba(0, 0, 0, .125)',
       minHeight: 56,
     },
   },
