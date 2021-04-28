@@ -23,7 +23,7 @@ import Settings from '../../Dialogs/Settings';
 import FolderItemEdit from './FolderItemEdit';
 import ListGroup, { Props as ListGroupProps } from './ListGroup';
 import CloudSync from '../../Dialogs/CloudSync';
-import { throttle } from 'lodash';
+import { defer, throttle } from 'lodash';
 import FolderGroupTitle from '../../../components/SidebarComponents/FolderGroupTitle';
 
 const Folders = () => {
@@ -164,12 +164,9 @@ const Folders = () => {
                         menuItems={[
                           {
                             label: 'Rename',
-                            onClick: async () => {
-                              if (activeFolderId !== folder.id) {
-                                await setActiveFolderId(folder.id);
-                              }
-
-                              setEditingFolderId(folder.id);
+                            onClick: () => {
+                              if (activeFolderId !== folder.id) setActiveFolderId(folder.id);
+                              defer(() => setEditingFolderId(folder.id));
                             },
                           },
                           {
