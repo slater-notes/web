@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { FolderItem } from '@slater-notes/core';
 import EditableTypography from '../../../components/EditableTypography';
 
