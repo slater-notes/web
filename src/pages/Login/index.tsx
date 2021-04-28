@@ -90,8 +90,8 @@ const Login = () => {
     },
     validationSchema: () =>
       yup.object().shape({
-        username: yup.string().trim(),
-        password: yup.string(),
+        username: yup.string().trim().required(),
+        password: yup.string().required(),
       }),
     onSubmit: ({ username, password }) => {
       reset();
@@ -162,10 +162,15 @@ const Login = () => {
             value={formik.values.username}
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
-            error={formik.touched.username && !!formik.errors.username}
+            error={
+              formik.touched.username &&
+              !!formik.errors.username &&
+              formik.values.username.length > 0
+            }
             helperText={
               formik.touched.username &&
               formik.errors.username &&
+              formik.values.username.length > 0 &&
               upperFirst(formik.errors.username)
             }
           />
@@ -179,10 +184,15 @@ const Login = () => {
             value={formik.values.password}
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
-            error={formik.touched.password && !!formik.errors.password}
+            error={
+              formik.touched.password &&
+              !!formik.errors.password &&
+              formik.values.password.length > 0
+            }
             helperText={
               formik.touched.password &&
               formik.errors.password &&
+              formik.values.password.length > 0 &&
               upperFirst(formik.errors.password)
             }
           />
