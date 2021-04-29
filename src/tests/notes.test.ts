@@ -85,9 +85,7 @@ describe('notes test', () => {
     const actions = store.getActions();
     const noteItem = state.fileCollection?.notes[0];
 
-    if (!noteItem) {
-      fail('noteItem is undefined');
-    }
+    if (!noteItem) throw Error('noteItem is undefined');
 
     await actions.loadNote(noteItem);
 
@@ -102,9 +100,7 @@ describe('notes test', () => {
     let state = store.getState();
     const noteItem = state.fileCollection?.notes[0];
 
-    if (!noteItem || !noteItem.id) {
-      fail('no notes');
-    }
+    if (!noteItem || !noteItem.id) throw Error('no notes');
 
     noteItem.title = 'Changed Title';
     noteItem.updated = moment().unix() + 1;
@@ -157,9 +153,7 @@ describe('notes test', () => {
     const noteItem = state.activeNote?.noteItem;
     const folderId = state.activeFolderId;
 
-    if (!noteItem || !folderId) {
-      fail('no active note or folder');
-    }
+    if (!noteItem || !folderId) throw Error('no active note or folder');
 
     noteItem.parentId = folderId;
 
@@ -185,9 +179,7 @@ describe('notes test', () => {
 
     const noteItem = state.activeNote?.noteItem;
 
-    if (!noteItem) {
-      fail('no active note');
-    }
+    if (!noteItem) throw Error('no active note');
 
     await store.getActions().trashNote(noteItem.id);
 
@@ -211,9 +203,7 @@ describe('notes test', () => {
 
     const folderId = state.fileCollection?.folders[0].id;
 
-    if (!folderId) {
-      fail('no folder in file collection');
-    }
+    if (!folderId) throw Error('no folder in file collection');
 
     await store.getActions().trashFolder(folderId);
 
@@ -235,9 +225,7 @@ describe('notes test', () => {
   test('permanently delete notes', async () => {
     const noteId = store.getState().fileCollection?.notes[0].id;
 
-    if (!noteId) {
-      fail('note not found');
-    }
+    if (!noteId) throw Error('note not found');
 
     await store.getActions().permanentlyDeleteNote(noteId);
 
@@ -259,9 +247,7 @@ describe('notes test', () => {
   test('permanently delete folders', async () => {
     const folderId = store.getState().fileCollection?.folders[0].id;
 
-    if (!folderId) {
-      fail('folder not found');
-    }
+    if (!folderId) throw Error('folder not found');
 
     await store.getActions().permanentlyDeleteFolder(folderId);
 

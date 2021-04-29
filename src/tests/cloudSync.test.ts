@@ -44,7 +44,7 @@ describe('Cloud sync', () => {
     })();
   });
 
-  test('register account', async () => {
+  test('register account', async (done) => {
     const result = await registerToCloudSync({
       username,
       token,
@@ -52,7 +52,7 @@ describe('Cloud sync', () => {
       fileCollection: 'bbb',
     });
 
-    if ('error' in result) fail();
+    if ('error' in result) throw Error();
 
     expect(result.sessionToken).toBeTruthy();
   });
@@ -63,7 +63,7 @@ describe('Cloud sync', () => {
       token,
     });
 
-    if ('error' in result) fail();
+    if ('error' in result) throw Error();
 
     expect(result.sessionToken).toBeTruthy();
 
@@ -76,7 +76,7 @@ describe('Cloud sync', () => {
       sessionToken,
     });
 
-    if ('error' in result) fail();
+    if ('error' in result) throw Error();
 
     expect(result.userItem).toBeTruthy();
     expect(result.fileCollection).toBeTruthy();
@@ -90,7 +90,7 @@ describe('Cloud sync', () => {
       fileCollection: 'bbb1',
     });
 
-    expect(result.success).toBeTruthy();
+    expect('success' in result).toBeTruthy();
   });
 
   test('put note', async () => {
@@ -101,9 +101,9 @@ describe('Cloud sync', () => {
       noteData: 'aaabbb',
     });
 
-    if ('error' in result) fail();
+    if ('error' in result) throw Error();
 
-    expect(result.success).toBeTruthy();
+    expect('success' in result).toBeTruthy();
   });
 
   test('get note', async () => {
@@ -113,7 +113,7 @@ describe('Cloud sync', () => {
       noteId: 'abc123',
     });
 
-    if ('error' in result) fail();
+    if ('error' in result) throw Error();
 
     expect(result.noteData).toBeTruthy();
   });

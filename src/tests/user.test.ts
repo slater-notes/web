@@ -33,7 +33,7 @@ describe('user test', () => {
   test('loading user that does not exist should fail gracefully', async () => {
     const result = await getDecryptedAccountFromDisk({ username: 'nouser', password: 'nopass' });
 
-    if (!('error' in result)) fail();
+    if (!('error' in result)) throw Error();
 
     expect(result.error).toBeTruthy();
     expect(result.errorCode).toEqual('no_user');
@@ -46,7 +46,7 @@ describe('user test', () => {
       password: 'PassThatDoesNotMatch',
     });
 
-    if (!('error' in result)) fail();
+    if (!('error' in result)) throw Error();
 
     expect(result.error).toEqual('Bad decryption key.');
   });
@@ -57,7 +57,7 @@ describe('user test', () => {
       password: 'testpass',
     });
 
-    if ('error' in result) fail();
+    if ('error' in result) throw Error();
 
     expect(result.user?.username).toEqual('testuser');
     expect(result.passwordKey).toBeTruthy();

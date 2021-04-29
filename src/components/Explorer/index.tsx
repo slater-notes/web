@@ -7,7 +7,6 @@ import {
   ListItemText,
   ListItemTypeMap,
   makeStyles,
-  Typography,
   useTheme,
 } from '@material-ui/core';
 import React from 'react';
