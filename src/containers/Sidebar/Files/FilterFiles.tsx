@@ -2,7 +2,7 @@ import { FormControl, makeStyles } from '@material-ui/core';
 import SingleLineInput from '../../../components/Input/SingleLineInput';
 
 interface Props {
-  onChange: (input: string) => void;
+  onChange: (input: string | null) => void;
 }
 
 const FilterFiles = (props: Props) => {
@@ -15,7 +15,10 @@ const FilterFiles = (props: Props) => {
         variant='outlined'
         autoComplete='off'
         size='small'
-        onChange={(e) => props.onChange(e.currentTarget.value)}
+        onChange={(e) => {
+          const { value } = e.currentTarget;
+          props.onChange(value === '' ? null : value);
+        }}
       />
     </FormControl>
   );

@@ -14,7 +14,7 @@ const Files = () => {
   const theme = useTheme();
   const classes = useStyles();
 
-  const [filter, setFilter] = React.useState<string>('');
+  const [filter, setFilter] = React.useState<string | null>(null);
   const [emptyTrashConfirm, setEmptyTrashConfirm] = React.useState(false);
 
   const fileCollection = useStoreState((s) => s.fileCollection);
@@ -28,7 +28,7 @@ const Files = () => {
   // Reset filter when changing folders
   React.useEffect(() => {
     if (activeFolderId !== 'all') {
-      setFilter('');
+      setFilter(null);
     }
     // eslint-disable-next-line
   }, [activeFolderId]);
@@ -77,13 +77,13 @@ const Files = () => {
       case 'all':
         return {
           key: '0',
-          primaryText: (
+          primaryText: filter ? (
+            <Box color={theme.palette.text.hint}>Empty result.</Box>
+          ) : (
             <NotifBox>
-              <>
-                You don't have any notes yet.
-                <br />
-                Press the <b>New Note</b> button to add a new note.
-              </>
+              You don't have any notes yet.
+              <br />
+              Press the <b>New Note</b> button to add a new note.
             </NotifBox>
           ),
         };
