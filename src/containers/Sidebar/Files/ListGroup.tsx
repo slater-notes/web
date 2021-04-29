@@ -63,6 +63,10 @@ const useStyles = makeStyles((theme) => ({
       backgroundColor: `${grey[200]} !important`,
     },
 
+    '&:not(:last-child) $listItemInner': {
+      borderBottom: `1px solid ${theme.palette.divider}`,
+    },
+
     '& .MuiListItemIcon-root': {
       minWidth: 'auto',
       marginRight: theme.spacing(2),
