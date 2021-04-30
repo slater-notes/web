@@ -61,7 +61,7 @@ const useStyles = makeStyles((theme) => ({
     background: 'none !important',
 
     '&.MuiListItem-gutters': {
-      padding: `0 ${theme.spacing(1)}px`,
+      padding: `0 ${theme.spacing(2)}px`,
     },
 
     '&.Mui-selected $listItemInner': {

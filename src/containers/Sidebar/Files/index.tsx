@@ -223,14 +223,12 @@ const useStyles = makeStyles((theme) => ({
   },
 
   titleContainer: {
-    padding: `0 ${theme.spacing(3)}px`,
+    padding: theme.spacing(2),
   },
 
   title: {
     display: 'flex',
     justifyContent: 'space-between',
-    padding: `${theme.spacing(3)}px 0`,
-    marginBottom: theme.spacing(2),
   },
 }));
 

@@ -14,7 +14,7 @@ const FolderGroupTitle = (props: Props) => {
   const classes = useStyles();
 
   return (
-    <List>
+    <List disablePadding>
       <ListItem className={classes.listItem}>{props.title}</ListItem>
       <ListItemSecondaryAction>
         <DefaultIconButton
@@ -29,8 +29,12 @@ const FolderGroupTitle = (props: Props) => {
 
 const useStyles = makeStyles((theme) => ({
   listItem: {
+    fontSize: '0.9rem',
+    fontWeight: theme.typography.fontWeightMedium,
+    color: theme.palette.text.secondary,
+
     '&.MuiListItem-gutters': {
-      padding: `${theme.spacing(0.8)}px ${theme.spacing(3)}px`,
+      padding: theme.spacing(2),
     },
   },
 }));

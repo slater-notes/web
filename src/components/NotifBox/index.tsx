@@ -12,7 +12,8 @@ const useStyles = makeStyles((theme) => ({
   container: {
     backgroundColor: grey[800],
     color: theme.palette.primary.contrastText,
-    padding: `${theme.spacing(2.5)}px ${theme.spacing(2)}px`,
+    padding: theme.spacing(2),
+    margin: `0 -${theme.spacing(2)}px`,
     borderRadius: theme.shape.borderRadius,
   },
 }));

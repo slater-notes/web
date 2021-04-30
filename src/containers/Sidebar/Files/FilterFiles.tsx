@@ -26,8 +26,7 @@ const FilterFiles = (props: Props) => {
 
 const useStyles = makeStyles((theme) => ({
   formControl: {
-    marginTop: `-${theme.spacing(3)}px`,
-    marginBottom: `${theme.spacing(3)}px`,
+    marginTop: theme.spacing(2),
   },
 }));
 
