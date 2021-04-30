@@ -2,6 +2,31 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.3.5](https://github.com/slater-notes/web/compare/v0.3.4...v0.3.5) (2021-04-30)
+
+
+### Features
+
+* add divider between files ([048585c](https://github.com/slater-notes/web/commit/048585c2b637023ec3b040a31a77e352301f08d8))
+* add eslint script ([8df3366](https://github.com/slater-notes/web/commit/8df33661d88ec0ec2dea9af7b66017a13dbe1286))
+* add main subtitle in sidebar ([2f788f5](https://github.com/slater-notes/web/commit/2f788f5e5c642319fb88eef6c50f771308ada056))
+* add topbar shadow on scoll ([8f1f9b9](https://github.com/slater-notes/web/commit/8f1f9b9fc173b7573d84d43f2d8b451e3747f59a))
+* clean up signup page text + ui ([a02c37e](https://github.com/slater-notes/web/commit/a02c37e5916e118c7bb28baffaa3801b89bfb13e))
+* improve topbar ui and make sidebar always temporary ([4c1052e](https://github.com/slater-notes/web/commit/4c1052e5c10627b10a4e05967ce7d859c3662387))
+* improve ui for input components ([1d91dfa](https://github.com/slater-notes/web/commit/1d91dfa8afa74843e4a28d4cd753c338b9a94de3))
+* **security:** use an anchor component ([9cf2e8e](https://github.com/slater-notes/web/commit/9cf2e8e3730eb463b13842ad769e32ce5ee30d80))
+
+
+### Bug Fixes
+
+* fix empty folder name on delete confirmation dialog ([2613082](https://github.com/slater-notes/web/commit/2613082f1a2e2fd842e210e8222e90782753e510))
+* fix folder renaming issue on safari ([e15ea3d](https://github.com/slater-notes/web/commit/e15ea3d8271df2dbde70584756a2a2f9711021cc))
+* fix login button loading indefinitely on safari ([1e7f451](https://github.com/slater-notes/web/commit/1e7f4515cb553949b2f1c1327f08e7f44b0ac8ba))
+* fix scroll on sidebar ([34ba385](https://github.com/slater-notes/web/commit/34ba3858d6b79a4ac15ec4a7b44c1debee7f8358))
+* improve sidebar ui ([74c12b9](https://github.com/slater-notes/web/commit/74c12b93b817455b3a615a9a2e8e15955deb9e0c))
+* prevent intro box from displaying when filtering files ([1f80bf7](https://github.com/slater-notes/web/commit/1f80bf7ba2d64095361348a915034adbf81aa4ed))
+* remove chrome-only csp header rule ([dc07890](https://github.com/slater-notes/web/commit/dc07890e6ed32a5eadf9764943050c77f1cdc6d7))
+
 ### [0.3.4](https://github.com/slater-notes/web/compare/v0.3.3...v0.3.4) (2021-04-23)
 
 
