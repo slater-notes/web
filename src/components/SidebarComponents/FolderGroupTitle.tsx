@@ -4,7 +4,7 @@ import DefaultIconButton from '../Buttons/DefaultIconButton';
 
 interface Props {
   title: string;
-  iconButton: {
+  iconButton?: {
     icon: Icon;
     onClick: () => void;
   };
@@ -16,13 +16,15 @@ const FolderGroupTitle = (props: Props) => {
   return (
     <List disablePadding>
       <ListItem className={classes.listItem}>{props.title}</ListItem>
-      <ListItemSecondaryAction>
-        <DefaultIconButton
-          label='Add Folder'
-          icon={props.iconButton.icon}
-          onClick={props.iconButton.onClick}
-        />
-      </ListItemSecondaryAction>
+      {props.iconButton && (
+        <ListItemSecondaryAction>
+          <DefaultIconButton
+            label='Add Folder'
+            icon={props.iconButton.icon}
+            onClick={props.iconButton.onClick}
+          />
+        </ListItemSecondaryAction>
+      )}
     </List>
   );
 };

@@ -100,7 +100,9 @@ const Folders = () => {
           />
         </div>
 
-        <div style={{ marginBottom: theme.spacing(5) }}>
+        <div className={classes.groupContainer}>
+          <FolderGroupTitle title='Notes' />
+
           <ListGroup
             items={[
               {
@@ -128,67 +130,69 @@ const Folders = () => {
           />
         </div>
 
-        <FolderGroupTitle
-          title='Folders'
-          iconButton={{
-            icon: PlusCircle,
-            onClick: () => createNewFolder({ title: '', editOnCreate: true }),
-          }}
-        />
+        <div className={classes.groupContainer}>
+          <FolderGroupTitle
+            title='Folders'
+            iconButton={{
+              icon: PlusCircle,
+              onClick: () => createNewFolder({ title: '', editOnCreate: true }),
+            }}
+          />
 
-        {useMemo(
-          () => {
-            const items: ListGroupProps['items'] = fileCollection?.folders
-              ? fileCollection.folders
-                  .filter((f) => !f.isDeleted)
-                  .sort((f1, f2) => f2.created - f1.created)
-                  .map((folder) => ({
-                    key: folder.id,
-                    text:
-                      editingFolderId === folder.id ? (
-                        <FolderItemEdit
-                          folder={folder}
-                          onDone={(value) => {
-                            folder.updated = moment().unix();
-                            folder.title = value.trim();
-                            updateFolder({ id: folder.id, folder });
-                            setEditingFolderId(null);
-                          }}
+          {useMemo(
+            () => {
+              const items: ListGroupProps['items'] = fileCollection?.folders
+                ? fileCollection.folders
+                    .filter((f) => !f.isDeleted)
+                    .sort((f1, f2) => f2.created - f1.created)
+                    .map((folder) => ({
+                      key: folder.id,
+                      text:
+                        editingFolderId === folder.id ? (
+                          <FolderItemEdit
+                            folder={folder}
+                            onDone={(value) => {
+                              folder.updated = moment().unix();
+                              folder.title = value.trim();
+                              updateFolder({ id: folder.id, folder });
+                              setEditingFolderId(null);
+                            }}
+                          />
+                        ) : (
+                          folder.title || 'Untitled'
+                        ),
+                      icon: Folder,
+                      secondaryAction: editingFolderId ? null : (
+                        <IconButtonWithMenu
+                          icon={MoreVertical}
+                          menuItems={[
+                            {
+                              label: 'Rename',
+                              onClick: () => {
+                                if (activeFolderId !== folder.id) setActiveFolderId(folder.id);
+                                defer(() => setEditingFolderId(folder.id));
+                              },
+                            },
+                            {
+                              label: 'Delete Folder...',
+                              onClick: () => {
+                                setDeleteFolderConfirm(folder);
+                              },
+                            },
+                          ]}
                         />
-                      ) : (
-                        folder.title || 'Untitled'
                       ),
-                    icon: Folder,
-                    secondaryAction: editingFolderId ? null : (
-                      <IconButtonWithMenu
-                        icon={MoreVertical}
-                        menuItems={[
-                          {
-                            label: 'Rename',
-                            onClick: () => {
-                              if (activeFolderId !== folder.id) setActiveFolderId(folder.id);
-                              defer(() => setEditingFolderId(folder.id));
-                            },
-                          },
-                          {
-                            label: 'Delete Folder...',
-                            onClick: () => {
-                              setDeleteFolderConfirm(folder);
-                            },
-                          },
-                        ]}
-                      />
-                    ),
-                    isActive: activeFolderId === folder.id,
-                    onClick: () => setActiveFolderId(folder.id),
-                  }))
-              : [];
+                      isActive: activeFolderId === folder.id,
+                      onClick: () => setActiveFolderId(folder.id),
+                    }))
+                : [];
 
-            return <ListGroup items={items} />;
-          },
-          //eslint-disable-next-line
-          [fileCollection, activeFolderId, editingFolderId],
-        )}
+              return <ListGroup items={items} />;
+            },
+            //eslint-disable-next-line
+            [fileCollection, activeFolderId, editingFolderId],
+          )}
+        </div>
 
         {deleteFolderConfirm && (
           <DefaultDialog
@@ -264,7 +268,10 @@ const useStyles = makeStyles((theme) => ({
   },
 
   mainButtonContainer: {
-    padding: `${theme.spacing(3)}px ${theme.spacing(3)}px`,
+    padding: theme.spacing(2),
+  },
+
+  groupContainer: {
     marginBottom: theme.spacing(2),
   },
 
