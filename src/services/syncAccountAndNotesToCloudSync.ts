@@ -88,18 +88,14 @@ const syncAccountAndNotesToCloudSync = async (
   // loop through notes from cloud storage
   await eachLimit(fileCollection.notes, 1, async (noteItem) => {
     const localNoteItem = payload.fileCollection.notes.find((n) => n.id === noteItem.id);
-    if (localNoteItem) {
-      // we have record of this note, see if it's outdated
-      // or if it doesn't have noteData on disk
-      const encryptedNoteData = await disk.get(noteItem.id);
 
-      if (localNoteItem.updated < noteItem.updated || !encryptedNoteData) {
-        newOrOutdatedNoteIds.push(noteItem.id);
-      }
-    } else {
-      // we don't have this note in out local
-      newOrOutdatedNoteIds.push(noteItem.id);
+    if (localNoteItem) {
+      const encryptedNoteData = await disk.get(noteItem.id);
+      if (encryptedNoteData && localNoteItem.updated < noteItem.updated) return;
     }
+
+    // this note is outdated or it has missing noteData in local
+    newOrOutdatedNoteIds.push(noteItem.id);
   });
 
   const mergedNotes: NoteItem[] = mergeArrayOfObjectsBy(
