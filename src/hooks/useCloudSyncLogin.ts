@@ -9,18 +9,20 @@ import getDecryptedAccountFromDisk from '../services/getDecryptedAccountFromDisk
 import syncAccountAndNotesToCloudSync from '../services/syncAccountAndNotesToCloudSync';
 import moment from 'moment';
 
-type LoginPayload = {
+interface LoginPayload {
   username: string;
   password: string;
-};
+}
 
-const useCloudSyncLogin = (): {
+interface ReturnObject {
   start: (payload: LoginPayload) => Promise<void>;
   isLoading: boolean;
   error: ErrorOrNull;
   isComplete: boolean;
   reset: () => void;
-} => {
+}
+
+const useCloudSyncLogin = (): ReturnObject => {
   const [isLoading, error, isComplete, setIsLoading, setError, setIsComplete, reset] = useLoading();
 
   const setUser = useStoreActions((a) => a.setUser);
@@ -89,7 +91,7 @@ const useCloudSyncLogin = (): {
     const sync = await syncAccountAndNotesToCloudSync({
       sessionToken,
       user: loadUser.user,
-      fileCollection: loadUser.fileCollection,
+      upstreamFileCollection: loadUser.fileCollection,
       fileCollectionNonce: loadUser.user.fileCollectionNonce,
       passwordKey: loadUser.passwordKey,
       cloudSyncPasswordKey: loadUser.cloudSyncPasswordKey,
@@ -105,7 +107,7 @@ const useCloudSyncLogin = (): {
     setUser(user);
     setPasswordKey(loadUser.passwordKey);
     setCloudSyncPasswordKey(loadUser.cloudSyncPasswordKey);
-    setFileCollection(loadUser.fileCollection);
+    setFileCollection(sync.fileCollection);
     setSettings(loadUser.settings);
 
     setIsComplete(true);

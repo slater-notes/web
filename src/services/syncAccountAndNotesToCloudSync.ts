@@ -21,7 +21,8 @@ import saveNotesToCloudSyncFromDisk from './saveNotesToCloudSyncFromDisk';
 export interface Payload {
   sessionToken: string;
   user: UserItem;
-  fileCollection: FileCollection;
+  upstreamFileCollection?: FileCollection;
+  localFileCollection?: FileCollection;
   fileCollectionNonce: string;
   passwordKey: CryptoKey;
   cloudSyncPasswordKey: CryptoKey;
@@ -35,75 +36,81 @@ const syncAccountAndNotesToCloudSync = async (
   payload: Payload,
 ): Promise<SuccessResonse | StandardError> => {
   console.log('syncAccountAndNotesToCloudSync');
-  // fetch from cloud
-  const account = await getAccountFromCloudSync({
-    username: payload.user.username,
-    sessionToken: payload.sessionToken,
-  });
 
-  if ('error' in account) {
-    return { error: account.error };
-  }
+  // Fetch fileCollection from server if `upstreamFileCollection` is not provided
+  let { upstreamFileCollection } = payload;
 
-  // decrypt fileCollection
-  let encryptedData;
-  try {
-    encryptedData = base64ToBuffer(account.fileCollection);
-  } catch (e) {
-    console.log(e);
-    return { error: 'unknown error' };
-  }
+  if (!upstreamFileCollection) {
+    const account = await getAccountFromCloudSync({
+      username: payload.user.username,
+      sessionToken: payload.sessionToken,
+    });
 
-  let decryptedData;
-  try {
-    decryptedData = await decrypt(
-      payload.passwordKey,
-      base64ToBuffer(payload.user.fileCollectionNonce),
-      encryptedData,
-    );
-  } catch (e) {
-    console.log(e);
-    return { error: 'bad decryption key' };
-  }
+    if ('error' in account) {
+      return { error: account.error };
+    }
 
-  let fileCollection: FileCollection;
-  try {
-    fileCollection = JSON.parse(bufferToString(decryptedData));
-  } catch (e) {
-    console.log(e);
-    return { error: 'unknown error' };
+    // decrypt fileCollection
+    let encryptedData;
+    try {
+      encryptedData = base64ToBuffer(account.fileCollection);
+    } catch (e) {
+      console.log(e);
+      return { error: 'unknown error' };
+    }
+
+    let decryptedData;
+    try {
+      decryptedData = await decrypt(
+        payload.passwordKey,
+        base64ToBuffer(payload.user.fileCollectionNonce),
+        encryptedData,
+      );
+    } catch (e) {
+      console.log(e);
+      return { error: 'bad decryption key' };
+    }
+
+    try {
+      upstreamFileCollection = JSON.parse(bufferToString(decryptedData)) as FileCollection;
+    } catch (e) {
+      console.error(e);
+      return { error: 'unknown error' };
+    }
   }
 
   // merge fileCollection.folders
   const mergedFolders: FolderItem[] = mergeArrayOfObjectsBy(
-    payload.fileCollection.folders,
-    fileCollection.folders,
+    payload.localFileCollection?.folders || [],
+    upstreamFileCollection.folders,
     'id',
     'updated',
   );
 
   // merge fileCollection.notes
-  const newOrOutdatedNoteIds: string[] = [];
-
-  // loop through notes from cloud storage
-  await eachLimit(fileCollection.notes, 1, async (noteItem) => {
-    const localNoteItem = payload.fileCollection.notes.find((n) => n.id === noteItem.id);
-
-    if (localNoteItem) {
-      const encryptedNoteData = await disk.get(noteItem.id);
-      if (encryptedNoteData && localNoteItem.updated < noteItem.updated) return;
-    }
-
-    // this note is outdated or it has missing noteData in local
-    newOrOutdatedNoteIds.push(noteItem.id);
-  });
-
   const mergedNotes: NoteItem[] = mergeArrayOfObjectsBy(
-    payload.fileCollection.notes,
-    fileCollection.notes,
+    payload.localFileCollection?.notes || [],
+    upstreamFileCollection.notes,
     'id',
     'updated',
   );
+
+  // check each notes are up-to-date
+  const newOrOutdatedNoteIds: string[] = [];
+
+  await eachLimit(upstreamFileCollection.notes, 1, async (upstreamNoteItem) => {
+    const localNoteItem = payload.localFileCollection?.notes.find(
+      (n) => n.id === upstreamNoteItem.id,
+    );
+
+    if (localNoteItem) {
+      const encryptedNoteData = await disk.get(upstreamNoteItem.id);
+      if (encryptedNoteData && localNoteItem.updated >= upstreamNoteItem.updated) return;
+    }
+
+    // this note is outdated or it has missing noteData in local
+    newOrOutdatedNoteIds.push(upstreamNoteItem.id);
+  });
 
   // download new and outdated noteData
   await getNotesFromCloudSyncAndSaveToDisk({
@@ -125,7 +132,7 @@ const syncAccountAndNotesToCloudSync = async (
 
   // create a new fileCollection object
   const newFileCollection = {
-    ...payload.fileCollection,
+    userId: payload.user.id,
     folders: mergedFolders,
     notes: mergedNotes,
   };

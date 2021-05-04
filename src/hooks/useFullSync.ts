@@ -68,7 +68,7 @@ const useFullSync = (): [() => Promise<void>, boolean, ErrorOrNull, boolean, () 
     const sync = await syncAccountAndNotesToCloudSync({
       sessionToken: cloudSyncSessionToken,
       user,
-      fileCollection,
+      localFileCollection: fileCollection,
       fileCollectionNonce,
       passwordKey,
       cloudSyncPasswordKey,

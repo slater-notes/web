@@ -45,7 +45,7 @@ const decryptAndSaveUserToDisk = async (
 
   const userItem: UserItem = JSON.parse(bufferToString(decryptedData));
 
-  //  save to disk
+  // save to disk
   await saveUserItemToDisk(userItem);
 
   return { success: true, userItem };

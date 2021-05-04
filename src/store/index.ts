@@ -23,6 +23,8 @@ import saveAppSettingsToDisk from '../services/saveAppSettingsToDisk';
 import { FileCollection, FolderItem, NoteData, NoteItem } from '../types/notes';
 import disk from '../utils/disk';
 import { ActiveNote } from '../types/activeNote';
+import saveNotesToCloudSync from '../services/saveNotesToCloudSync';
+import saveAccountToCloudSync from '../services/saveAccountToCloudSync';
 
 export interface StoreModel {
   user: UserItem | null;
@@ -149,11 +151,11 @@ const ApplicationStore: StoreModel = {
     actions.setUser(payload.userItem);
 
     if (!payload.noCloudSync && user.cloudSyncSessionToken && cloudSyncPasswordKey) {
-      syncAccountAndNotesToCloudSyncDebouncedWorker({
-        sessionToken: user.cloudSyncSessionToken,
+      saveAccountToCloudSync({
         user,
         fileCollection,
         fileCollectionNonce: user.fileCollectionNonce,
+        sessionToken: user.cloudSyncSessionToken,
         passwordKey,
         cloudSyncPasswordKey,
       });
@@ -253,11 +255,12 @@ const ApplicationStore: StoreModel = {
     actions.setActiveNote({ noteItem, noteData });
 
     if (user.cloudSyncSessionToken && cloudSyncPasswordKey) {
-      syncAccountAndNotesToCloudSyncDebouncedWorker({
-        sessionToken: user.cloudSyncSessionToken,
+      saveNotesToCloudSync({
         user,
+        noteIds: [noteItem.id],
         fileCollection,
         fileCollectionNonce: user.fileCollectionNonce,
+        sessionToken: user.cloudSyncSessionToken,
         passwordKey,
         cloudSyncPasswordKey,
       });
@@ -300,7 +303,7 @@ const ApplicationStore: StoreModel = {
       syncAccountAndNotesToCloudSyncDebouncedWorker({
         sessionToken: user.cloudSyncSessionToken,
         user,
-        fileCollection,
+        localFileCollection: fileCollection,
         fileCollectionNonce: user.fileCollectionNonce,
         passwordKey,
         cloudSyncPasswordKey,
@@ -360,11 +363,11 @@ const ApplicationStore: StoreModel = {
     actions.setFileCollection({ ...fileCollection });
 
     if (user.cloudSyncSessionToken && cloudSyncPasswordKey) {
-      syncAccountAndNotesToCloudSyncDebouncedWorker({
-        sessionToken: user.cloudSyncSessionToken,
+      saveAccountToCloudSync({
         user,
         fileCollection,
         fileCollectionNonce: user.fileCollectionNonce,
+        sessionToken: user.cloudSyncSessionToken,
         passwordKey,
         cloudSyncPasswordKey,
       });
@@ -399,11 +402,12 @@ const ApplicationStore: StoreModel = {
     await saveNoteDataToDisk(passwordKey, noteItem.nonce, payload.noteData);
 
     if (user.cloudSyncSessionToken && cloudSyncPasswordKey) {
-      syncAccountAndNotesToCloudSyncDebouncedWorker({
-        sessionToken: user.cloudSyncSessionToken,
+      saveNotesToCloudSync({
         user,
+        noteIds: [noteItem.id],
         fileCollection,
         fileCollectionNonce: user.fileCollectionNonce,
+        sessionToken: user.cloudSyncSessionToken,
         passwordKey,
         cloudSyncPasswordKey,
       });
@@ -442,11 +446,11 @@ const ApplicationStore: StoreModel = {
     actions.setFileCollection({ ...fileCollection });
 
     if (user.cloudSyncSessionToken && cloudSyncPasswordKey) {
-      syncAccountAndNotesToCloudSyncDebouncedWorker({
-        sessionToken: user.cloudSyncSessionToken,
+      saveAccountToCloudSync({
         user,
         fileCollection,
         fileCollectionNonce: user.fileCollectionNonce,
+        sessionToken: user.cloudSyncSessionToken,
         passwordKey,
         cloudSyncPasswordKey,
       });
@@ -499,11 +503,11 @@ const ApplicationStore: StoreModel = {
     await actions.updateNoteItem({ id: noteId, noteItem });
 
     if (user.cloudSyncSessionToken && cloudSyncPasswordKey) {
-      syncAccountAndNotesToCloudSyncDebouncedWorker({
-        sessionToken: user.cloudSyncSessionToken,
+      saveAccountToCloudSync({
         user,
         fileCollection,
         fileCollectionNonce: user.fileCollectionNonce,
+        sessionToken: user.cloudSyncSessionToken,
         passwordKey,
         cloudSyncPasswordKey,
       });
@@ -537,11 +541,11 @@ const ApplicationStore: StoreModel = {
     await actions.updateFolder({ id: folderId, folder });
 
     if (user.cloudSyncSessionToken && cloudSyncPasswordKey) {
-      syncAccountAndNotesToCloudSyncDebouncedWorker({
-        sessionToken: user.cloudSyncSessionToken,
+      saveAccountToCloudSync({
         user,
         fileCollection,
         fileCollectionNonce: user.fileCollectionNonce,
+        sessionToken: user.cloudSyncSessionToken,
         passwordKey,
         cloudSyncPasswordKey,
       });
@@ -586,11 +590,11 @@ const ApplicationStore: StoreModel = {
     actions.setFileCollection({ ...fileCollection });
 
     if (user.cloudSyncSessionToken && cloudSyncPasswordKey) {
-      syncAccountAndNotesToCloudSyncDebouncedWorker({
-        sessionToken: user.cloudSyncSessionToken,
+      saveAccountToCloudSync({
         user,
         fileCollection,
         fileCollectionNonce: user.fileCollectionNonce,
+        sessionToken: user.cloudSyncSessionToken,
         passwordKey,
         cloudSyncPasswordKey,
       });
@@ -623,11 +627,11 @@ const ApplicationStore: StoreModel = {
     }
 
     if (user.cloudSyncSessionToken && cloudSyncPasswordKey) {
-      syncAccountAndNotesToCloudSyncDebouncedWorker({
-        sessionToken: user.cloudSyncSessionToken,
+      saveAccountToCloudSync({
         user,
         fileCollection,
         fileCollectionNonce: user.fileCollectionNonce,
+        sessionToken: user.cloudSyncSessionToken,
         passwordKey,
         cloudSyncPasswordKey,
       });
@@ -660,11 +664,11 @@ const ApplicationStore: StoreModel = {
     }
 
     if (user.cloudSyncSessionToken && cloudSyncPasswordKey) {
-      syncAccountAndNotesToCloudSyncDebouncedWorker({
-        sessionToken: user.cloudSyncSessionToken,
+      saveAccountToCloudSync({
         user,
         fileCollection,
         fileCollectionNonce: user.fileCollectionNonce,
+        sessionToken: user.cloudSyncSessionToken,
         passwordKey,
         cloudSyncPasswordKey,
       });
