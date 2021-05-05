@@ -15,6 +15,7 @@ const FilterFiles = (props: Props) => {
         variant='outlined'
         autoComplete='off'
         size='small'
+        fullWidth
         onChange={(e) => {
           const { value } = e.currentTarget;
           props.onChange(value === '' ? null : value);

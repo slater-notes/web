@@ -1,11 +1,10 @@
-import { Box, makeStyles, useTheme } from '@material-ui/core';
+import { makeStyles } from '@material-ui/core';
 import React from 'react';
 import { FolderItem, NoteItem } from '@slater-notes/core';
-import { MenuItemObject } from '../../components/Menus/SimpleTextMenu';
-import Tag from '../../components/Tag';
+import { PopupMenuItem } from '../../components/PopupMenu';
+import ChipWithMenu from '../../components/ChipWithMenu';
 import { useStoreActions, useStoreState } from '../../store/typedHooks';
 import moment from 'moment';
-import { grey } from '@material-ui/core/colors';
 
 interface Props {
   noteItem: NoteItem;
@@ -13,7 +12,6 @@ interface Props {
 }
 
 const FolderPicker = (props: Props) => {
-  const theme = useTheme();
   const classes = useStyles();
 
   const [folder, setFolder] = React.useState<FolderItem | null | undefined>(null);
@@ -52,7 +50,7 @@ const FolderPicker = (props: Props) => {
   return (
     <React.Fragment>
       {React.useMemo(() => {
-        const items: MenuItemObject[] =
+        const items: PopupMenuItem[] =
           fileCollection && fileCollection.folders.length > 0
             ? fileCollection.folders
                 .filter((f) => !f.isDeleted)
@@ -72,17 +70,8 @@ const FolderPicker = (props: Props) => {
 
         return (
           <div className={classes.container}>
-            <Tag
-              className={classes.tag}
-              text={
-                <Box
-                  component='span'
-                  fontSize='0.9rem'
-                  fontWeight={theme.typography.fontWeightMedium}
-                >
-                  {folder ? folder.title || 'Untitled' : 'Save to folder...'}
-                </Box>
-              }
+            <ChipWithMenu
+              text={folder ? folder.title || 'Untitled' : 'Save to folder...'}
               menuItems={items}
               onDelete={props.noteItem.parentId ? () => updateFolder(null) : undefined}
             />
@@ -101,18 +90,6 @@ const useStyles = makeStyles((theme) => ({
 
   removeFromFolderText: {
     color: theme.palette.error.main,
-  },
-
-  tag: {
-    background: '0 !important',
-    borderRadius: theme.shape.borderRadius,
-    border: `1px solid ${theme.palette.divider}`,
-    padding: `${theme.spacing(1.25)}px ${theme.spacing(1)}px`,
-    height: 'auto',
-
-    '&:hover': {
-      borderColor: grey[300],
-    },
   },
 }));
 

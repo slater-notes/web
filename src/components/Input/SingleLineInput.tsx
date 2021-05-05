@@ -1,7 +1,7 @@
 import { makeStyles, TextField, TextFieldProps } from '@material-ui/core';
 
 const SingleLineInput = (props: TextFieldProps) => {
-  const { label, input } = useStyles();
+  const { label } = useStyles();
 
   return (
     <div>
@@ -10,7 +10,7 @@ const SingleLineInput = (props: TextFieldProps) => {
           {props.label}
         </label>
       )}
-      <TextField id={props.name} {...props} className={input} label={undefined} />
+      <TextField id={props.name} {...props} label={undefined} />
     </div>
   );
 };
@@ -21,10 +21,6 @@ const useStyles = makeStyles((theme) => ({
     fontSize: '0.9rem',
     fontWeight: theme.typography.fontWeightMedium,
     marginBottom: theme.spacing(1),
-  },
-
-  input: {
-    width: '100%',
   },
 }));
 

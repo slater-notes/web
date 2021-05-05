@@ -1,7 +1,7 @@
 import { IconButton } from '@material-ui/core';
 import React, { useRef, useState } from 'react';
 import { Icon } from 'react-feather';
-import SimpleTextMenu from '../Menus/SimpleTextMenu';
+import PopupMenu from '../PopupMenu';
 
 interface Props {
   icon: Icon;
@@ -23,7 +23,7 @@ const IconButtonWithMenu = (props: Props) => {
         <props.icon size={props.iconSize || 16} />
       </IconButton>
 
-      <SimpleTextMenu
+      <PopupMenu
         anchorEl={ref.current}
         isOpen={isOpen}
         onClose={() => setIsOpen(false)}
