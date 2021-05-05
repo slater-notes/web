@@ -49,6 +49,7 @@ const Folders = () => {
   const createNewFolder = useStoreActions((a) => a.createNewFolder);
   const updateFolder = useStoreActions((a) => a.updateFolder);
   const trashFolder = useStoreActions((a) => a.trashFolder);
+  const setSidebarOpen = useStoreActions((a) => a.setSidebarOpen);
 
   const handleMainContainerScroll = () => {
     if (mainContainerRef.current) {
@@ -94,6 +95,8 @@ const Folders = () => {
                 } else {
                   createNewNote({ title: '', parentId: activeFolderId });
                 }
+
+                defer(() => setSidebarOpen(false));
               },
             }}
             text='New Note'

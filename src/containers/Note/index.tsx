@@ -1,4 +1,3 @@
-import { defer } from 'lodash';
 import { useEffect, useState } from 'react';
 import { useStoreState } from '../../store/typedHooks';
 import { ActiveNote } from '../../types/activeNote';
@@ -8,16 +7,6 @@ const Note = () => {
   const [notes, setNotes] = useState<ActiveNote[]>([]);
 
   const activeNote = useStoreState((s) => s.activeNote);
-
-  const focusTitleInput = () => {
-    if (activeNote?.noteItem.title.trim().length === 0) {
-      document
-        .querySelector<HTMLInputElement>(
-          `#note-page-${activeNote.noteItem.id} .note-page__title-input input`,
-        )
-        ?.focus();
-    }
-  };
 
   useEffect(() => {
     if (!activeNote) return;
@@ -31,8 +20,6 @@ const Note = () => {
     }
 
     setNotes(notes);
-
-    defer(() => focusTitleInput());
 
     // eslint-disable-next-line
   }, [activeNote]);

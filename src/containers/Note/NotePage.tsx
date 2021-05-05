@@ -1,5 +1,5 @@
 import { makeStyles } from '@material-ui/core';
-import { debounce } from 'lodash';
+import { debounce, defer } from 'lodash';
 import moment from 'moment';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import EditableTypography from '../../components/EditableTypography';
@@ -91,6 +91,8 @@ const NotePage = ({ note }: Props) => {
         setLastContentEdit(now());
       }
     }
+
+    defer(() => inputRef.current?.focus());
   }, [note]);
 
   return (
@@ -109,7 +111,7 @@ const NotePage = ({ note }: Props) => {
             text={title}
             placeholder='Untitled'
             disabled={note.noteItem.isDeleted}
-            className={[classes.title, 'note-page__title-input'].join(' ')}
+            className={classes.title}
             typographyProps={{
               variant: 'h4',
               component: 'div',
