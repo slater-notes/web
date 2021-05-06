@@ -15,7 +15,9 @@ interface Payload {
 }
 
 /**
- * Push fileCollection and noteData to cloud sync.
+ * When saving indiviual notes data, it's metadata also get updated in
+ * `fileCollection`. This function allows us to push both the updated
+ * `fileCollection` + `noteData` to the cloud sync server.
  */
 const saveNotesToCloudSync = async (payload: Payload): Promise<StandardResponse> => {
   const results = await Promise.all([
@@ -27,6 +29,7 @@ const saveNotesToCloudSync = async (payload: Payload): Promise<StandardResponse>
       passwordKey: payload.passwordKey,
       cloudSyncPasswordKey: payload.cloudSyncPasswordKey,
     }),
+
     saveNotesToCloudSyncFromDisk({
       username: payload.user.username,
       sessionToken: payload.sessionToken,
@@ -34,10 +37,12 @@ const saveNotesToCloudSync = async (payload: Payload): Promise<StandardResponse>
     }),
   ]);
 
+  // return the first error, if any
   for (const result of results) {
     if ('error' in result) return result;
   }
 
+  // when both results are good, return the first StandardSuccess result.
   return results[0];
 };
 
