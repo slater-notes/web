@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.3.6](https://github.com/slater-notes/web/compare/v0.3.5...v0.3.6) (2021-05-07)
+
+
+### Bug Fixes
+
+* fix and improve notes syncing ([500157a](https://github.com/slater-notes/web/commit/500157a4add428a5e459359a3e3a1c464accbed0))
+* fix notes not syncing properly during login ([30d7879](https://github.com/slater-notes/web/commit/30d787909c7fa8173feaf88cb93da086588aa369))
+* fix sidebar not closing when creating a new note ([f93995d](https://github.com/slater-notes/web/commit/f93995d0fbd1a2300eed2f62f216d459a93aa48f))
+
 ### [0.3.5](https://github.com/slater-notes/web/compare/v0.3.4...v0.3.5) (2021-04-30)
 
 
