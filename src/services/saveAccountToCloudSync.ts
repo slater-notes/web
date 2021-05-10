@@ -5,6 +5,7 @@ import {
   stringToBuffer,
   UserItem,
 } from '@slater-notes/core';
+import { debounce } from 'lodash';
 import updateAccountToCloudSync from '../api/cloudSync/updateAccount';
 import { FileCollection } from '../types/notes';
 import { StandardResponse } from '../types/response';
@@ -48,3 +49,7 @@ const saveAccountToCloudSync = async (payload: Payload): Promise<StandardRespons
 };
 
 export default saveAccountToCloudSync;
+
+export const saveAccountToCloudSyncDebounced = debounce(saveAccountToCloudSync, 500, {
+  leading: false,
+});

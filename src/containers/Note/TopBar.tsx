@@ -80,7 +80,7 @@ const TopBar = (props: Props) => {
         <div>
           {!props.note.noteItem.isDeleted && (
             <>
-              {props.saved ? <StatusText>✓ Saved</StatusText> : <StatusText>Unsaved</StatusText>}
+              <StatusText>{props.saved ? '✓ Saved' : 'Unsaved'}</StatusText>
 
               <DefaultIconButton
                 label={props.note.noteItem.isStarred ? 'Remove from Favorites' : 'Add to Favorites'}

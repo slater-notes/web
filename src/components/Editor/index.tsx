@@ -11,6 +11,7 @@ import keyboardShortcutHandler from './keyboardShortcutHandler';
 interface Props {
   value: Node[];
   setValue: (value: Node[]) => void;
+  onChange: (value: Node[]) => void;
   readOnly: boolean;
 }
 
@@ -21,8 +22,18 @@ const SlateEditor = (props: Props) => {
   const renderElement = useCallback(RenderElement, []);
   const renderLeaf = useCallback(RenderLeaf, []);
 
+  const handleChange = (value: Node[]) => {
+    // only trigger onChange when content actually changes
+    if (JSON.stringify(value) !== JSON.stringify(props.value)) {
+      console.log('new content!');
+      props.onChange(value);
+    }
+
+    props.setValue(value);
+  };
+
   return (
-    <Slate editor={editor} value={props.value} onChange={props.setValue}>
+    <Slate editor={editor} value={props.value} onChange={handleChange}>
       <HoveringToolbar />
       <Editable
         className={classes.editor}

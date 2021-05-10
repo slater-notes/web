@@ -1,7 +1,7 @@
 import { UserItem } from '@slater-notes/core';
 import { FileCollection } from '../types/notes';
 import { StandardResponse } from '../types/response';
-import saveAccountToCloudSync from './saveAccountToCloudSync';
+import { saveAccountToCloudSyncDebounced } from './saveAccountToCloudSync';
 import saveNotesToCloudSyncFromDisk from './saveNotesToCloudSyncFromDisk';
 
 interface Payload {
@@ -20,8 +20,8 @@ interface Payload {
  * `fileCollection` + `noteData` to the cloud sync server.
  */
 const saveNotesToCloudSync = async (payload: Payload): Promise<StandardResponse> => {
-  const results = await Promise.all([
-    saveAccountToCloudSync({
+  await Promise.all([
+    saveAccountToCloudSyncDebounced({
       user: payload.user,
       fileCollection: payload.fileCollection,
       fileCollectionNonce: payload.fileCollectionNonce,
@@ -37,13 +37,7 @@ const saveNotesToCloudSync = async (payload: Payload): Promise<StandardResponse>
     }),
   ]);
 
-  // return the first error, if any
-  for (const result of results) {
-    if ('error' in result) return result;
-  }
-
-  // when both results are good, return the first StandardSuccess result.
-  return results[0];
+  return { success: true };
 };
 
 export default saveNotesToCloudSync;

@@ -127,11 +127,11 @@ const NotePage = ({ note }: Props) => {
           <Editor
             readOnly={!!note.noteItem.isDeleted}
             value={content}
-            setValue={(content) => {
-              setContent(content);
+            setValue={setContent}
+            onChange={(newContent) => {
               setLastContentEdit(now());
               setSaved(false);
-              handleSaveNoteContentDebounced(content);
+              handleSaveNoteContentDebounced(newContent);
             }}
           />
         </div>

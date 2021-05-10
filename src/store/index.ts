@@ -24,7 +24,9 @@ import { FileCollection, FolderItem, NoteData, NoteItem } from '../types/notes';
 import disk from '../utils/disk';
 import { ActiveNote } from '../types/activeNote';
 import saveNotesToCloudSync from '../services/saveNotesToCloudSync';
-import saveAccountToCloudSync from '../services/saveAccountToCloudSync';
+import saveAccountToCloudSync, {
+  saveAccountToCloudSyncDebounced,
+} from '../services/saveAccountToCloudSync';
 
 export interface StoreModel {
   user: UserItem | null;
@@ -363,7 +365,7 @@ const ApplicationStore: StoreModel = {
     actions.setFileCollection({ ...fileCollection });
 
     if (user.cloudSyncSessionToken && cloudSyncPasswordKey) {
-      saveAccountToCloudSync({
+      saveAccountToCloudSyncDebounced({
         user,
         fileCollection,
         fileCollectionNonce: user.fileCollectionNonce,
