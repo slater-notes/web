@@ -225,7 +225,7 @@ const Folders = () => {
             {
               key: 'cloudsync',
               text: 'Cloud Sync',
-              icon: typeof user?.cloudLastSynced === 'number' ? Cloud : CloudOff,
+              icon: user?.cloudSyncSessionToken ? Cloud : CloudOff,
               onClick: () => setOpenCloudSync(true),
             },
             {
