@@ -48,6 +48,7 @@ const PopupMenu = (props: Props) => {
 const useStyles = makeStyles((theme) => ({
   subheader: {
     fontSize: '0.9em',
+    background: 'none !important',
   },
 }));
 
